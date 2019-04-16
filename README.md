@@ -1,5 +1,7 @@
 # voe
-Fast 3kb Vue-like  web component compiler
+> Fast 3kb Vue-like  web component compiler
+
+### p.s.
 
 留坑，大概明年实现，将 vue 的 模板引擎移除掉，取而代之 web component 的 runtime
 
