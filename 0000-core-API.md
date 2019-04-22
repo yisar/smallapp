@@ -5,7 +5,7 @@
 ## class API
 
 ```jsx
-class App extends Voe {
+class MyComponent extends Voe {
   // 通过 static 定义的属性，不会被劫持
   static tag = 'v-app'
 
@@ -37,13 +37,16 @@ class App extends Voe {
   }
 }
 ```
+```html
+<my-component></my-component>
+```
 
 ### data
 
 为了更好的符合语义化，data 可以通过方法定义
 
 ```js
-class App extends Voe {
+class MyComponent extends Voe {
   data() {
     return {
       count: 1,
@@ -59,7 +62,7 @@ class App extends Voe {
 静态属性，通过 static 关键字声明，它不会被劫持
 
 ```js
-class App extends Voe {
+class MyComponent extends Voe {
   static ep = new Eplayer() //不会被劫持，不是响应的
 }
 ```
@@ -69,7 +72,7 @@ class App extends Voe {
 props 需要事先声明，才会被代理到 this 上
 
 ```js
-class App extends Voe {
+class MyComponent extends Voe {
   static props = {
     msg: String,
   }
@@ -84,7 +87,7 @@ class App extends Voe {
 通过 get 关键字声明的方法为 computed 方法
 
 ```js
-class App extends Voe {
+class MyComponent extends Voe {
   get plusOne() {
     console.log(this.count)
   }
@@ -96,7 +99,7 @@ class App extends Voe {
 任何不是生命周期 或 render 的函数都是普通函数
 
 ```js
-class App extends Voe {
+class MyComponent extends Voe {
   //生命周期
   mounted() {
     document.title = this.count
@@ -113,7 +116,7 @@ class App extends Voe {
 默认使用 jsx 而不是模板，即 render 函数
 
 ```jsx
-class App extends Voe {
+class MyComponent extends Voe {
   render() {
     return (
       <div>
