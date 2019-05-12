@@ -128,15 +128,15 @@ class myApp extends Voe {
 
 ### JSX
 
-默认使用 jsx 而不是模板，即 render 函数
+默认使用 jsx 而不是模板，即 render 函数，提倡全部小写，和 web 保持一致，组件必须使用连字符
 
 ```jsx
 class myApp extends Voe {
   render() {
     return (
       <div>
-        <h1>{this.count}</h1>
-        <button onClick={() => {this.increment()}}>+</button>
+        <head-line count="this.count"/>
+        <button onclick={() => {this.increment()}}>+</button>
       </div>
     )
   }
