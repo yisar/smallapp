@@ -11,9 +11,6 @@
 import Voe from 'voe'
 
 class myApp extends Voe {
-  // 通过 static 定义的属性，不会被劫持
-  static tag = 'v-app'
-
   // data 直接声明
   count = 0
 
