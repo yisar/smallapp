@@ -39,7 +39,7 @@ class myApp extends Voe {
   }
 }
 
-Voe.render(<my-app />, document.body)
+Voe.define('my-app', <my-app />)
 ```
 ### render
 
