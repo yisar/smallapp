@@ -5,7 +5,7 @@
 ## class API
 
 ```jsx
-class MyComponent extends Voe {
+class MyComponent extends Voe.Component {
   // 通过 static 定义的属性，不会被劫持
   static tag = 'v-app'
 
