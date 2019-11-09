@@ -4,7 +4,7 @@
 
 ### p.s.
 
-一边复现 vue3 核心，一边寻找新的灵感和思路，目前仅用于学习和交流
+一边复现 vue3 核心，一边寻找新的灵感和思路，用于学习和交流
 
 - web worker 和 主线程 通信
 - 一个精彩的 vdom diff 算法
@@ -12,7 +12,7 @@
 - web-components
 
 ```js
-import { h, ref, define } from '..'
+import { h, ref } from '..'
 
 const App = {
   setup() {
@@ -25,5 +25,4 @@ const App = {
     )
   },
 }
-define('my-app', App)
 ```
