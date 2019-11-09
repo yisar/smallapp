@@ -386,15 +386,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function app(config) {
   var setup = config.setup;
-  return delegator(new Worker(getPathname()), _channel.default, setup);
+  return delegator(new Worker(PATHNAME), _channel.default, setup);
 }
 
 function delegator(worker, channel, callback) {}
 
-function getPathname() {
+var PATHNAME = function () {
   var scripts = document.getElementsByTagName('script');
   return scripts[scripts.length - 1].src;
-}
+}();
 },{"./diff":"../src/diff.js","./channel":"../src/channel.js"}],"diff.js":[function(require,module,exports) {
 "use strict";
 
