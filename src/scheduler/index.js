@@ -41,15 +41,11 @@ function queueJob (rawJob) {
   if (currentJob) {
     currentJob.children.push(job)
   }
-  // Let's see if this invalidates any work that
-  // has already been staged.
-  if (job.status === 2 /* PENDING_COMMIT */) {
-    // staged job invalidated
+
+  if (job.status === 2) {
     invalidateJob(job)
-    // re-insert it into the stage queue
     requeueInvalidatedJob(job)
-  } else if (job.status !== 1 /* PENDING_STAGE */) {
-    // a new job
+  } else if (job.status !== 1) {
     queueJobForStaging(job)
   }
   if (!hasPendingFlush) {
@@ -65,9 +61,6 @@ function queuePostEffect (fn) {
   }
 }
 function flushEffects () {
-  // post commit hooks (updated, mounted)
-  // this queue is flushed in reverse becuase these hooks should be invoked
-  // child first
   var i = postEffectsQueue.length
   while (i--) {
     postEffectsQueue[i]()
@@ -81,9 +74,6 @@ function queueNodeOp (op) {
     applyOp(op)
   }
 }
-// The original nextTick now needs to be reworked so that the callback only
-// triggers after the next commit, when all node ops and post effects have been
-// completed.
 function nextTick (fn) {
   return new Promise(function (resolve, reject) {
     p.then(function () {
@@ -97,7 +87,7 @@ function nextTick (fn) {
     }).catch(reject)
   })
 }
-// Internals -------------------------------------------------------------------
+
 function flush () {
   var job
   while (true) {
@@ -114,31 +104,24 @@ function flush () {
     }
   }
   if (stageQueue.length === 0) {
-    // all done, time to commit!
     for (var i = 0; i < commitQueue.length; i++) {
       commitJob(commitQueue[i])
     }
     commitQueue.length = 0
     flushEffects()
-    // some post commit hook triggered more updates...
     if (stageQueue.length > 0) {
       if (getNow() - flushStartTimestamp > frameBudget) {
         return flushAfterMacroTask()
       } else {
-        // not out of budget yet, flush sync
         return flush()
       }
     }
-    // now we are really done
     hasPendingFlush = false
     for (var i = 0; i < nextTickQueue.length; i++) {
       nextTickQueue[i]()
     }
     nextTickQueue.length = 0
   } else {
-    // got more job to do
-    // shouldn't reach here in compat mode, because the stageQueue is
-    // guarunteed to have been depleted
     flushAfterMacroTask()
   }
 }
@@ -152,21 +135,19 @@ function queueJobForStaging (job) {
   job.postEffects = job.postEffects || []
   job.children = job.children || []
   resetJob(job)
-  // inherit parent job's expiration deadline
   job.expiration = currentJob ? currentJob.expiration : getNow() + 500 /* NORMAL */
   stageQueue.push(job)
-  job.status = 1 /* PENDING_STAGE */
+  job.status = 1
 }
 function invalidateJob (job) {
-  // recursively invalidate all child jobs
   var children = job.children
   for (var i = 0; i < children.length; i++) {
     var child = children[i]
-    if (child.status === 2 /* PENDING_COMMIT */) {
+    if (child.status === 2) {
       invalidateJob(child)
-    } else if (child.status === 1 /* PENDING_STAGE */) {
+    } else if (child.status === 1) {
       stageQueue.splice(stageQueue.indexOf(child), 1)
-      child.status = 0 /* IDLE */
+      child.status = 0
     }
   }
   if (job.cleanup) {
@@ -174,13 +155,10 @@ function invalidateJob (job) {
     job.cleanup = null
   }
   resetJob(job)
-  // remove from commit queue
   commitQueue.splice(commitQueue.indexOf(job), 1)
-  job.status = 0 /* IDLE */
+  job.status = 0
 }
 function requeueInvalidatedJob (job) {
-  // With varying priorities we should insert job at correct position
-  // based on expiration time.
   for (var i = 0; i < stageQueue.length; i++) {
     if (job.expiration < stageQueue[i].expiration) {
       stageQueue.splice(i, 0, job)
