@@ -1,17 +1,17 @@
-const [TEXT, UPDATE, INSERT, REMOVE] = [1, 2]
-let patches = {}
+const [TEXT, UPDATE, INSERT, REMOVE] = [1, 2,3,4]
+let patches = []
 let index = 0
 
-function diff (oldVnode, newVnode, index) {
+function diff (oldVnode, newVnode) {
   if (oldVnode === newVnode) {
   } else if (oldVnode && oldVnode.type === TEXT && newVnode.type === TEXT) {
     if (oldVnode.children !== newVnode.children) {
-      patches[index] = { type: TEXT, newVnode, oldVnode }
+      patches.push({ type: TEXT, newVnode, oldVnode }) 
     }
   } else if (oldVnode == null || oldVnode.type !== newVnode.type) {
-    patches[index] = { type: REPLACE, newVnode, oldVnode }
+    patches.push({ type: INSERT, newVnode},{ type: REMOVE, oldVnode})
   } else {
-    // update
+    patches.push({type:UPDATE})
 
     let savedVnode
     let childVnode
@@ -52,11 +52,11 @@ function diff (oldVnode, newVnode, index) {
 
     if (oldStart > oldEnd) {
       while (newStart <= newEnd) {
-        patches[index] = { type: INSERT, before: newKids[newStart++], after: oldKids[oldStart] }
+        patches.push({ type: INSERT, before: newKids[newStart++], after: oldKids[oldStart] })
       }
     } else if (newStart > newEnd) {
       while (oldStart <= oldEnd) {
-        patches[index] = { type: REMOVE, node: oldKids[oldStart++] }
+        patches.push({ type: REMOVE, node: oldKids[oldStart++] })
       }
     } else {
       let oldKeyed = createKeyMap(oldKids, oldStart, newStart)
@@ -68,7 +68,7 @@ function diff (oldVnode, newVnode, index) {
 
         if (newKeyed[oldKey] || (oldKey != null && newKey === getKey(oldKids[oldStart + 1]))) {
           if (oldKey == null) {
-            patches[index] = { type: REMOVE, childVnode }
+            patches.push({ type: REMOVE, childVnode })
           }
           oldStart++
           continue
@@ -99,15 +99,33 @@ function diff (oldVnode, newVnode, index) {
 
       while (oldStart <= oldEnd) {
         if (getKey((childVnode = oldKids[oldStart++])) == null) {
-          patches[index] = { type: REMOVE, node: childVnode }
+          patches.push({ type: REMOVE, node: childVnode })
         }
       }
 
       for (const key in oldKeyed) {
         if (newKeyed[key] == null) {
-          patches[index] = { type: REMOVE, node: lastkeyed[key] }
+          patches.push({ type: REMOVE, node: lastkeyed[key] })
         }
       }
     }
   }
+}
+
+function getKey(node) {
+  return node == null ? null : node.key
+}
+
+function createKeyMap(children, start, end) {
+  let out = {}
+  let key
+  let node
+
+  for (; start <= end; start++) {
+    if ((key = (node = children[start]).key) != null) {
+      out[key] = node
+    }
+  }
+
+  return out
 }
