@@ -1,17 +1,19 @@
-const [TEXT, UPDATE, INSERT, REMOVE] = [1, 2,3,4]
+const [TEXT, INSERT, REMOVE, UPDATE] = [0, 1, 2, 3]
 let patches = []
-let index = 0
 
-function diff (oldVnode, newVnode) {
+export function diff (oldVnode, newVnode) {
   if (oldVnode === newVnode) {
   } else if (oldVnode && oldVnode.type === TEXT && newVnode.type === TEXT) {
     if (oldVnode.children !== newVnode.children) {
-      patches.push({ type: TEXT, newVnode, oldVnode }) 
+      patches.push({ type: TEXT, newVnode, oldVnode })
     }
   } else if (oldVnode == null || oldVnode.type !== newVnode.type) {
-    patches.push({ type: INSERT, newVnode},{ type: REMOVE, oldVnode})
+    patches.push({ type: INSERT, newVnode })
+    if (oldVnode != null) {
+      patches.push({ type: REMOVE, oldVnode })
+    }
   } else {
-    patches.push({type:UPDATE})
+    patches.push({ type: UPDATE,oldVnode,newVnode })
 
     let savedVnode
     let childVnode
@@ -110,22 +112,23 @@ function diff (oldVnode, newVnode) {
       }
     }
   }
+  console.log(patches)
 }
 
-function getKey(node) {
+function getKey (node) {
   return node == null ? null : node.key
 }
 
-function createKeyMap(children, start, end) {
+function createKeyMap (children, start, end) {
   let out = {}
   let key
   let node
 
-  for (; start <= end; start++) {
+  while (start <= end) {
     if ((key = (node = children[start]).key) != null) {
       out[key] = node
     }
+    start++
   }
-
   return out
 }
