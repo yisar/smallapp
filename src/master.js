@@ -1,10 +1,18 @@
 import { diff } from './diff'
-import { postMessageToMain } from './channel'
+import channel from './channel'
 
 export function app (config) {
   let setup = config.setup
 
-  let newVnode = setup()
+  return delegator(new Worker(getPathname()),channel,setup)
+}
 
-  postMessageToMain(diff(null, newVnode))
+function delegator(worker,channel,callback){
+
+
+}
+
+function getPathname() {
+  var scripts = document.getElementsByTagName('script')
+  return scripts[scripts.length - 1].src
 }

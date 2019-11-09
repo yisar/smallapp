@@ -4,7 +4,7 @@ let mainQueue = []
 let workerQueue = []
 let messageHandlers = {}
 
-export function connectMain (postMessage, callback) {
+function connectMain (postMessage, callback) {
   postToWorker = postMessage
 
   if (typeof callback === 'function') {
@@ -18,7 +18,7 @@ export function connectMain (postMessage, callback) {
   workerQueue = null
 }
 
-export function connectWorker (postMessage, callback) {
+function connectWorker (postMessage, callback) {
   postToMain = postMessage
 
   if (typeof callback === 'function') {
@@ -32,7 +32,7 @@ export function connectWorker (postMessage, callback) {
   mainQueue = null
 }
 
-export function postMessageToMain (message) {
+function postMessageToMain (message) {
   if (typeof postToMain === 'function') {
     return postToMain(message)
   }
@@ -40,7 +40,7 @@ export function postMessageToMain (message) {
   mainQueue.push(message)
 }
 
-export function postMessageToWorker (message) {
+function postMessageToWorker (message) {
   if (typeof postToWorker === 'function') {
     return postToWorker(message)
   }
@@ -48,7 +48,7 @@ export function postMessageToWorker (message) {
   workerQueue.push(message)
 }
 
-export function handleMessage (type, data) {
+function handleMessage (type, data) {
   var messageHandler = messageHandlers[type]
 
   if (messageHandler) {
@@ -56,6 +56,8 @@ export function handleMessage (type, data) {
   }
 }
 
-export function on (type, messageHandler) {
+function on (type, messageHandler) {
   messageHandlers[type] = messageHandler
 }
+
+export default { connectMain, connectWorker, postMessageToMain, postMessageToWorker, handleMessage, on }

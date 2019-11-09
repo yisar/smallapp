@@ -298,12 +298,7 @@ function createKeyMap(children, start, end) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.connectMain = connectMain;
-exports.connectWorker = connectWorker;
-exports.postMessageToMain = postMessageToMain;
-exports.postMessageToWorker = postMessageToWorker;
-exports.handleMessage = handleMessage;
-exports.on = on;
+exports.default = void 0;
 var postToMain = null;
 var postToWorker = null;
 var mainQueue = [];
@@ -365,6 +360,16 @@ function handleMessage(type, data) {
 function on(type, messageHandler) {
   messageHandlers[type] = messageHandler;
 }
+
+var _default = {
+  connectMain: connectMain,
+  connectWorker: connectWorker,
+  postMessageToMain: postMessageToMain,
+  postMessageToWorker: postMessageToWorker,
+  handleMessage: handleMessage,
+  on: on
+};
+exports.default = _default;
 },{}],"../src/master.js":[function(require,module,exports) {
 "use strict";
 
@@ -375,12 +380,20 @@ exports.app = app;
 
 var _diff = require("./diff");
 
-var _channel = require("./channel");
+var _channel = _interopRequireDefault(require("./channel"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function app(config) {
   var setup = config.setup;
-  var newVnode = setup();
-  (0, _channel.postMessageToMain)((0, _diff.diff)(null, newVnode));
+  return delegator(new Worker(getPathname()), _channel.default, setup);
+}
+
+function delegator(worker, channel, callback) {}
+
+function getPathname() {
+  var scripts = document.getElementsByTagName('script');
+  return scripts[scripts.length - 1].src;
 }
 },{"./diff":"../src/diff.js","./channel":"../src/channel.js"}],"diff.js":[function(require,module,exports) {
 "use strict";

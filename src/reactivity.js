@@ -34,7 +34,9 @@ function reactive (target) {
   }
 
   let observed = new Proxy(target, handlers)
+
   toProxy.set(target, observed)
   toRaw.set(observed, target)
+  
   return observed
 }
