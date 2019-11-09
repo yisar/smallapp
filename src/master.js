@@ -1,5 +1,6 @@
 import { diff } from './diff'
 import channel from './channel'
+import { PATHNAME } from './slave'
 
 export function app (config) {
   let setup = config.setup
@@ -8,8 +9,3 @@ export function app (config) {
 }
 
 function delegator (worker, channel, callback) {}
-
-var PATHNAME = (function () {
-  var scripts = document.getElementsByTagName('script')
-  return scripts[scripts.length - 1].src
-})()

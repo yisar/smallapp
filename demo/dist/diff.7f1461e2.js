@@ -370,6 +370,20 @@ var _default = {
   on: on
 };
 exports.default = _default;
+},{}],"../src/slave.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PATHNAME = void 0;
+
+var PATHNAME = function () {
+  var scripts = document.getElementsByTagName('script');
+  return scripts[scripts.length - 1].src;
+}();
+
+exports.PATHNAME = PATHNAME;
 },{}],"../src/master.js":[function(require,module,exports) {
 "use strict";
 
@@ -382,20 +396,17 @@ var _diff = require("./diff");
 
 var _channel = _interopRequireDefault(require("./channel"));
 
+var _slave = require("./slave");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function app(config) {
   var setup = config.setup;
-  return delegator(new Worker(PATHNAME), _channel.default, setup);
+  return delegator(new Worker(_slave.PATHNAME), _channel.default, setup);
 }
 
 function delegator(worker, channel, callback) {}
-
-var PATHNAME = function () {
-  var scripts = document.getElementsByTagName('script');
-  return scripts[scripts.length - 1].src;
-}();
-},{"./diff":"../src/diff.js","./channel":"../src/channel.js"}],"diff.js":[function(require,module,exports) {
+},{"./diff":"../src/diff.js","./channel":"../src/channel.js","./slave":"../src/slave.js"}],"diff.js":[function(require,module,exports) {
 "use strict";
 
 var _master = require("../src/master");
