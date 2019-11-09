@@ -12,9 +12,9 @@
 - web-components
 
 ```js
-import { h, ref } from '..'
+import { h, ref, app } from '..'
 
-const App = {
+app({
   setup() {
     const count = ref(0)
     return (
@@ -24,5 +24,5 @@ const App = {
       </main>
     )
   },
-}
+})
 ```
