@@ -51,7 +51,7 @@ export function postMessageToWorker (message) {
 export function handleMessage (type, data) {
   var messageHandler = messageHandlers[type]
 
-  if (messageHandler != null) {
+  if (messageHandler) {
     messageHandler(data)
   }
 }
