@@ -18,7 +18,7 @@ export function connectMain (postMessage, callback) {
   workerQueue = null
 }
 
-export function connectWorker (postMessage) {
+export function connectWorker (postMessage, callback) {
   postToMain = postMessage
 
   if (typeof callback === 'function') {

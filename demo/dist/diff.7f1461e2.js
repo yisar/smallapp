@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/master.js":[function(require,module,exports) {
+})({"../src/diff.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -266,7 +266,7 @@ function diff(oldVnode, newVnode) {
     }
   }
 
-  console.log(patches);
+  return patches;
 }
 
 function getKey(node) {
@@ -292,7 +292,97 @@ function createKeyMap(children, start, end) {
 
   return out;
 }
-},{}],"diff.js":[function(require,module,exports) {
+},{}],"../src/channel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.connectMain = connectMain;
+exports.connectWorker = connectWorker;
+exports.postMessageToMain = postMessageToMain;
+exports.postMessageToWorker = postMessageToWorker;
+exports.handleMessage = handleMessage;
+exports.on = on;
+var postToMain = null;
+var postToWorker = null;
+var mainQueue = [];
+var workerQueue = [];
+var messageHandlers = {};
+
+function connectMain(postMessage, callback) {
+  postToWorker = postMessage;
+
+  if (typeof callback === 'function') {
+    callback('main');
+  }
+
+  while (workerQueue.length) {
+    postToWorker(workerQueue.shift());
+  }
+
+  workerQueue = null;
+}
+
+function connectWorker(postMessage, callback) {
+  postToMain = postMessage;
+
+  if (typeof callback === 'function') {
+    callback('worker');
+  }
+
+  while (mainQueue.length) {
+    postToMain(mainQueue.shift());
+  }
+
+  mainQueue = null;
+}
+
+function postMessageToMain(message) {
+  if (typeof postToMain === 'function') {
+    return postToMain(message);
+  }
+
+  mainQueue.push(message);
+}
+
+function postMessageToWorker(message) {
+  if (typeof postToWorker === 'function') {
+    return postToWorker(message);
+  }
+
+  workerQueue.push(message);
+}
+
+function handleMessage(type, data) {
+  var messageHandler = messageHandlers[type];
+
+  if (messageHandler) {
+    messageHandler(data);
+  }
+}
+
+function on(type, messageHandler) {
+  messageHandlers[type] = messageHandler;
+}
+},{}],"../src/master.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.app = app;
+
+var _diff = require("./diff");
+
+var _channel = require("./channel");
+
+function app(config) {
+  var setup = config.setup;
+  var newVnode = setup();
+  (0, _channel.postMessageToMain)((0, _diff.diff)(null, newVnode));
+}
+},{"./diff":"../src/diff.js","./channel":"../src/channel.js"}],"diff.js":[function(require,module,exports) {
 "use strict";
 
 var _master = require("../src/master");
