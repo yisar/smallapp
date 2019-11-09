@@ -3,7 +3,7 @@ let patches = []
 
 export function diff (oldVnode, newVnode) {
   if (oldVnode === newVnode) {
-  } else if (oldVnode && oldVnode.type === TEXT && newVnode.type === TEXT) {
+  } else if (oldVnode && isText(oldVnode.type) && isText(newVnode.type)) {
     if (oldVnode.children !== newVnode.children) {
       patches.push({ type: TEXT, newVnode, oldVnode })
     }
@@ -117,6 +117,10 @@ export function diff (oldVnode, newVnode) {
 
 function getKey (node) {
   return node == null ? null : node.key
+}
+
+function isText(node){
+  return typeof node.type === 'string' || typeof node.type === 'number'
 }
 
 function createKeyMap (children, start, end) {
