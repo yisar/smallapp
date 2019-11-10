@@ -4,9 +4,11 @@ export function masochism (worker, config) {
   worker.postMessage(0)
   function patch (e) {
     let patches = e.data
-    if (patches[0].length === 1) {
-      let dom = createElement(patches[0][0])
-      document.body.appendChild(dom)
+    for (const i in patches) {
+      let op = patches[i]
+      if (op.length === 1) {
+        document.body.appendChild(createElement(op[0]))
+      }
     }
   }
   worker.onmessage = patch
