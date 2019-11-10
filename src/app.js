@@ -12,8 +12,8 @@ const PATHNAME =
 export function app (config) {
   if (MAIN) {
     const worker = new Worker(PATHNAME)
-    sadism(worker, config)
+    masochism(worker, config)
   } else {
-    masochism(config)
+    sadism(config)
   }
 }

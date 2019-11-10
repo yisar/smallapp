@@ -1,3 +1,4 @@
 /ignore
 /demo/dist/
 /demo/.cache/
+/demo/node_modules/

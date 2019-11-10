@@ -1,4 +1,5 @@
 import { app } from './app'
 import { reactive } from './reactivity'
+import { h } from './h'
 
-export { app, reactive }
+export { app, reactive, h }
