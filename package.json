@@ -1,10 +1,11 @@
 {
   "name": "voe",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "> Double thread framework has the same API with Vue",
   "main": "hyperapp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"rollup -i src/index.js -o dist/voe.js --no-esModule -mf umd -n voe"
   },
   "repository": {
     "type": "git",

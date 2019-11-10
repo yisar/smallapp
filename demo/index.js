@@ -1,3 +1,30 @@
+const PATHNAME = (function () {
+  const scripts = document.getElementsByTagName('script')
+  return scripts[scripts.length - 1].src
+})()
+
+function app (config) {
+  dispatch(new Worker(PATHNAME), config.setup)
+}
+
+function dispatch (worker, callback) {
+  function message (e) {
+    console.log(e.data.data)
+  }
+  worker.onmessage = message
+  callback()
+}
+
+self.addEventListener(
+  'message',
+  e => {
+    console.log(e)
+
+      self.postMessage(222)
+    },
+  false
+)
+
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
 const isObj = obj => typeof obj === 'object'
@@ -6,7 +33,7 @@ function trigger () {
   console.log('update')
 }
 
-export function reactive (target) {
+function reactive (target) {
   if (!isObj(target)) return target
 
   let proxy = toProxy.get(target)
@@ -37,6 +64,6 @@ export function reactive (target) {
 
   toProxy.set(target, observed)
   toRaw.set(observed, target)
-  
+
   return observed
 }

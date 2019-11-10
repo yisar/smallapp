@@ -12,15 +12,15 @@
 - web-components
 
 ```js
-import { h, ref, app } from '..'
+import { h, reactive, app } from '..'
 
 app({
   setup() {
-    const count = ref(0)
+    const count = reactive(0)
     return (
       <main>
-        {count.value}
-        <button onClick={() => count.value++}>+</button>
+        {count}
+        <button onClick={() => count++}>+</button>
       </main>
     )
   },
