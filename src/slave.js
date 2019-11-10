@@ -1,39 +1,35 @@
-import { TEXT } from './h'
 import { sadism } from './master'
+import { createElement } from './dom'
+let oldVnode = null
 
 export function masochism (worker, config) {
+  // 首次渲染在 slave 中做
   worker.postMessage(0)
   function patch (e) {
     let patches = JSON.parse(e.data)
     for (const i in patches) {
       let op = patches[i]
       if (op.length === 1) {
-        document.body.appendChild(createElement(op[0]))
       }
     }
   }
   worker.onmessage = patch
 }
 
-function createElement (vnode) {
-  let dom = vnode.tag === TEXT ? document.createTextNode(vnode.type) : document.createElement(vnode.type)
-  if (vnode.children) {
-    for (let i = 0; i < vnode.children.length; i++) {
-      dom.appendChild(createElement(vnode.children[i]))
-    }
-  }
-  return dom
-}
-
 export function app (config) {
   if (MAIN) {
-    const worker = new Worker(PATHNAME)
-    masochism(worker, config)
+    if (oldVnode == null) {
+      const setup = config.setup
+      let rootVnode = setup()
+      document.body.appendChild(createElement(rootVnode))
+    } else {
+      const worker = new Worker(PATHNAME)
+      // masochism(worker, config)
+    }
   } else {
-    sadism(config)
+    // sadism(config)
   }
 }
-
 
 const MAIN = typeof window !== 'undefined'
 const PATHNAME =

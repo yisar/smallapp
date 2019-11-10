@@ -1,16 +1,15 @@
+let patches = {}
+let index = 0
+
 export function sadism (config) {
   function perform (e) {
     const setup = config.setup
     let rootVnode = setup()
     let patches = diff(null, rootVnode)
-    // self.postMessage(JSON.stringify(patches))
-    self.postMessage(patches)
+    self.postMessage(JSON.stringify(patches))
   }
   self.onmessage = perform
 }
-
-let patches = {}
-let index = 0
 
 function diff (oldVnode, newVnode) {
   if (oldVnode === newVnode) {
