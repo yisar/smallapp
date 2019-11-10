@@ -3,7 +3,7 @@ import { TEXT } from './h'
 export function masochism (worker, config) {
   worker.postMessage(0)
   function patch (e) {
-    let patches = e.data
+    let patches = JSON.parse(e.data)
     for (const i in patches) {
       let op = patches[i]
       if (op.length === 1) {
