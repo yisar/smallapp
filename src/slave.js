@@ -1,5 +1,5 @@
 import { sadism } from './master'
-import { createElement } from './dom'
+import { createElement,handlers } from './dom'
 let oldVnode = null
 
 export function masochism (worker, config) {
@@ -19,16 +19,18 @@ export function masochism (worker, config) {
 export function app (config) {
   if (MAIN) {
     if (oldVnode == null) {
-      const setup = config.setup
-      let rootVnode = setup()
+      let rootVnode = (oldVnode = config.setup())
       document.body.appendChild(createElement(rootVnode))
-    } else {
-      const worker = new Worker(PATHNAME)
-      // masochism(worker, config)
     }
   } else {
-    // sadism(config)
+    sadism(config)
   }
+}
+
+export function trigger(){
+  const worker = new Worker(PATHNAME)
+  console.log(handlers)
+  worker.postMessage(0)
 }
 
 const MAIN = typeof window !== 'undefined'
