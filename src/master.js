@@ -1,7 +1,6 @@
-self.addEventListener(
-  'message',
-  e=> {
-    self.postMessage(222)
-  },
-  false
-)
+export function sadism (config) {
+  self.onmessage = e => {
+    console.log(e.data)
+    self.postMessage('from worker')
+  }
+}
