@@ -1,6 +1,7 @@
 import { sadism } from './master'
 import { createElement,handlers } from './dom'
 let oldVnode = null
+let oldVm = null
 
 export function masochism (worker, config) {
   // 首次渲染在 slave 中做
@@ -20,6 +21,7 @@ export function app (config) {
   if (MAIN) {
     if (oldVnode == null) {
       let rootVnode = (oldVnode = config.setup())
+      oldVm = config
       document.body.appendChild(createElement(rootVnode))
     }
   } else {
@@ -29,7 +31,7 @@ export function app (config) {
 
 export function trigger(){
   const worker = new Worker(PATHNAME)
-  console.log(handlers)
+  console.log(oldVm.setup())
   worker.postMessage(0)
 }
 
