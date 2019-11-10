@@ -3,7 +3,8 @@ export function sadism (config) {
     const setup = config.setup
     let rootVnode = setup()
     let patches = diff(null, rootVnode)
-    self.postMessage(JSON.stringify(patches))
+    // self.postMessage(JSON.stringify(patches))
+    self.postMessage(patches)
   }
   self.onmessage = perform
 }

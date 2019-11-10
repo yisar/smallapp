@@ -1,4 +1,5 @@
 import { TEXT } from './h'
+import { sadism } from './master'
 
 export function masochism (worker, config) {
   worker.postMessage(0)
@@ -23,3 +24,21 @@ function createElement (vnode) {
   }
   return dom
 }
+
+export function app (config) {
+  if (MAIN) {
+    const worker = new Worker(PATHNAME)
+    masochism(worker, config)
+  } else {
+    sadism(config)
+  }
+}
+
+
+const MAIN = typeof window !== 'undefined'
+const PATHNAME =
+  MAIN &&
+  (function () {
+    const scripts = document.getElementsByTagName('script')
+    return scripts[scripts.length - 1].src
+  })()
