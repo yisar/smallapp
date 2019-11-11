@@ -105,11 +105,6 @@
   let activeEffectStack = [];
 
   function effect (fn) {
-    const effect = createReactiveEffect(fn);
-    return effect
-  }
-
-  function createReactiveEffect (fn) {
     const effect = function effect (...args) {
       return run(effect, fn, args)
     };

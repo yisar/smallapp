@@ -2,14 +2,8 @@ import { sadism } from './master'
 import { targetMap } from './reactivity'
 import { createElement, handlers } from './dom'
 let activeEffectStack = []
-let currentInstance = null
 
 function effect (fn) {
-  const effect = createReactiveEffect(fn)
-  return effect
-}
-
-function createReactiveEffect (fn) {
   const effect = function effect (...args) {
     return run(effect, fn, args)
   }
@@ -62,7 +56,6 @@ export function trigger (target, key) {
 }
 
 export function track (target, key) {
-  console.log(target,key)
   const effect = activeEffectStack[activeEffectStack.length - 1]
   if (effect) {
     let depsMap = targetMap.get(target)
