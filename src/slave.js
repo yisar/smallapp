@@ -1,21 +1,30 @@
 import { sadism } from './master'
 import { createElement, handlers } from './dom'
-let oldVnode = null
 let oldVm = null
 let currentInstance = null
+let activeEffectStack = []
 
-export function masochism (worker, config) {
-  // 首次渲染在 slave 中做
-  worker.postMessage(0)
-  function patch (e) {
-    let patches = JSON.parse(e.data)
-    for (const i in patches) {
-      let op = patches[i]
-      if (op.length === 1) {
-      }
+function effect (fn) {
+  const effect = createReactiveEffect(fn)
+  return effect
+}
+
+function createReactiveEffect (fn) {
+  const effect = function effect (...args) {
+    return run(effect, fn, args)
+  }
+  return effect
+}
+
+function run (effect, fn, args) {
+  if (activeEffectStack.indexOf(effect) === -1) {
+    try {
+      activeEffectStack.push(effect)
+      return fn(...args)
+    } finally {
+      activeEffectStack.pop()
     }
   }
-  worker.onmessage = patch
 }
 
 export function app (instance) {
@@ -38,12 +47,10 @@ export function app (instance) {
   }
 }
 
-function renderComponent(instance){
+function renderComponent (instance) {
   currentInstance = instance
   return instance.type(instance.props)
 }
-
-let targetMap = new Map()
 
 export function trigger (target, key) {
   let deps = targetMap.get(target)

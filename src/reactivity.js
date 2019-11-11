@@ -2,6 +2,7 @@ import { trigger } from './slave'
 
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
+const targetMap = new WeakMap()
 const isObj = obj => typeof obj === 'object'
 
 export function reactive (target) {
@@ -35,6 +36,10 @@ export function reactive (target) {
 
   toProxy.set(target, observed)
   toRaw.set(observed, target)
+
+  if (!targetMap.has(target)) {
+    targetMap.set(target, new Map())
+  }
 
   return observed
 }
