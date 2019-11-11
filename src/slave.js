@@ -37,7 +37,6 @@ export function app (instance) {
         document.body.appendChild(createElement(instance.render()))
         mounted = true
       } else {
-        // update
         const oldVnode = instance.subTree || null
         const newVnode = (instance.subTree = instance.render())
         document.body.innerHTML = ''

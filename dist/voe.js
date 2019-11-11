@@ -6,7 +6,7 @@
 
   function sadism (config) {
     function perform (e) {
-      console.log(e.data);
+      // console.log(e.data)
     }
     self.onmessage = perform;
   }
@@ -27,17 +27,18 @@
     const handlers = {
       get (target, key, receiver) {
         let res = Reflect.get(target, key, receiver);
-        track(target, key);
         if (isObj(target[key])) {
           return reactive(res)
         }
+        track(target, key);
         return res
       },
       set (target, key, value, receiver) {
+        let res = Reflect.set(target, key, value, receiver);
         if (key in target) {
-          trigger(this);
+          trigger(target, key);
         }
-        return Reflect.set(target, key, value, receiver)
+        return res
       },
       deleteProperty () {
         return Reflect.defineProperty(target, key)
@@ -129,18 +130,17 @@
   function app (instance) {
     if (MAIN) {
       let mounted = false;
+      instance.render = instance.setup();
 
       instance.update = effect(function componentEffects () {
         if (!mounted) {
-          const newVnode = instance.setup();
-          document.body.appendChild(createElement(newVnode));
+          document.body.appendChild(createElement(instance.render()));
           mounted = true;
         } else {
-          // update
           const oldVnode = instance.subTree || null;
-          const newVnode = (instance.subTree = renderComponent(instance));
-
-          diff(oldVnode, newVnode);
+          const newVnode = (instance.subTree = instance.render());
+          document.body.innerHTML = '';
+          document.body.appendChild(createElement(newVnode));
         }
       });
 
@@ -149,15 +149,8 @@
       sadism();
     }
   }
-
-  function renderComponent (instance) {
-    currentInstance = instance;
-    return instance.type(instance.props)
-  }
-
   function trigger (target, key) {
     let deps = targetMap.get(target);
-
     const effects = new Set();
 
     deps.get(key).forEach(e => effects.add(e));
@@ -169,6 +162,7 @@
   }
 
   function track (target, key) {
+    console.log(target,key);
     const effect = activeEffectStack[activeEffectStack.length - 1];
     if (effect) {
       let depsMap = targetMap.get(target);
