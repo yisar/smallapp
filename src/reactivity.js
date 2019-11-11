@@ -24,7 +24,7 @@ export function reactive (target) {
     },
     set (target, key, value, receiver) {
       if (key in target) {
-        trigger(this)
+        trigger(target, key)
       }
       return Reflect.set(target, key, value, receiver)
     },
