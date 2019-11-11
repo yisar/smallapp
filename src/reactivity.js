@@ -1,4 +1,4 @@
-import { trigger } from './slave'
+import { trigger, track } from './slave'
 
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
@@ -16,6 +16,7 @@ export function reactive (target) {
   const handlers = {
     get (target, key, receiver) {
       let res = Reflect.get(target, key, receiver)
+      track(target, key)
       if (isObj(target[key])) {
         return reactive(res)
       }

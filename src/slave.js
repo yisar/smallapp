@@ -40,7 +40,7 @@ export function app (instance) {
         const oldVnode = instance.subTree || null
         const newVnode = (instance.subTree = renderComponent(instance))
 
-        diff(oldVnode,newVnode)
+        diff(oldVnode, newVnode)
       }
     })
 
@@ -66,6 +66,23 @@ export function trigger (target, key) {
 
   const worker = new Worker(PATHNAME)
   worker.postMessage(0)
+}
+
+export function track (target, key) {
+  const effect = activeEffectStack[activeEffectStack.length - 1]
+  if (effect) {
+    let depsMap = targetMap.get(target)
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()))
+    }
+    let dep = depsMap.get(key)
+    if (!dep) {
+      depsMap.set(key, (dep = new Set()))
+    }
+    if (!dep.has(effect)) {
+      dep.add(effect)
+    }
+  }
 }
 
 const MAIN = typeof window !== 'undefined'
