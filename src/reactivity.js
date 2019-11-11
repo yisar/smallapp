@@ -2,7 +2,7 @@ import { trigger } from './slave'
 
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
-const targetMap = new WeakMap()
+export const targetMap = new WeakMap()
 const isObj = obj => typeof obj === 'object'
 
 export function reactive (target) {

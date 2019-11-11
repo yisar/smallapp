@@ -1,7 +1,6 @@
 import { sadism } from './master'
+import { targetMap } from './reactivity'
 import { createElement, handlers } from './dom'
-let oldVm = null
-let currentInstance = null
 let activeEffectStack = []
 
 function effect (fn) {
@@ -38,10 +37,14 @@ export function app (instance) {
         mounted = true
       } else {
         // update
-        const oldVnode = instance.subTree
+        const oldVnode = instance.subTree || null
         const newVnode = (instance.subTree = renderComponent(instance))
+
+        diff(oldVnode,newVnode)
       }
     })
+
+    instance.update()
   } else {
     sadism(instance)
   }
@@ -54,8 +57,14 @@ function renderComponent (instance) {
 
 export function trigger (target, key) {
   let deps = targetMap.get(target)
+
+  const effects = new Set()
+
+  deps.get(key).forEach(e => effects.add(e))
+
+  effects.forEach(e => e())
+
   const worker = new Worker(PATHNAME)
-  console.log(oldVm.setup())
   worker.postMessage(0)
 }
 
