@@ -3,7 +3,7 @@ let index = 0
 
 export function sadism (config) {
   function perform (e) {
-    console.log(e.data)
+    // console.log(e.data)
   }
   self.onmessage = perform
 }

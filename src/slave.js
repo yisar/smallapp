@@ -33,17 +33,14 @@ export function app (instance) {
 
     instance.update = effect(function componentEffects () {
       if (!mounted) {
-        const newVnode = instance.setup()
-        document.body.appendChild(createElement(newVnode))
+        instance.render = instance.setup()
+        document.body.appendChild(createElement(instance.render()))
         mounted = true
       } else {
         // update
         const oldVnode = instance.subTree || null
         const newVnode = (instance.subTree = renderComponent(instance))
-
         console.log(oldVnode,newVnode)
-
-        // diff(oldVnode, newVnode)
       }
     })
 
@@ -54,8 +51,7 @@ export function app (instance) {
 }
 
 function renderComponent (instance) {
-  console.log(instance)
-  return instance.setup()
+  return instance.render()
 }
 
 export function trigger (target, key) {
@@ -71,6 +67,7 @@ export function trigger (target, key) {
 }
 
 export function track (target, key) {
+  console.log(target,key)
   const effect = activeEffectStack[activeEffectStack.length - 1]
   if (effect) {
     let depsMap = targetMap.get(target)

@@ -6,7 +6,7 @@ const App = {
       state.count++
     }
     let state = reactive({ count: 0 })
-    return <button onClick={add}>{state.count}</button>
+    return () => <button onClick={add}>{state.count}</button>
   }
 }
 

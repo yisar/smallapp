@@ -16,17 +16,18 @@ export function reactive (target) {
   const handlers = {
     get (target, key, receiver) {
       let res = Reflect.get(target, key, receiver)
-      track(target, key)
       if (isObj(target[key])) {
         return reactive(res)
       }
+      track(target, key)
       return res
     },
     set (target, key, value, receiver) {
       if (key in target) {
         trigger(target, key)
       }
-      return Reflect.set(target, key, value, receiver)
+      let res = Reflect.set(target, key, value, receiver)
+      return res
     },
     deleteProperty () {
       return Reflect.defineProperty(target, key)
