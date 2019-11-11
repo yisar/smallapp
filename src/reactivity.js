@@ -23,10 +23,10 @@ export function reactive (target) {
       return res
     },
     set (target, key, value, receiver) {
+      let res = Reflect.set(target, key, value, receiver)
       if (key in target) {
         trigger(target, key)
       }
-      let res = Reflect.set(target, key, value, receiver)
       return res
     },
     deleteProperty () {

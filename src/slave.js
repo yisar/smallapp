@@ -30,17 +30,18 @@ function run (effect, fn, args) {
 export function app (instance) {
   if (MAIN) {
     let mounted = false
+    instance.render = instance.setup()
 
     instance.update = effect(function componentEffects () {
       if (!mounted) {
-        instance.render = instance.setup()
         document.body.appendChild(createElement(instance.render()))
         mounted = true
       } else {
         // update
         const oldVnode = instance.subTree || null
-        const newVnode = (instance.subTree = renderComponent(instance))
-        console.log(oldVnode,newVnode)
+        const newVnode = (instance.subTree = instance.render())
+        document.body.innerHTML = ''
+        document.body.appendChild(createElement(newVnode))
       }
     })
 
@@ -49,11 +50,6 @@ export function app (instance) {
     sadism(instance)
   }
 }
-
-function renderComponent (instance) {
-  return instance.render()
-}
-
 export function trigger (target, key) {
   let deps = targetMap.get(target)
   const effects = new Set()
