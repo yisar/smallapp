@@ -20,29 +20,30 @@ function run (effect, fn, args) {
     }
   }
 }
-
 export function app (instance) {
+  instance.render = instance.setup()
   if (MAIN) {
-    let mounted = false
-    instance.render = instance.setup()
-
+    const worker = new Worker(PATHNAME)
     instance.update = effect(function componentEffects () {
-      if (!mounted) {
-        document.body.appendChild(createElement(instance.render()))
-        mounted = true
-      } else {
-        const oldVnode = instance.subTree || null
-        const newVnode = (instance.subTree = instance.render())
-        document.body.innerHTML = ''
-        document.body.appendChild(createElement(newVnode))
-      }
+      const oldVnode = instance.subTree || null
+      const newVnode = (instance.subTree = instance.render())
+      worker.postMessage(JSON.stringify({ oldVnode, newVnode }))
+      document.body.innerHTML = ''
+      document.body.appendChild(createElement(instance.render()))
     })
-
     instance.update()
   } else {
-    sadism(instance)
+    self.onmessage = e => {
+      let { oldVnode, newVnode } = JSON.parse(e.data)
+      diff(oldVnode, newVnode)
+    }
   }
 }
+
+function diff (oldVnode, newVnode) {
+  console.log(oldVnode, newVnode)
+}
+
 export function trigger (target, key) {
   let deps = targetMap.get(target)
   const effects = new Set()
@@ -50,9 +51,6 @@ export function trigger (target, key) {
   deps.get(key).forEach(e => effects.add(e))
 
   effects.forEach(e => e())
-
-  const worker = new Worker(PATHNAME)
-  worker.postMessage(0)
 }
 
 export function track (target, key) {

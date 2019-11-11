@@ -13,7 +13,7 @@ export function updateProperty (dom, name, oldValue, newValue) {
 }
 
 export function createElement (vnode) {
-  let dom = vnode.tag === TEXT ? document.createTextNode(vnode.type) : document.createElement(vnode.type)
+  let dom = vnode.type === TEXT ? document.createTextNode(vnode.tag) : document.createElement(vnode.tag)
   if (vnode.children) {
     for (let i = 0; i < vnode.children.length; i++) {
       dom.appendChild(createElement(vnode.children[i]))

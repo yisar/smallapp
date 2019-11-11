@@ -1,6 +1,6 @@
 export const TEXT = 3
 
-export function h (type, attrs) {
+export function h (tag, attrs) {
   let props = attrs || {}
   let key = props.key || null
   let children = []
@@ -9,12 +9,12 @@ export function h (type, attrs) {
     let vnode = arguments[i]
     if (vnode == null || vnode === true || vnode === false) {
     } else if (typeof vnode === 'string' || typeof vnode === 'number') {
-      children.push({ type: vnode, tag: TEXT })
+      children.push({ tag: vnode, type: TEXT })
     } else {
       children.push(vnode)
     }
   }
 
   delete props.key
-  return { type, props, children, key }
+  return { tag, props, children, key }
 }
