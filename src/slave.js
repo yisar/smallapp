@@ -1,7 +1,8 @@
 import { sadism } from './master'
-import { createElement,handlers } from './dom'
+import { createElement, handlers } from './dom'
 let oldVnode = null
 let oldVm = null
+let currentInstance = null
 
 export function masochism (worker, config) {
   // 首次渲染在 slave 中做
@@ -17,19 +18,35 @@ export function masochism (worker, config) {
   worker.onmessage = patch
 }
 
-export function app (config) {
+export function app (instance) {
   if (MAIN) {
-    if (oldVnode == null) {
-      let rootVnode = (oldVnode = config.setup())
-      oldVm = config
-      document.body.appendChild(createElement(rootVnode))
-    }
+    let mounted = false
+
+    instance.update = effect(function componentEffects () {
+      if (!mounted) {
+        const newVnode = instance.setup()
+        document.body.appendChild(createElement(newVnode))
+        mounted = true
+      } else {
+        // update
+        const oldVnode = instance.subTree
+        const newVnode = (instance.subTree = renderComponent(instance))
+      }
+    })
   } else {
-    sadism(config)
+    sadism(instance)
   }
 }
 
-export function trigger(){
+function renderComponent(instance){
+  currentInstance = instance
+  return instance.type(instance.props)
+}
+
+let targetMap = new Map()
+
+export function trigger (target, key) {
+  let deps = targetMap.get(target)
   const worker = new Worker(PATHNAME)
   console.log(oldVm.setup())
   worker.postMessage(0)
