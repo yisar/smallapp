@@ -33,7 +33,7 @@ app({
 
 由于用户代码都在 worker 中运行，所以 document、window、cookie、fetch，localstorage 等都不能用
 
-但是可以可以使用 xhr 和 indexDB，可以通过它们来模拟
+但是可以使用 xhr 和 indexDB，双线程的目的就在于此，不是不让用，而是真的没得用
 
 
 
