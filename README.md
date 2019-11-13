@@ -2,27 +2,28 @@
 
 > Double thread framework has the same API with Vue
 
-### p.s.
+### Introduction
 
-一边复现 vue3 核心，一边寻找新的灵感和思路，用于学习和交流
+voe （发音 `/vəʊ/`） 的双线程是小程序的底层架构，它通过 web-worker 隔离 web 环境，屏蔽 dom 能力，从而做到绝对的控制力
 
-- web worker 和 主线程 通信
-- 一个精彩的 vdom diff 算法
-- 和 vue3 几乎一致的 API
-- web-components
+顺便实现了 vue3 的响应式，依赖收集，状态更新等，但本质不同
+
+### Use
 
 ```js
-import { h, reactive, app } from '..'
+import { h, app, reactive } from "..";
 
 app({
   setup() {
     const count = reactive(0)
-    return (
+    return () => (
       <main>
         {count}
         <button onClick={() => count++}>+</button>
       </main>
     )
-  },
+  }
 })
 ```
+
+
