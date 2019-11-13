@@ -5,23 +5,6 @@ import { handlerMap } from './h'
 const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 
-function effect (fn) {
-  const effect = function effect (...args) {
-    return run(effect, fn, args)
-  }
-  return effect
-}
-
-function run (effect, fn, args) {
-  if (activeEffectStack.indexOf(effect) === -1) {
-    try {
-      activeEffectStack.push(effect)
-      return fn(...args)
-    } finally {
-      activeEffectStack.pop()
-    }
-  }
-}
 export function app (instance) {
   instance.render = instance.setup()
   MAIN ? masochism() : sadism(instance)
@@ -43,6 +26,24 @@ function sadism (instance) {
       instance.update()
     }
   })
+}
+
+function effect (fn) {
+  const effect = function effect (...args) {
+    return run(effect, fn, args)
+  }
+  return effect
+}
+
+function run (effect, fn, args) {
+  if (activeEffectStack.indexOf(effect) === -1) {
+    try {
+      activeEffectStack.push(effect)
+      return fn(...args)
+    } finally {
+      activeEffectStack.pop()
+    }
+  }
 }
 
 export function trigger (target, key) {
