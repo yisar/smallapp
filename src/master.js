@@ -1,7 +1,7 @@
 import { targetMap } from './reactivity'
 import { masochism } from './slave'
 import { EVENT } from './dom'
-import { handlers } from './h'
+import { handlerMap } from './h'
 const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 
@@ -38,7 +38,7 @@ function sadism (instance) {
   self.addEventListener('message', e => {
     const { type, id } = e.data
     if (type === EVENT) {
-      const fn = handlers[id - 1]
+      const fn = handlerMap[id - 1]
       fn && fn()
       instance.update()
     }

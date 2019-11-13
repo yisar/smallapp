@@ -29,5 +29,12 @@ app({
   }
 })
 ```
+#### p.s.
+
+由于用户代码都在 worker 中运行，所以 document、window、cookie、fetch，localstorage 等都不能用
+
+但是可以可以使用 xhr 和 indexDB，可以通过它们来模拟
+
+
 
 

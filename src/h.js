@@ -1,6 +1,6 @@
 export const TEXT = 3
 
-export let handlers = []
+export let handlerMap = []
 
 export function h (tag, attrs) {
   let props = attrs || {}
@@ -10,8 +10,8 @@ export function h (tag, attrs) {
   for (const k in props) {
     if (k[0] === 'o' && k[1] === 'n') {
       let e = props[k]
-      handlers.push(e)
-      props[k] = handlers.length
+      handlerMap.push(e)
+      props[k] = handlerMap.length
     }
   }
 
