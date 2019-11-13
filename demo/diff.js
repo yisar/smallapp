@@ -1,4 +1,4 @@
-import { h,diff, patch, render } from '../ignore/vdom'
+import { diff,h } from '../ignore/vdom'
 
 let node1 = (
   <div>
@@ -13,17 +13,12 @@ let node1 = (
 let node2 = (
   <div className="test">
     <ul>
-      {[...Array(1000).keys()].map(i => (
+    {[3, 1, 2].map(i => (
         <li>{i}</li>
       ))}
     </ul>
   </div>
 )
 
-render(node1, '#app')
-
-document.querySelector('.btn').onclick = () => {
-  const patches = diff(node1, node2)
-  console.log(patches)
-  patch('#app', patches)
-}
+const patches = diff(node1,node2)
+console.log(patches)

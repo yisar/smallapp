@@ -1,4 +1,4 @@
-import { trigger, track } from './slave'
+import { trigger, track } from './master'
 
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()

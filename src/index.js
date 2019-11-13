@@ -1,4 +1,4 @@
-import { app } from './slave'
+import { app } from './master'
 import { reactive } from './reactivity'
 import { h } from './h'
 

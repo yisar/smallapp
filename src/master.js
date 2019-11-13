@@ -1,25 +1,72 @@
-let patches = {}
-let index = 0
+import { targetMap } from './reactivity'
+import { masochism } from './slave'
+import { EVENT } from './dom'
+import { handlers } from './h'
+const MAIN = typeof window !== 'undefined'
+const activeEffectStack = []
 
-export function sadism (config) {
-  function perform (e) {
-    // console.log(e.data)
+function effect (fn) {
+  const effect = function effect (...args) {
+    return run(effect, fn, args)
   }
-  self.onmessage = perform
+  return effect
 }
 
-function diff (oldVnode, newVnode) {
-  if (oldVnode === newVnode) {
-  } else if (oldVnode != null && oldVnode.tag === TEXT && newVnode === TEXT) {
-    if (oldVnode.type != newVnode.type) {
-      patches[index++] = [newVnode]
+function run (effect, fn, args) {
+  if (activeEffectStack.indexOf(effect) === -1) {
+    try {
+      activeEffectStack.push(effect)
+      return fn(...args)
+    } finally {
+      activeEffectStack.pop()
     }
-  } else if (oldVnode == null || oldVnode.type !== newVnode.type) {
-    patches[index++] = [newVnode]
-    if (oldVnode != null) {
-      patches[index++] = [oldVnode, index]
-    }
-  } else {
   }
-  return patches
+}
+export function app (instance) {
+  instance.render = instance.setup()
+  MAIN ? masochism() : sadism(instance)
+}
+
+function sadism (instance) {
+  instance.update = effect(function componentEffects () {
+    const oldVnode = instance.subTree || null
+    const newVnode = (instance.subTree = instance.render())
+    // diff and patch
+    self.postMessage(newVnode)
+  })
+  instance.update()
+  self.addEventListener('message', e => {
+    const { type, id } = e.data
+    if (type === EVENT) {
+      const fn = handlers[id - 1]
+      fn && fn()
+      instance.update()
+    }
+  })
+}
+
+export function trigger (target, key) {
+  let deps = targetMap.get(target)
+  const effects = new Set()
+
+  deps.get(key).forEach(e => effects.add(e))
+
+  effects.forEach(e => e())
+}
+
+export function track (target, key) {
+  const effect = activeEffectStack[activeEffectStack.length - 1]
+  if (effect) {
+    let depsMap = targetMap.get(target)
+    if (!depsMap) {
+      targetMap.set(target, (depsMap = new Map()))
+    }
+    let dep = depsMap.get(key)
+    if (!dep) {
+      depsMap.set(key, (dep = new Set()))
+    }
+    if (!dep.has(effect)) {
+      dep.add(effect)
+    }
+  }
 }
