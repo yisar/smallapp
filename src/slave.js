@@ -11,9 +11,13 @@ export function masochism () {
   const worker = new Worker(PATHNAME)
   worker.onmessage = e => {
     const commit = e.data
-    commit.forEach(c => {
-      parentMap[c[1]].innerHTML = ''
-      parentMap[c[1]][c[0]](createElement(c[3], worker), c[2])
+    commit.forEach(op => {
+      parentMap[op[1]].innerHTML = '' // 暂时清除
+      if (op.length > 3) {
+        parentMap[op[1]][c[0]](createElement(op[3], worker), op[2])
+      } else {
+        parentMap[op[1]][c[0]](op[2])
+      }
     })
   }
 }
