@@ -14,9 +14,9 @@ export function masochism () {
     commit.forEach(op => {
       parentMap[op[1]].innerHTML = '' // 暂时清除
       if (op.length > 3) {
-        parentMap[op[1]][c[0]](createElement(op[3], worker), op[2])
+        parentMap[op[1]][op[0]](createElement(op[3], worker), op[2])
       } else {
-        parentMap[op[1]][c[0]](op[2])
+        parentMap[op[1]][op[0]](op[2])
       }
     })
   }
