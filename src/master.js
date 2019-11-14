@@ -32,7 +32,7 @@ function diff (parent, node, oldVnode, newVnode) {
   const commitQueue = []
   if (oldVnode === newVnode) {
   } else if (!oldVnode || oldVnode.type !== newVnode.type) {
-    commitQueue.push(['insertBefore', parent, node, newVnode])
+    commitQueue.push([parent, node, newVnode])
   }
   return commitQueue
 }

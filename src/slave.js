@@ -1,4 +1,4 @@
-import { createElement } from './dom'
+import { createElement, updateProperty } from './dom'
 export const elementMap = []
 export let worker = null
 
@@ -17,14 +17,19 @@ export function masochism () {
 }
 
 function commit (op) {
-  el(op[1]).innerHTML = ''
+  getElement(op[0]).innerHTML = ''
   elementMap.length = 1
-  if (op.length > 3) {
-    if (op[2]) el(op[1])[op[0]](el(op[3]), el(op[2]))
-    else el(op[1])[op[0]](createElement(op[3]), null)
+
+  if (op.length === 4) {
+    updateProperty(op[1], op[2], op[3])
+  } else if (op.length === 3) {
+    getElement(op[0]).insertBefore(
+      getElement(op[2]) || createElement(op[2]),
+      getElement(op[1])
+    )
   } else {
-    el(op[1])[op[0]](el(op[2]))
+    getElement(op[0]).removeChild(getElement(op[1]))
   }
 }
 
-const el = index => elementMap[index]
+const getElement = index => elementMap[index]
