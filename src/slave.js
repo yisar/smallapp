@@ -17,19 +17,14 @@ export function masochism () {
 }
 
 function commit (op) {
-  el(op[1]).innerHTML = '' // 暂时清除
+  el(op[1]).innerHTML = ''
   elementMap.length = 1
   if (op.length > 3) {
-    if (op[2]) {
-      el(op[1])[op[0]](el(op[3]), el(op[2]))
-    } else {
-      el(op[1])[op[0]](createElement(op[3]), null)
-    }
+    if (op[2]) el(op[1])[op[0]](el(op[3]), el(op[2]))
+    else el(op[1])[op[0]](createElement(op[3]), null)
   } else {
     el(op[1])[op[0]](el(op[2]))
   }
 }
 
-function el (index) {
-  return elementMap[index]
-}
+const el = index => elementMap[index]
