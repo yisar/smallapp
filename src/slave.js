@@ -1,22 +1,24 @@
 import { createElement } from './dom'
-const dom = []
+export const elementMap = []
+export let worker = null
 
 export function masochism () {
   const PATHNAME = (function () {
     const scripts = document.getElementsByTagName('script')
     return scripts[scripts.length - 1].src
   })()
-  dom.push(document.body)
+  elementMap.push(document.body)
 
-  const worker = new Worker(PATHNAME)
+  worker = new Worker(PATHNAME)
   worker.onmessage = e => {
     const commit = e.data
     commit.forEach(op => {
-      dom[op[1]].innerHTML = '' // 暂时清除
+      elementMap[op[1]].innerHTML = '' // 暂时清除
+      elementMap.length = 1
       if (op.length > 3) {
-        dom[op[1]][op[0]](createElement(op[3], worker), op[2])
+        elementMap[op[1]][op[0]](createElement(op[3]), op[2])
       } else {
-        dom[op[1]][op[0]](dom[op[2]])
+        elementMap[op[1]][op[0]](elementMap[op[2]])
       }
     })
   }
