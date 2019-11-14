@@ -16,7 +16,11 @@ export function masochism () {
       elementMap[op[1]].innerHTML = '' // 暂时清除
       elementMap.length = 1
       if (op.length > 3) {
-        elementMap[op[1]][op[0]](createElement(op[3]), op[2])
+        if (op[2]) {
+          elementMap[op[1]][op[0]](elementMap[op[3]], elementMap[op[2]])
+        } else {
+          elementMap[op[1]][op[0]](createElement(op[3]), null)
+        }
       } else {
         elementMap[op[1]][op[0]](elementMap[op[2]])
       }
