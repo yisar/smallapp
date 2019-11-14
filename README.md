@@ -1,6 +1,9 @@
-# voe
-
-> Double thread framework has the same API with Vue
+<p align="center"><img src="https://ws1.sinaimg.cn/large/0065Zy9ely1g8xk4ktgctj30eg0cit9a.jpg" alt="fre logo" width="180"></p>
+<h1 align="center">Fre</h1>
+<p align="center">:snowman: Double thread javascript framework has the same API with Vue3.</p>
+<p align="center">
+<a href="https://npmjs.com/package/fre"><img src="https://img.shields.io/npm/v/fre.svg?style=flat-square" alt="npm-v"></a>
+</p>
 
 ### Introduction
 

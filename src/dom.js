@@ -4,6 +4,7 @@ export const EVENT = 1
 export function updateProperty (dom, name, oldValue, newValue, worker) {
   if (name === 'key') {
   } else if (name[0] === 'o' && name[1] === 'n') {
+    console.log(oldValue)
     name = name.slice(2).toLowerCase()
     let newHandler = (event) => {
       // 不能传太多，此处省略对事件的简化操作

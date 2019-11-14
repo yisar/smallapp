@@ -14,8 +14,8 @@ function sadism (instance) {
   instance.update = effect(function componentEffects () {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.render())
-    // diff and patch
-    self.postMessage(newVnode)
+    let commit = diff(0, null, null, newVnode)
+    self.postMessage(commit)
   })
   instance.update()
   self.addEventListener('message', e => {
@@ -26,6 +26,15 @@ function sadism (instance) {
       instance.update()
     }
   })
+}
+
+function diff (parent, node, oldVnode, newVnode) {
+  const commitQueue = []
+  if (oldVnode === newVnode) {
+  } else if (!oldVnode || oldVnode.type !== newVnode.type) {
+    commitQueue.push(['insertBefore', parent, node, newVnode])
+  }
+  return commitQueue
 }
 
 function effect (fn) {
@@ -51,7 +60,6 @@ export function trigger (target, key) {
   const effects = new Set()
 
   deps.get(key).forEach(e => effects.add(e))
-
   effects.forEach(e => e())
 }
 
