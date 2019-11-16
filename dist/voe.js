@@ -75,9 +75,12 @@
         children.push(vnode);
       }
     }
-
-    delete props.key;
-    return { tag, props, children, key }
+    return {
+      tag: typeof tag === 'function' ? tag(props) : tag,
+      props,
+      children,
+      key
+    }
   }
 
   const EVENT = 1;
@@ -86,10 +89,32 @@
     if (name === 'key') ; else if (name[0] === 'o' && name[1] === 'n') {
       name = name.slice(2).toLowerCase();
       let newHandler = event => {
+        const {
+          type,
+          x,
+          y,
+          clientX,
+          clientY,
+          offsetX,
+          offsetY,
+          pageX,
+          pageY
+        } = event;
         // 不能传太多，此处省略对事件的简化操作
         worker.postMessage({
           type: EVENT,
-          id: newValue
+          id: newValue,
+          event: {
+            type,
+            x,
+            y,
+            clientX,
+            clientY,
+            offsetX,
+            offsetY,
+            pageX,
+            pageY
+          }
         });
       };
       dom.addEventListener(name, newHandler);
@@ -126,14 +151,13 @@
     worker = new Worker(PATHNAME);
     worker.onmessage = e => {
       const commitQueue = e.data;
-      commitQueue.forEach(commit);
+      for (const index in commitQueue) {
+        commit(commitQueue[index]);
+      }
     };
   }
 
   function commit (op) {
-    getElement(op[0]).innerHTML = '';
-    elementMap.length = 1;
-
     if (op.length === 4) {
       updateProperty(op[1], op[2], op[3]);
     } else if (op.length === 3) {
@@ -142,14 +166,15 @@
         getElement(op[1])
       );
     } else {
-      getElement(op[0]).removeChild(getElement(op[1]));
+      getElement(op[0]).nodeValue = op[1];
     }
   }
 
-  const getElement = index => elementMap[index];
+  const getElement = index => elementMap[index] || null;
 
   const MAIN = typeof window !== 'undefined';
   const activeEffectStack = [];
+  const commitQueue = {};
 
   function app (instance) {
     instance.render = instance.setup();
@@ -160,99 +185,45 @@
     instance.update = effect(function componentEffects () {
       const oldVnode = instance.subTree || null;
       const newVnode = (instance.subTree = instance.render());
-      let commit = diff(0, null, oldVnode, newVnode);
+      let index = 0;
+      let commit = diff(0, oldVnode, newVnode, index);
       self.postMessage(commit);
     });
     instance.update();
     self.addEventListener('message', e => {
-      const { type, id } = e.data;
+      const { type, id, event } = e.data;
       if (type === EVENT) {
         const fn = handlerMap[id - 1];
-        fn && fn();
+        fn && fn(event);
         instance.update();
       }
     });
   }
 
-  function diff (parent, node, oldVnode, newVnode) {
-    const commitQueue = [];
-    if (oldVnode === newVnode) ; else if (!oldVnode || oldVnode.type !== newVnode.type) {
-      commitQueue.push([parent, node, newVnode]);
-      if (oldVnode != null) {
-        commitQueue.push([parent, node]);
+  function diff (parent, oldVnode, newVnode, index) {
+    if (oldVnode === newVnode) ; else if (
+      oldVnode != null &&
+      oldVnode.type === TEXT &&
+      newVnode.type === TEXT
+    ) {
+      if (oldVnode.tag !== newVnode.tag) {
+        commitQueue[index] = [index + 1, newVnode.tag];
       }
+    } else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
+      commitQueue[index] = [parent, index - 1, newVnode];
     } else {
-      commitQueue.push([null, node, oldVnode.props, newVnode.props]);
-      let oldKeyed = {};
-      let newKeyed = {};
-      let oldElements = [];
       let oldChildren = oldVnode.children;
       let children = newVnode.children;
-
-      for (let i = 0; i < oldChildren.length; i++) {
-        oldElements[i] = [node, i];
-        let oldKey = getKey(oldChildren[i]);
-        if (oldKey != null) {
-          oldKeyed[oldKey] = [oldElements[i], oldChildren[i]];
-        }
-      }
-
-      let i = 0;
-      let j = 0;
-
-      while (j < children.length) {
-        let oldKey = getKey(oldChildren[i]);
-        let newKey = getKey(children[i]);
-        if (newKeyed[oldKey]) {
-          i++;
-          commitQueue.push([]);
-          continue
-        }
-
-        if (newKey != null && newKey === getKey(oldChildren[i + 1])) {
-          if (oldKey == null) {
-            commitQueue.push([element, oldElements[i]]);
-          }
-          i++;
-          continue
-        }
-
-        if (newKey == null) {
-          if (oldKey == null) {
-            diff(node, oldElements[i], oldChildren[i], children[k]);
-            k++;
-          }
-          i++;
-        } else {
-          let keyed = oldKeyed[newKey] || [];
-          if (oldKey === newKey) {
-            diff(node, keyed[0], keyed[1], children[k]);
-            i++;
-          } else {
-            diff(node, oldElements[i], null, children[k]);
-            newKeyed[newKey] = children[k];
-            k++;
-          }
-        }
-      }
-
-      while (i < oldChildren.length) {
-        if (getKey(oldChildren[i]) == null) {
-          commitQueue.push(node, oldElements[i]);
-        }
-        i++;
-      }
-
-      for (let i in oldKeyed) {
-        if (!newKeyed[i]) {
-          commitQueue.push(node, oldKeyed[i][0]);
+      commitQueue[index] = [null, index, oldVnode.props, newVnode.props];
+      if (children) {
+        for (let i = 0; i < children.length; i++) {
+          index = index + i + 1;
+          diff(parent, oldChildren[i], children[i], index);
         }
       }
     }
     return commitQueue
   }
-
-  const getKey = node => (node ? node.key : null);
 
   function effect (fn) {
     const effect = function effect (...args) {

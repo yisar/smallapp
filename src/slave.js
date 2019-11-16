@@ -20,7 +20,7 @@ export function masochism () {
 
 function commit (op) {
   if (op.length === 4) {
-    // updateProperty(op[1], op[2], op[3])
+    updateProperty(op[1], op[2], op[3])
   } else if (op.length === 3) {
     getElement(op[0]).insertBefore(
       getElement(op[2]) || createElement(op[2]),
