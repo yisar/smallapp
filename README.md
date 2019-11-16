@@ -15,7 +15,7 @@ voe （发音 `/vəʊ/`） 的双线程是小程序的底层架构，它通过 w
 ### Use
 
 ```js
-import { h, app, reactive } from "..";
+import { h, app, reactive } from ".."
 
 app({
   setup() {

@@ -12,7 +12,7 @@ export function app (instance) {
 }
 
 function sadism (instance) {
-  instance.update = effect(function componentEffects () {
+  instance.update = effect(() => {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.render())
     let index = 0
@@ -20,12 +20,12 @@ function sadism (instance) {
     self.postMessage(commit)
   })
   instance.update()
+  
   self.addEventListener('message', e => {
     const { type, id, event } = e.data
     if (type === EVENT) {
       const fn = handlerMap[id - 1]
       fn && fn(event)
-      instance.update()
     }
   })
 }
