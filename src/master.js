@@ -16,11 +16,11 @@ function sadism (instance) {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.render())
     let index = 0
-    let commit = diff(0, oldVnode, newVnode, index)
+    let commit = diff(0, index, oldVnode, newVnode)
     self.postMessage(commit)
   })
   instance.update()
-  
+
   self.addEventListener('message', e => {
     const { type, id, event } = e.data
     if (type === EVENT) {
@@ -30,7 +30,7 @@ function sadism (instance) {
   })
 }
 
-function diff (parent, oldVnode, newVnode, index) {
+function diff (parent, index, oldVnode, newVnode) {
   if (oldVnode === newVnode) {
   } else if (
     oldVnode != null &&
@@ -48,8 +48,7 @@ function diff (parent, oldVnode, newVnode, index) {
     commitQueue[index] = [null, index, oldVnode.props, newVnode.props]
     if (children) {
       for (let i = 0; i < children.length; i++) {
-        index = index + i + 1
-        diff(parent, oldChildren[i], children[i], index)
+        diff(parent, ++index + i, oldChildren[i], children[i])
       }
     }
   }
