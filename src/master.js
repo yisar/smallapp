@@ -21,10 +21,10 @@ function sadism (instance) {
   })
   instance.update()
   self.addEventListener('message', e => {
-    const { type, id } = e.data
+    const { type, id, event } = e.data
     if (type === EVENT) {
       const fn = handlerMap[id - 1]
-      fn && fn()
+      fn && fn(event)
       instance.update()
     }
   })

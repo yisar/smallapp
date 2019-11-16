@@ -2,7 +2,7 @@ import { app, h, reactive } from '../src'
 
 const App = {
   setup () {
-    const add = () => {
+    const add = e => {
       state.count++
     }
     let state = reactive({ count: 0 })

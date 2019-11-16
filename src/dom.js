@@ -7,11 +7,32 @@ export function updateProperty (dom, name, oldValue, newValue) {
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
     let newHandler = event => {
-      console.log(111)
+      const {
+        type,
+        x,
+        y,
+        clientX,
+        clientY,
+        offsetX,
+        offsetY,
+        pageX,
+        pageY
+      } = event
       // 不能传太多，此处省略对事件的简化操作
       worker.postMessage({
         type: EVENT,
-        id: newValue
+        id: newValue,
+        event: {
+          type,
+          x,
+          y,
+          clientX,
+          clientY,
+          offsetX,
+          offsetY,
+          pageX,
+          pageY
+        }
       })
     }
     dom.addEventListener(name, newHandler)
