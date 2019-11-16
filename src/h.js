@@ -24,7 +24,10 @@ export function h (tag, attrs) {
       children.push(vnode)
     }
   }
-
-  delete props.key
-  return { tag, props, children, key }
+  return {
+    tag: typeof tag === 'function' ? tag(props) : tag,
+    props,
+    children,
+    key
+  }
 }

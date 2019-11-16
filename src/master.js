@@ -1,9 +1,10 @@
 import { targetMap } from './reactivity'
 import { masochism } from './slave'
 import { EVENT } from './dom'
-import { handlerMap } from './h'
+import { handlerMap, TEXT } from './h'
 const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
+const commitQueue = {}
 
 export function app (instance) {
   instance.render = instance.setup()
@@ -14,7 +15,8 @@ function sadism (instance) {
   instance.update = effect(function componentEffects () {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.render())
-    let commit = diff(0, null, oldVnode, newVnode)
+    let index = 0
+    let commit = diff(0, null, oldVnode, newVnode, index)
     self.postMessage(commit)
   })
   instance.update()
@@ -28,86 +30,31 @@ function sadism (instance) {
   })
 }
 
-function diff (parent, node, oldVnode, newVnode) {
-  const commitQueue = []
+function diff (parent, node, oldVnode, newVnode, index) {
   if (oldVnode === newVnode) {
-  } else if (!oldVnode || oldVnode.type !== newVnode.type) {
-    commitQueue.push([parent, node, newVnode])
-    if (oldVnode != null) {
-      commitQueue.push([parent, node])
+  } else if (
+    oldVnode != null &&
+    oldVnode.type === TEXT &&
+    newVnode.type === TEXT
+  ) {
+    if (oldVnode.tag !== newVnode.tag) {
+      commitQueue[index] = [index + 1, newVnode.tag]
     }
+  } else if (!oldVnode || oldVnode.tag !== newVnode.tag) {
+    commitQueue[index] = [parent, node, newVnode]
   } else {
-    commitQueue.push([null, node, oldVnode.props, newVnode.props])
-    let oldKeyed = {}
-    let newKeyed = {}
-    let oldElements = []
     let oldChildren = oldVnode.children
     let children = newVnode.children
-
-    for (let i = 0; i < oldChildren.length; i++) {
-      oldElements[i] = [node, i]
-      let oldKey = getKey(oldChildren[i])
-      if (oldKey != null) {
-        oldKeyed[oldKey] = [oldElements[i], oldChildren[i]]
-      }
-    }
-
-    let i = 0
-    let j = 0
-
-    while (j < children.length) {
-      let oldKey = getKey(oldChildren[i])
-      let newKey = getKey(children[i])
-      if (newKeyed[oldKey]) {
-        i++
-        commitQueue.push([])
-        continue
-      }
-
-      if (newKey != null && newKey === getKey(oldChildren[i + 1])) {
-        if (oldKey == null) {
-          commitQueue.push([element, oldElements[i]])
-        }
-        i++
-        continue
-      }
-
-      if (newKey == null) {
-        if (oldKey == null) {
-          diff(node, oldElements[i], oldChildren[i], children[k])
-          k++
-        }
-        i++
-      } else {
-        let keyed = oldKeyed[newKey] || []
-        if (oldKey === newKey) {
-          diff(node, keyed[0], keyed[1], children[k])
-          i++
-        } else {
-          diff(node, oldElements[i], null, children[k])
-          newKeyed[newKey] = children[k]
-          k++
-        }
-      }
-    }
-
-    while (i < oldChildren.length) {
-      if (getKey(oldChildren[i]) == null) {
-        commitQueue.push(node, oldElements[i])
-      }
-      i++
-    }
-
-    for (let i in oldKeyed) {
-      if (!newKeyed[i]) {
-        commitQueue.push(node, oldKeyed[i][0])
+    commitQueue[index] = [null, index, oldVnode.props, newVnode.props]
+    if (children) {
+      for (let i = 0; i < children.length; i++) {
+        index = index + i + 1
+        diff(parent, index, oldChildren[i], children[i], index)
       }
     }
   }
   return commitQueue
 }
-
-const getKey = node => (node ? node.key : null)
 
 function effect (fn) {
   const effect = function effect (...args) {

@@ -7,6 +7,7 @@ export function updateProperty (dom, name, oldValue, newValue) {
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
     let newHandler = event => {
+      console.log(111)
       // 不能传太多，此处省略对事件的简化操作
       worker.postMessage({
         type: EVENT,
