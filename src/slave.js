@@ -31,4 +31,4 @@ function commit (op) {
   }
 }
 
-const getElement = index => elementMap[index]
+const getElement = index => elementMap[index] || null
