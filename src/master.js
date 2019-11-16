@@ -14,7 +14,7 @@ function sadism (instance) {
   instance.update = effect(function componentEffects () {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.render())
-    let commit = diff(0, null, null, newVnode)
+    let commit = diff(0, null, oldVnode, newVnode)
     self.postMessage(commit)
   })
   instance.update()
@@ -33,9 +33,81 @@ function diff (parent, node, oldVnode, newVnode) {
   if (oldVnode === newVnode) {
   } else if (!oldVnode || oldVnode.type !== newVnode.type) {
     commitQueue.push([parent, node, newVnode])
+    if (oldVnode != null) {
+      commitQueue.push([parent, node])
+    }
+  } else {
+    commitQueue.push([null, node, oldVnode.props, newVnode.props])
+    let oldKeyed = {}
+    let newKeyed = {}
+    let oldElements = []
+    let oldChildren = oldVnode.children
+    let children = newVnode.children
+
+    for (let i = 0; i < oldChildren.length; i++) {
+      oldElements[i] = [node, i]
+      let oldKey = getKey(oldChildren[i])
+      if (oldKey != null) {
+        oldKeyed[oldKey] = [oldElements[i], oldChildren[i]]
+      }
+    }
+
+    let i = 0
+    let j = 0
+
+    while (j < children.length) {
+      let oldKey = getKey(oldChildren[i])
+      let newKey = getKey(children[i])
+      if (newKeyed[oldKey]) {
+        i++
+        commitQueue.push([])
+        continue
+      }
+
+      if (newKey != null && newKey === getKey(oldChildren[i + 1])) {
+        if (oldKey == null) {
+          commitQueue.push([element, oldElements[i]])
+        }
+        i++
+        continue
+      }
+
+      if (newKey == null) {
+        if (oldKey == null) {
+          diff(node, oldElements[i], oldChildren[i], children[k])
+          k++
+        }
+        i++
+      } else {
+        let keyed = oldKeyed[newKey] || []
+        if (oldKey === newKey) {
+          diff(node, keyed[0], keyed[1], children[k])
+          i++
+        } else {
+          diff(node, oldElements[i], null, children[k])
+          newKeyed[newKey] = children[k]
+          k++
+        }
+      }
+    }
+
+    while (i < oldChildren.length) {
+      if (getKey(oldChildren[i]) == null) {
+        commitQueue.push(node, oldElements[i])
+      }
+      i++
+    }
+
+    for (let i in oldKeyed) {
+      if (!newKeyed[i]) {
+        commitQueue.push(node, oldKeyed[i][0])
+      }
+    }
   }
   return commitQueue
 }
+
+const getKey = node => (node ? node.key : null)
 
 function effect (fn) {
   const effect = function effect (...args) {

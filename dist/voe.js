@@ -82,10 +82,10 @@
 
   const EVENT = 1;
 
-  function updateProperty (dom, name, oldValue, newValue, worker) {
+  function updateProperty (dom, name, oldValue, newValue) {
     if (name === 'key') ; else if (name[0] === 'o' && name[1] === 'n') {
       name = name.slice(2).toLowerCase();
-      let newHandler = (event) => {
+      let newHandler = event => {
         // 不能传太多，此处省略对事件的简化操作
         worker.postMessage({
           type: EVENT,
@@ -96,32 +96,57 @@
     }
   }
 
-  function createElement (vnode, worker) {
-    let dom = vnode.type === TEXT ? document.createTextNode(vnode.tag) : document.createElement(vnode.tag);
+  function createElement (vnode) {
+    let dom =
+      vnode.type === TEXT
+        ? document.createTextNode(vnode.tag)
+        : document.createElement(vnode.tag);
+    elementMap.push(dom);
     if (vnode.children) {
       for (let i = 0; i < vnode.children.length; i++) {
         dom.appendChild(createElement(vnode.children[i]));
       }
     }
     for (var name in vnode.props) {
-      updateProperty(dom, name, null, vnode.props[name], worker);
+      updateProperty(dom, name, null, vnode.props[name]);
     }
     return dom
   }
+
+  const elementMap = [];
+  let worker = null;
 
   function masochism () {
     const PATHNAME = (function () {
       const scripts = document.getElementsByTagName('script');
       return scripts[scripts.length - 1].src
     })();
+    elementMap.push(document.body);
 
-    const worker = new Worker(PATHNAME);
+    worker = new Worker(PATHNAME);
     worker.onmessage = e => {
-      const newVnode = e.data;
-      document.body.innerHTML = '';
-      document.body.appendChild(createElement(newVnode, worker));
+      const commitQueue = e.data;
+      commitQueue.forEach(commit);
     };
   }
+
+  function commit (op) {
+    getElement(op[0]).innerHTML = '';
+    elementMap.length = 1;
+
+    if (op.length === 4) {
+      updateProperty(op[1], op[2], op[3]);
+    } else if (op.length === 3) {
+      getElement(op[0]).insertBefore(
+        getElement(op[2]) || createElement(op[2]),
+        getElement(op[1])
+      );
+    } else {
+      getElement(op[0]).removeChild(getElement(op[1]));
+    }
+  }
+
+  const getElement = index => elementMap[index];
 
   const MAIN = typeof window !== 'undefined';
   const activeEffectStack = [];
@@ -135,8 +160,8 @@
     instance.update = effect(function componentEffects () {
       const oldVnode = instance.subTree || null;
       const newVnode = (instance.subTree = instance.render());
-      // diff and patch
-      self.postMessage(newVnode);
+      let commit = diff(0, null, null, newVnode);
+      self.postMessage(commit);
     });
     instance.update();
     self.addEventListener('message', e => {
@@ -147,6 +172,14 @@
         instance.update();
       }
     });
+  }
+
+  function diff (parent, node, oldVnode, newVnode) {
+    const commitQueue = [];
+    if (oldVnode === newVnode) ; else if (!oldVnode || oldVnode.type !== newVnode.type) {
+      commitQueue.push([parent, node, newVnode]);
+    }
+    return commitQueue
   }
 
   function effect (fn) {
@@ -172,7 +205,6 @@
     const effects = new Set();
 
     deps.get(key).forEach(e => effects.add(e));
-
     effects.forEach(e => e());
   }
 
