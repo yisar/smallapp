@@ -1,6 +1,6 @@
 import { render, h, reactive } from '../src'
 
-function App () {
+function App (props) {
   const state = reactive({ count: 0 })
   return () => (
     <div>
@@ -10,4 +10,4 @@ function App () {
   )
 }
 
-render(<App/>)
+render(<App />)

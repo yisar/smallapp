@@ -4,7 +4,6 @@ const toProxy = new WeakMap()
 const toRaw = new WeakMap()
 export const targetMap = new WeakMap()
 const isObj = obj => typeof obj === 'object'
-let lastTarget = null
 
 export function reactive (target) {
   if (!isObj(target)) return target
@@ -13,7 +12,6 @@ export function reactive (target) {
   if (proxy) return proxy
 
   if (toRaw.has(target)) return target
-  let lastValue = null
 
   const handlers = {
     get (target, key, receiver) {
