@@ -19,15 +19,15 @@ yarn add voe
 ```
 
 ```js
-import { h, render, reactive } from "../src"
+import { render, h, reactive } from '../src'
 
-function App() {
+function App (props) {
   const state = reactive({ count: 0 })
   return () => (
-    <div>
-      <h1>{state.count}</h1>
+    <view>
+      <text>{state.count}</text>
       <button onClick={e => state.count++}>+</button>
-    </div>
+    </view>
   )
 }
 

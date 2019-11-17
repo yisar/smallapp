@@ -40,6 +40,14 @@ export function updateProperty (dom, name, oldValue, newValue) {
 }
 
 export function createElement (vnode) {
+  switch (vnode.tag) {
+    case 'view':
+      vnode.tag = 'div'
+      break
+    case 'text':
+      vnode.tag = 'span'
+      break
+  }
   let dom =
     vnode.type === TEXT
       ? document.createTextNode(vnode.tag)
