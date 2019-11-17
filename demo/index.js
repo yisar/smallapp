@@ -1,18 +1,13 @@
-import { app, h, reactive } from '../src'
+import { render, h, reactive } from '../src'
 
-const App = {
-  setup () {
-    const add = e => {
-      state.count++
-    }
-    let state = reactive({ count: 0 })
-    return () => (
-      <div>
-        <h1>{state.count}</h1>
-        <button onClick={add}>+</button>
-      </div>
-    )
-  }
+function App () {
+  const state = reactive({ count: 0 })
+  return () => (
+    <div>
+      <h1>{state.count}</h1>
+      <button onClick={e => state.count++}>+</button>
+    </div>
+  )
 }
 
-app(App)
+render(<App/>)

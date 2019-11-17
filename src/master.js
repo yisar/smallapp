@@ -6,21 +6,19 @@ const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 const commitQueue = {}
 
-export function app (instance) {
-  instance.render = instance.setup()
+export function render (instance) {
   MAIN ? masochism() : sadism(instance)
 }
 
 function sadism (instance) {
   instance.update = effect(() => {
     const oldVnode = instance.subTree || null
-    const newVnode = (instance.subTree = instance.render())
+    const newVnode = (instance.subTree = instance.tag(instance.props))
     let index = 0
     let commit = diff(0, index, oldVnode, newVnode)
     self.postMessage(commit)
   })
   instance.update()
-
   self.addEventListener('message', e => {
     const { type, id, event } = e.data
     if (type === EVENT) {

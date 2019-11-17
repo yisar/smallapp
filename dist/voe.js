@@ -19,18 +19,18 @@
 
     const handlers = {
       get (target, key, receiver) {
-        let res = Reflect.get(target, key, receiver);
-        if (isObj(target[key])) {
+        let newValue = target[key];
+
+        if (isObj(newValue)) {
           return reactive(res)
         }
+        let res = Reflect.get(target, key, receiver);
         track(target, key);
         return res
       },
       set (target, key, value, receiver) {
         let res = Reflect.set(target, key, value, receiver);
-        if (key in target) {
-          trigger(target, key);
-        }
+        if (key in target) trigger(target, key);
         return res
       },
       deleteProperty () {
@@ -176,17 +176,16 @@
   const activeEffectStack = [];
   const commitQueue = {};
 
-  function app (instance) {
-    instance.render = instance.setup();
+  function render (instance) {
     MAIN ? masochism() : sadism(instance);
   }
 
   function sadism (instance) {
-    instance.update = effect(function componentEffects () {
+    instance.update = effect(() => {
       const oldVnode = instance.subTree || null;
-      const newVnode = (instance.subTree = instance.render());
+      const newVnode = (instance.subTree = instance.tag(instance.props));
       let index = 0;
-      let commit = diff(0, oldVnode, newVnode, index);
+      let commit = diff(0, index, oldVnode, newVnode);
       self.postMessage(commit);
     });
     instance.update();
@@ -195,12 +194,11 @@
       if (type === EVENT) {
         const fn = handlerMap[id - 1];
         fn && fn(event);
-        instance.update();
       }
     });
   }
 
-  function diff (parent, oldVnode, newVnode, index) {
+  function diff (parent, index, oldVnode, newVnode) {
     if (oldVnode === newVnode) ; else if (
       oldVnode != null &&
       oldVnode.type === TEXT &&
@@ -217,8 +215,7 @@
       commitQueue[index] = [null, index, oldVnode.props, newVnode.props];
       if (children) {
         for (let i = 0; i < children.length; i++) {
-          index = index + i + 1;
-          diff(parent, oldChildren[i], children[i], index);
+          diff(parent, ++index + i, oldChildren[i], children[i]);
         }
       }
     }
@@ -268,9 +265,9 @@
     }
   }
 
-  exports.app = app;
   exports.h = h;
   exports.reactive = reactive;
+  exports.render = render;
 
 })));
 //# sourceMappingURL=voe.js.map
