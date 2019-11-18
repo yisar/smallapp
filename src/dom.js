@@ -11,8 +11,6 @@ const tagMap = new Map([
 ])
 
 export function updateProperty (dom, name, oldValue, newValue, isSvg) {
-  let newTag = tagMap.get(vnode.tag)
-  if (newTag) vnode.tag === newTag
   if (name === 'key' || oldValue === newValue) {
   } else if (name === 'style') {
     for (var k in { ...oldValue, ...newValue }) {
@@ -60,14 +58,8 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
 }
 
 export function createElement (vnode) {
-  switch (vnode.tag) {
-    case 'view':
-      vnode.tag = 'div'
-      break
-    case 'text':
-      vnode.tag = 'span'
-      break
-  }
+  let newTag = tagMap.get(vnode.tag)
+  if (newTag) vnode.tag === newTag
   let dom =
     vnode.type === TEXT
       ? document.createTextNode(vnode.tag)
