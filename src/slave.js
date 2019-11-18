@@ -1,6 +1,7 @@
 import { createElement, updateProperty } from './dom'
 export const elementMap = []
 export let worker = null
+const isNum = x => typeof x === 'number'
 
 export function masochism () {
   const PATHNAME = (function () {
@@ -9,7 +10,7 @@ export function masochism () {
   })()
   elementMap.push(document.body)
   worker = new Worker(PATHNAME)
-  
+
   worker.onmessage = e => {
     const commitQueue = e.data
     for (const index in commitQueue) {
@@ -19,15 +20,17 @@ export function masochism () {
 }
 
 function commit (op) {
-  if (op.length === 4) {
-    updateProperty(op[1], op[2], op[3])
-  } else if (op.length === 3) {
-    getElement(op[0]).insertBefore(
-      getElement(op[2]) || createElement(op[2]),
-      getElement(op[1])
-    )
+  if (op.length === 3) {
+    isNum(op[1])
+      ? getElement(op[0]).insertBefore(
+        getElement(op[2]) || createElement(op[2]),
+        getElement(op[1])
+      )
+      : updateProperty(getElement(op[0]), op[1], op[2])
   } else {
-    getElement(op[0]).nodeValue = op[1]
+    isNum(op[1])
+      ? getElement(op[0]).removeChild(op[1])
+      : (getElement(op[0]).nodeValue = op[1])
   }
 }
 

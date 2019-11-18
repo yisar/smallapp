@@ -85,8 +85,13 @@
 
   const EVENT = 1;
 
-  function updateProperty (dom, name, oldValue, newValue) {
-    if (name === 'key') ; else if (name[0] === 'o' && name[1] === 'n') {
+  function updateProperty (dom, name, oldValue, newValue, isSvg) {
+    if (name === 'key' || oldValue === newValue) ; else if (name === 'style') {
+      for (var k in { ...oldValue, ...newValue }) {
+        oldValue = newValue == null || newValue[k] == null ? '' : newValue[k];
+        dom[name][k] = oldValue;
+      }
+    } else if (name[0] === 'o' && name[1] === 'n') {
       name = name.slice(2).toLowerCase();
       let newHandler = event => {
         const {
@@ -100,7 +105,6 @@
           pageX,
           pageY
         } = event;
-        // 不能传太多，此处省略对事件的简化操作
         worker.postMessage({
           type: EVENT,
           id: newValue,
@@ -118,6 +122,12 @@
         });
       };
       dom.addEventListener(name, newHandler);
+    } else if (name in dom && !isSvg) {
+      dom[name] = newValue == null ? '' : newValue;
+    } else if (newValue == null || newValue === false) {
+      dom.removeAttribute(name);
+    } else {
+      dom.setAttribute(name, newValue);
     }
   }
 
@@ -148,6 +158,7 @@
 
   const elementMap = [];
   let worker = null;
+  const isNum = x => typeof x === 'number';
 
   function masochism () {
     const PATHNAME = (function () {
@@ -155,8 +166,8 @@
       return scripts[scripts.length - 1].src
     })();
     elementMap.push(document.body);
-
     worker = new Worker(PATHNAME);
+
     worker.onmessage = e => {
       const commitQueue = e.data;
       for (const index in commitQueue) {
@@ -166,15 +177,17 @@
   }
 
   function commit (op) {
-    if (op.length === 4) {
-      updateProperty(op[1], op[2], op[3]);
-    } else if (op.length === 3) {
-      getElement(op[0]).insertBefore(
-        getElement(op[2]) || createElement(op[2]),
-        getElement(op[1])
-      );
+    if (op.length === 3) {
+      isNum(op[1])
+        ? getElement(op[0]).insertBefore(
+          getElement(op[2]) || createElement(op[2]),
+          getElement(op[1])
+        )
+        : updateProperty(getElement(op[0]), op[1], op[2]);
     } else {
-      getElement(op[0]).nodeValue = op[1];
+      isNum(op[1])
+        ? getElement(op[0]).removeChild(op[1])
+        : (getElement(op[0]).nodeValue = op[1]);
     }
   }
 
@@ -217,10 +230,13 @@
       }
     } else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
       commitQueue[index] = [parent, index - 1, newVnode];
+      if (oldVnode != null) {
+        commitQueue[index] = [parent, index - 1];
+      }
     } else {
       let oldChildren = oldVnode.children;
       let children = newVnode.children;
-      commitQueue[index] = [null, index, oldVnode.props, newVnode.props];
+      commitQueue[index] = [index, oldVnode.props, newVnode.props];
       if (children) {
         for (let i = 0; i < children.length; i++) {
           diff(parent, ++index + i, oldChildren[i], children[i]);

@@ -2,10 +2,10 @@ import { TEXT } from './h'
 import { worker, elementMap } from './slave'
 export const EVENT = 1
 
-export function updateProperty (dom, name, oldValue, newValue) {
+export function updateProperty (dom, name, oldValue, newValue, isSvg) {
   if (name === 'key' || oldValue === newValue) {
   } else if (name === 'style') {
-    for (var k in {...oldValue, ...newValue}) {
+    for (var k in { ...oldValue, ...newValue }) {
       oldValue = newValue == null || newValue[k] == null ? '' : newValue[k]
       dom[name][k] = oldValue
     }
@@ -40,7 +40,7 @@ export function updateProperty (dom, name, oldValue, newValue) {
       })
     }
     dom.addEventListener(name, newHandler)
-  } else if (name in dom) {
+  } else if (name in dom && !isSvg) {
     dom[name] = newValue == null ? '' : newValue
   } else if (newValue == null || newValue === false) {
     dom.removeAttribute(name)

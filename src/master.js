@@ -40,10 +40,13 @@ function diff (parent, index, oldVnode, newVnode) {
     }
   } else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
     commitQueue[index] = [parent, index - 1, newVnode]
+    if (oldVnode != null) {
+      commitQueue[index] = [parent, index - 1]
+    }
   } else {
     let oldChildren = oldVnode.children
     let children = newVnode.children
-    commitQueue[index] = [null, index, oldVnode.props, newVnode.props]
+    commitQueue[index] = [index, oldVnode.props, newVnode.props]
     if (children) {
       for (let i = 0; i < children.length; i++) {
         diff(parent, ++index + i, oldChildren[i], children[i])
