@@ -8,8 +8,8 @@ export function masochism () {
     return scripts[scripts.length - 1].src
   })()
   elementMap.push(document.body)
-
   worker = new Worker(PATHNAME)
+  
   worker.onmessage = e => {
     const commitQueue = e.data
     for (const index in commitQueue) {

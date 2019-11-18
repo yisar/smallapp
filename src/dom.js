@@ -3,7 +3,12 @@ import { worker, elementMap } from './slave'
 export const EVENT = 1
 
 export function updateProperty (dom, name, oldValue, newValue) {
-  if (name === 'key') {
+  if (name === 'key' || oldValue === newValue) {
+  } else if (name === 'style') {
+    for (var k in {...oldValue, ...newValue}) {
+      oldValue = newValue == null || newValue[k] == null ? '' : newValue[k]
+      dom[name][k] = oldValue
+    }
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
     let newHandler = event => {
@@ -18,7 +23,6 @@ export function updateProperty (dom, name, oldValue, newValue) {
         pageX,
         pageY
       } = event
-      // 不能传太多，此处省略对事件的简化操作
       worker.postMessage({
         type: EVENT,
         id: newValue,
@@ -36,6 +40,12 @@ export function updateProperty (dom, name, oldValue, newValue) {
       })
     }
     dom.addEventListener(name, newHandler)
+  } else if (name in dom) {
+    dom[name] = newValue == null ? '' : newValue
+  } else if (newValue == null || newValue === false) {
+    dom.removeAttribute(name)
+  } else {
+    dom.setAttribute(name, newValue)
   }
 }
 
