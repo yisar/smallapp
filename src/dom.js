@@ -1,8 +1,18 @@
 import { TEXT } from './h'
 import { worker, elementMap } from './slave'
 export const EVENT = 1
+const tagMap = new Map([
+  ['view', 'div'],
+  ['text', 'span'],
+  ['icon', 'i'],
+  ['button', 'button'],
+  ['image', 'img'],
+  ['navigator', 'a']
+])
 
 export function updateProperty (dom, name, oldValue, newValue, isSvg) {
+  let newTag = tagMap.get(vnode.tag)
+  if (newTag) vnode.tag === newTag
   if (name === 'key' || oldValue === newValue) {
   } else if (name === 'style') {
     for (var k in { ...oldValue, ...newValue }) {
