@@ -51,8 +51,16 @@
   }
 
   const TEXT = 3;
-
   let handlerMap = [];
+  const tagMap = new Map([
+    ['view', 'div'],
+    ['text', 'span'],
+    ['icon', 'i'],
+    ['button', 'button'],
+    ['image', 'img'],
+    ['navigator', 'a']
+  ]);
+  const inputMap = ['checkbox', 'radio', 'text'];
 
   function h (tag, attrs) {
     let props = attrs || {};
@@ -75,6 +83,14 @@
         children.push(vnode);
       }
     }
+    
+    let newTag = tagMap.get(tag);
+    let index = inputMap.indexOf(tag) > -1;
+    if (index) {
+      newTag = 'input';
+      props.type = tagMap[index];
+    }
+
     return {
       tag: typeof tag === 'function' ? tag(props) : tag,
       props,
@@ -84,6 +100,7 @@
   }
 
   const EVENT = 1;
+
 
   function updateProperty (dom, name, oldValue, newValue, isSvg) {
     if (name === 'key' || oldValue === newValue) ; else if (name === 'style') {
@@ -132,14 +149,6 @@
   }
 
   function createElement (vnode) {
-    switch (vnode.tag) {
-      case 'view':
-        vnode.tag = 'div';
-        break
-      case 'text':
-        vnode.tag = 'span';
-        break
-    }
     let dom =
       vnode.type === TEXT
         ? document.createTextNode(vnode.tag)
