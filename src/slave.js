@@ -1,4 +1,5 @@
 import { createElement, updateProperty } from './dom'
+import { COMMIT, WEB_API,RETURN } from './master'
 export const elementMap = []
 export let worker = null
 const isNum = x => typeof x === 'number'
@@ -12,9 +13,11 @@ export function masochism () {
   worker = new Worker(PATHNAME)
 
   worker.onmessage = e => {
-    const commitQueue = e.data
-    for (const index in commitQueue) {
-      commit(commitQueue[index])
+    const { type, data } = e.data
+    if (type === COMMIT) {
+      for (const index in data) {
+        commit(data[index])
+      }
     }
   }
 }

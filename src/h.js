@@ -1,5 +1,5 @@
 export const TEXT = 3
-export let handlerMap = []
+export let handlerMap = {}
 const tagMap = new Map([
   ['view', 'div'],
   ['text', 'span'],
@@ -8,31 +8,29 @@ const tagMap = new Map([
   ['image', 'img'],
   ['navigator', 'a']
 ])
-const inputMap = ['checkbox', 'radio', 'text']
+const inputMap = ['checkbox', 'radio']
 
 export function h (tag, attrs) {
   let props = attrs || {}
   let key = props.key || null
   let children = []
 
-  for (const k in props) {
-    if (k[0] === 'o' && k[1] === 'n') {
-      let e = props[k]
-      handlerMap.push(e)
-      props[k] = handlerMap.length
-    }
-  }
+  Object.keys(props).forEach((k, i) => {
+    let e = props[k]
+    handlerMap[i] = e
+    props[k] = i
+  })
 
   for (let i = 2; i < arguments.length; i++) {
     let vnode = arguments[i]
     if (vnode == null || vnode === true || vnode === false) {
     } else if (typeof vnode === 'string' || typeof vnode === 'number') {
-      children.push({ tag: vnode, type: TEXT })
+      children.push({ tag: vnode + '', type: TEXT })
     } else {
       children.push(vnode)
     }
   }
-  
+
   let newTag = tagMap.get(tag)
   if (newTag) tag === newTag
   let index = inputMap.indexOf(tag) > -1

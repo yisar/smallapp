@@ -1,6 +1,6 @@
 import { TEXT } from './h'
 import { worker, elementMap } from './slave'
-export const EVENT = 1
+import {EVENT} from './master'
 
 
 export function updateProperty (dom, name, oldValue, newValue, isSvg) {
@@ -12,6 +12,7 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
     }
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
+    console.log(newValue)
     let newHandler = event => {
       const {
         type,
@@ -27,7 +28,7 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
       worker.postMessage({
         type: EVENT,
         id: newValue,
-        event: {
+        data: {
           type,
           x,
           y,
@@ -44,7 +45,7 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
   } else if (name in dom && !isSvg) {
     dom[name] = newValue == null ? '' : newValue
   } else if (newValue == null || newValue === false) {
-    dom.removeAttribute(name)
+    // dom.removeAttribute(name)
   } else {
     dom.setAttribute(name, newValue)
   }

@@ -5,7 +5,13 @@ function App (props) {
   return () => (
     <view>
       <text>{state.count}</text>
-      <button onClick={e => state.count++}>+</button>
+      <button onClick={e => {
+        fetch('https://api.clicli.us/rank').then(res => res.json())
+        .then(data => {
+         console.log(data)
+        })
+        state.count++
+      }}>+</button>
     </view>
   )
 }

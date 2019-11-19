@@ -1,10 +1,10 @@
 import { masochism } from './slave'
-import { EVENT } from './dom'
 import { handlerMap, TEXT } from './h'
 const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 const commitQueue = {}
 export const targetMap = new WeakMap()
+export const [COMMIT, EVENT, WEB_API, RETURN] = [1, 2, 3]
 export function render (instance) {
   MAIN ? masochism() : sadism(instance)
 }
@@ -15,16 +15,19 @@ function sadism (instance) {
     const newVnode = (instance.subTree = instance.tag(instance.props))
     let index = 0
     let commit = diff(0, index, oldVnode, newVnode)
-    self.postMessage(commit)
+    self.postMessage({
+      type: COMMIT,
+      data: commit
+    })
   })
   instance.update()
-  self.addEventListener('message', e => {
-    const { type, id, event } = e.data
+  self.onmessage = e => {
+    const { type, data, id } = e.data
     if (type === EVENT) {
-      const fn = handlerMap[id - 1]
-      fn && fn(event)
+      const fn = handlerMap[id]
+      fn && fn(data)
     }
-  })
+  }
 }
 
 function diff (parent, index, oldVnode, newVnode) {
@@ -40,7 +43,7 @@ function diff (parent, index, oldVnode, newVnode) {
   } else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
     commitQueue[index] = [parent, index - 1, newVnode]
     if (oldVnode != null) {
-      commitQueue[index] = [parent, index - 1]
+      commitQueue[index] = [parent, index]
     }
   } else {
     let oldChildren = oldVnode.children
@@ -96,4 +99,12 @@ export function track (target, key) {
       dep.add(effect)
     }
   }
+}
+
+function callMethod (name, data) {
+  self.postMessage({
+    type: WEB_API,
+    name,
+    data
+  })
 }
