@@ -17,7 +17,7 @@ export function reactive (target) {
       let newValue = target[key]
 
       if (isObj(newValue)) {
-        return reactive(res)
+        return reactive(newValue)
       }
       let res = Reflect.get(target, key, receiver)
       track(target, key)
@@ -28,12 +28,12 @@ export function reactive (target) {
       if (key in target) trigger(target, key)
       return res
     },
-    deleteProperty () {
-      return Reflect.defineProperty(target, key)
+    deleteProperty (target, key, receiver) {
+      return Reflect.defineProperty(target, key,receiver)
     }
   }
 
-  let observed = new Proxy(target, handlers)
+  let observed = new Proxy(target, handlers as any)
 
   toProxy.set(target, observed)
   toRaw.set(observed, target)

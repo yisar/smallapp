@@ -4,21 +4,24 @@ const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 const commitQueue = {}
 export const targetMap = new WeakMap()
-export const [COMMIT, EVENT, WEB_API, RETURN] = [1, 2, 3]
-export function render (instance) {
+export const [COMMIT, EVENT, WEB_API] = [1, 2, 3]
+export function render(instance) {
   MAIN ? masochism() : sadism(instance)
 }
 
-function sadism (instance) {
+function sadism(instance) {
   instance.update = effect(() => {
     const oldVnode = instance.subTree || null
     const newVnode = (instance.subTree = instance.tag(instance.props))
     let index = 0
     let commit = diff(0, index, oldVnode, newVnode)
-    self.postMessage({
-      type: COMMIT,
-      data: commit
-    })
+    self.postMessage(
+      {
+        type: COMMIT,
+        data: commit,
+      },
+      null
+    )
   })
   instance.update()
   self.onmessage = e => {
@@ -30,7 +33,7 @@ function sadism (instance) {
   }
 }
 
-function diff (parent, index, oldVnode, newVnode) {
+function diff(parent, index, oldVnode, newVnode) {
   if (oldVnode === newVnode) {
   } else if (
     oldVnode != null &&
@@ -58,14 +61,14 @@ function diff (parent, index, oldVnode, newVnode) {
   return commitQueue
 }
 
-function effect (fn) {
-  const effect = function effect (...args) {
+function effect(fn) {
+  const effect = function effect(...args) {
     return run(effect, fn, args)
   }
   return effect
 }
 
-function run (effect, fn, args) {
+function run(effect, fn, args) {
   if (activeEffectStack.indexOf(effect) === -1) {
     try {
       activeEffectStack.push(effect)
@@ -76,15 +79,15 @@ function run (effect, fn, args) {
   }
 }
 
-export function trigger (target, key) {
+export function trigger(target, key) {
   let deps = targetMap.get(target)
   const effects = new Set()
 
   deps.get(key).forEach(e => effects.add(e))
-  effects.forEach(e => e())
+  effects.forEach((e: any) => e())
 }
 
-export function track (target, key) {
+export function track(target, key) {
   const effect = activeEffectStack[activeEffectStack.length - 1]
   if (effect) {
     let depsMap = targetMap.get(target)
@@ -99,12 +102,4 @@ export function track (target, key) {
       dep.add(effect)
     }
   }
-}
-
-function callMethod (name, data) {
-  self.postMessage({
-    type: WEB_API,
-    name,
-    data
-  })
 }

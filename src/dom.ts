@@ -1,9 +1,22 @@
 import { TEXT } from './h'
 import { worker, elementMap } from './slave'
-import {EVENT} from './master'
+import { EVENT } from './master'
 
+export function updateElement(dom, oldProps, newProps) {
+  Object.keys(newProps)
+    .filter(() => {})
+    .forEach(name => {
+      updateProperty(dom, name, oldProps[name], newProps[name], false)
+    })
+}
 
-export function updateProperty (dom, name, oldValue, newValue, isSvg) {
+export function updateProperty(
+  dom: any,
+  name: string,
+  oldValue: any,
+  newValue: any,
+  isSvg: boolean
+) {
   if (name === 'key' || oldValue === newValue) {
   } else if (name === 'style') {
     for (var k in { ...oldValue, ...newValue }) {
@@ -12,7 +25,6 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
     }
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
-    console.log(newValue)
     let newHandler = event => {
       const {
         type,
@@ -23,7 +35,7 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
         offsetX,
         offsetY,
         pageX,
-        pageY
+        pageY,
       } = event
       worker.postMessage({
         type: EVENT,
@@ -37,8 +49,8 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
           offsetX,
           offsetY,
           pageX,
-          pageY
-        }
+          pageY,
+        },
       })
     }
     dom.addEventListener(name, newHandler)
@@ -51,7 +63,7 @@ export function updateProperty (dom, name, oldValue, newValue, isSvg) {
   }
 }
 
-export function createElement (vnode) {
+export function createElement(vnode) {
   let dom =
     vnode.type === TEXT
       ? document.createTextNode(vnode.tag)
@@ -63,7 +75,7 @@ export function createElement (vnode) {
     }
   }
   for (var name in vnode.props) {
-    updateProperty(dom, name, null, vnode.props[name])
+    updateProperty(dom, name, null, vnode.props[name], false)
   }
   return dom
 }

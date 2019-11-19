@@ -5,7 +5,8 @@
   "main": "/dist/voe.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -i src/index.js -o dist/voe.js --no-esModule -mf umd -n voe"
+    "build": "rollup -c",
+    "dev":"rollup -c --watch"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,9 @@
   },
   "homepage": "https://github.com/132yse/voe#readme",
   "devDependencies": {
-    "rollup": "^1.27.1"
+    "rollup": "^1.27.1",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.7.2"
   }
 }

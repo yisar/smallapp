@@ -6,11 +6,10 @@ const tagMap = new Map([
   ['icon', 'i'],
   ['button', 'button'],
   ['image', 'img'],
-  ['navigator', 'a']
+  ['navigator', 'a'],
 ])
-const inputMap = ['checkbox', 'radio']
 
-export function h (tag, attrs) {
+export function h(tag: string | Function, attrs: any) {
   let props = attrs || {}
   let key = props.key || null
   let children = []
@@ -31,18 +30,13 @@ export function h (tag, attrs) {
     }
   }
 
-  let newTag = tagMap.get(tag)
+  let newTag = tagMap.get(tag as string)
   if (newTag) tag === newTag
-  let index = inputMap.indexOf(tag) > -1
-  if (index) {
-    newTag = 'input'
-    props.type = tagMap[index]
-  }
 
   return {
     tag: typeof tag === 'function' ? tag(props) : tag,
     props,
     children,
-    key
+    key,
   }
 }

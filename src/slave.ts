@@ -1,5 +1,5 @@
-import { createElement, updateProperty } from './dom'
-import { COMMIT, WEB_API,RETURN } from './master'
+import { createElement, updateElement } from './dom'
+import { COMMIT } from './master'
 export const elementMap = []
 export let worker = null
 const isNum = x => typeof x === 'number'
@@ -29,7 +29,7 @@ function commit (op) {
         getElement(op[2]) || createElement(op[2]),
         getElement(op[1])
       )
-      : updateProperty(getElement(op[0]), op[1], op[2])
+      : updateElement(getElement(op[0]), op[1], op[2])
   } else {
     isNum(op[1])
       ? getElement(op[0]).removeChild(op[1])

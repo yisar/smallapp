@@ -1,4 +1,4 @@
-import { render, h, reactive } from '../src'
+import { render, h, reactive } from '../dist/voe'
 
 function App (props) {
   const state = reactive({ count: 0 })
