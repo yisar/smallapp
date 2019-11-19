@@ -1,11 +1,10 @@
-import { targetMap } from './reactivity'
 import { masochism } from './slave'
 import { EVENT } from './dom'
 import { handlerMap, TEXT } from './h'
 const MAIN = typeof window !== 'undefined'
 const activeEffectStack = []
 const commitQueue = {}
-
+export const targetMap = new WeakMap()
 export function render (instance) {
   MAIN ? masochism() : sadism(instance)
 }

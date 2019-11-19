@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/132yse/voe/issues"
   },
-  "homepage": "https://github.com/132yse/voe#readme"
+  "homepage": "https://github.com/132yse/voe#readme",
+  "devDependencies": {
+    "rollup": "^1.27.1"
+  }
 }

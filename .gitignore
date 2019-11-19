@@ -2,3 +2,5 @@
 /demo/dist/
 /demo/.cache/
 /demo/node_modules/
+node_modules
+yarn.lock

@@ -1,8 +1,7 @@
-import { trigger, track } from './master'
-
+import { trigger, track, targetMap } from './master'
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
-export const targetMap = new WeakMap()
+
 const isObj = obj => typeof obj === 'object'
 
 export function reactive (target) {
