@@ -88,7 +88,7 @@
             name = name.slice(2).toLowerCase();
             var newHandler = function (event) {
                 var type = event.type, x = event.x, y = event.y, clientX = event.clientX, clientY = event.clientY, offsetX = event.offsetX, offsetY = event.offsetY, pageX = event.pageX, pageY = event.pageY;
-                worker.postMessage({
+                worker.postMessage(JSON.stringify({
                     type: EVENT,
                     id: newValue,
                     data: {
@@ -102,7 +102,7 @@
                         pageX: pageX,
                         pageY: pageY,
                     },
-                });
+                }));
             };
             dom.addEventListener(name, newHandler);
         }
@@ -129,7 +129,6 @@
         }
         return dom;
     }
-    //# sourceMappingURL=dom.js.map
 
     var elementMap = [];
     var worker = null;
@@ -143,7 +142,7 @@
         worker = new Worker(PATHNAME);
         worker.onmessage = function (e) {
             var _a;
-            var _b = e.data, type = _b.type, data = _b.data, name = _b.name, prams = _b.prams;
+            var _b = JSON.parse(e.data), type = _b.type, data = _b.data, name = _b.name, prams = _b.prams;
             if (type === COMMIT) {
                 for (var index in data) {
                     commit(data[index]);
@@ -184,14 +183,14 @@
             var newVnode = (instance.subTree = instance.tag(instance.props));
             var index = 0;
             var commit = diff(0, index, oldVnode, newVnode);
-            self.postMessage({
+            self.postMessage(JSON.stringify({
                 type: COMMIT,
                 data: commit,
-            }, null);
+            }), null);
         });
         instance.update();
         self.onmessage = function (e) {
-            var _a = e.data, type = _a.type, data = _a.data, id = _a.id;
+            var _a = JSON.parse(e.data), type = _a.type, data = _a.data, id = _a.id;
             if (type === EVENT) {
                 var fn = handlerMap[id];
                 fn && fn(data);
@@ -277,12 +276,13 @@
         }
     }
     function callMethod(name, prams) {
-        self.postMessage({
+        self.postMessage(JSON.stringify({
             type: WEB_API,
             name: name,
             prams: prams,
-        }, null);
+        }), null);
     }
+    //# sourceMappingURL=master.js.map
 
     var toProxy = new WeakMap();
     var toRaw = new WeakMap();

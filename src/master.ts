@@ -16,16 +16,17 @@ function sadism(instance) {
     let index = 0
     let commit = diff(0, index, oldVnode, newVnode)
     self.postMessage(
-      {
+      JSON.stringify({
         type: COMMIT,
         data: commit,
-      },
+      })
+      ,
       null
     )
   })
   instance.update()
   self.onmessage = e => {
-    const { type, data, id } = e.data
+    const { type, data, id } = JSON.parse(e.data)
     if (type === EVENT) {
       const fn = handlerMap[id]
       fn && fn(data)
@@ -114,11 +115,11 @@ export function track(target, key) {
 
 function callMethod(name: any, prams: any) {
   self.postMessage(
-    {
+    JSON.stringify({
       type: WEB_API,
       name,
       prams,
-    },
+    }),
     null
   )
 }

@@ -37,7 +37,7 @@ export function updateProperty(
         pageX,
         pageY,
       } = event
-      worker.postMessage({
+      worker.postMessage(JSON.stringify({
         type: EVENT,
         id: newValue,
         data: {
@@ -51,7 +51,7 @@ export function updateProperty(
           pageX,
           pageY,
         },
-      })
+      }))
     }
     dom.addEventListener(name, newHandler)
   } else if (name in dom && !isSvg) {

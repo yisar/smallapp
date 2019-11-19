@@ -13,7 +13,7 @@ export function masochism() {
   worker = new Worker(PATHNAME)
 
   worker.onmessage = e => {
-    const { type, data, name, prams } = e.data
+    const { type, data, name, prams } = JSON.parse(e.data)
     if (type === COMMIT) {
       for (const index in data) {
         commit(data[index])
