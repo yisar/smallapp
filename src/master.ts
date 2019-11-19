@@ -31,6 +31,14 @@ function sadism(instance) {
       fn && fn(data)
     }
   }
+  ;(self as any).localStorage = {
+    getItem(key) {
+      callMethod(['localStorage', 'getItem'], [key])
+    },
+    setItem(key, val) {
+      callMethod(['localStorage', 'setItem'], [key, val])
+    },
+  }
 }
 
 function diff(parent, index, oldVnode, newVnode) {
@@ -102,4 +110,15 @@ export function track(target, key) {
       dep.add(effect)
     }
   }
+}
+
+function callMethod(name: any, prams: any) {
+  self.postMessage(
+    {
+      type: WEB_API,
+      name,
+      prams,
+    },
+    null
+  )
 }

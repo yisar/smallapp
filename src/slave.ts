@@ -1,11 +1,11 @@
 import { createElement, updateElement } from './dom'
-import { COMMIT } from './master'
+import { COMMIT, WEB_API } from './master'
 export const elementMap = []
 export let worker = null
 const isNum = x => typeof x === 'number'
 
-export function masochism () {
-  const PATHNAME = (function () {
+export function masochism() {
+  const PATHNAME = (function() {
     const scripts = document.getElementsByTagName('script')
     return scripts[scripts.length - 1].src
   })()
@@ -13,22 +13,25 @@ export function masochism () {
   worker = new Worker(PATHNAME)
 
   worker.onmessage = e => {
-    const { type, data } = e.data
+    const { type, data, name, prams } = e.data
     if (type === COMMIT) {
       for (const index in data) {
         commit(data[index])
       }
     }
+    if (type === WEB_API) {
+      ;(window as any)[name[0]][name[1]](...prams)
+    }
   }
 }
 
-function commit (op) {
+function commit(op) {
   if (op.length === 3) {
     isNum(op[1])
       ? getElement(op[0]).insertBefore(
-        getElement(op[2]) || createElement(op[2]),
-        getElement(op[1])
-      )
+          getElement(op[2]) || createElement(op[2]),
+          getElement(op[1])
+        )
       : updateElement(getElement(op[0]), op[1], op[2])
   } else {
     isNum(op[1])

@@ -6,10 +6,7 @@ function App (props) {
     <view>
       <text>{state.count}</text>
       <button onClick={e => {
-        fetch('https://api.clicli.us/rank').then(res => res.json())
-        .then(data => {
-         console.log(data)
-        })
+        localStorage.setItem('name','132')
         state.count++
       }}>+</button>
     </view>

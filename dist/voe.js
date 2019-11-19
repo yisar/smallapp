@@ -67,6 +67,7 @@
             key: key,
         };
     }
+    //# sourceMappingURL=h.js.map
 
     function updateElement(dom, oldProps, newProps) {
         Object.keys(newProps)
@@ -128,6 +129,7 @@
         }
         return dom;
     }
+    //# sourceMappingURL=dom.js.map
 
     var elementMap = [];
     var worker = null;
@@ -140,11 +142,15 @@
         elementMap.push(document.body);
         worker = new Worker(PATHNAME);
         worker.onmessage = function (e) {
-            var _a = e.data, type = _a.type, data = _a.data;
+            var _a;
+            var _b = e.data, type = _b.type, data = _b.data, name = _b.name, prams = _b.prams;
             if (type === COMMIT) {
                 for (var index in data) {
                     commit(data[index]);
                 }
+            }
+            if (type === WEB_API) {
+                (_a = window[name[0]])[name[1]].apply(_a, prams);
             }
         };
     }
@@ -161,6 +167,7 @@
         }
     }
     var getElement = function (index) { return elementMap[index] || null; };
+    //# sourceMappingURL=slave.js.map
 
     var _a;
     var MAIN = typeof window !== 'undefined';
@@ -189,6 +196,14 @@
                 var fn = handlerMap[id];
                 fn && fn(data);
             }
+        };
+        self.localStorage = {
+            getItem: function (key) {
+                callMethod(['localStorage', 'getItem'], [key]);
+            },
+            setItem: function (key, val) {
+                callMethod(['localStorage', 'setItem'], [key, val]);
+            },
         };
     }
     function diff(parent, index, oldVnode, newVnode) {
@@ -261,6 +276,13 @@
             }
         }
     }
+    function callMethod(name, prams) {
+        self.postMessage({
+            type: WEB_API,
+            name: name,
+            prams: prams,
+        }, null);
+    }
 
     var toProxy = new WeakMap();
     var toRaw = new WeakMap();
@@ -301,6 +323,7 @@
         }
         return observed;
     }
+    //# sourceMappingURL=reactivity.js.map
 
     exports.h = h;
     exports.reactive = reactive;
