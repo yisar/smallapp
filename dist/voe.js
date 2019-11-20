@@ -67,7 +67,6 @@
             key: key,
         };
     }
-    //# sourceMappingURL=h.js.map
 
     function updateElement(dom, oldProps, newProps) {
         Object.keys(newProps)
@@ -144,9 +143,11 @@
             var _a;
             var _b = JSON.parse(e.data), type = _b.type, data = _b.data, name = _b.name, prams = _b.prams;
             if (type === COMMIT) {
-                for (var index in data) {
-                    commit(data[index]);
-                }
+                requestAnimationFrame(function () {
+                    for (var index in data) {
+                        commit(data[index]);
+                    }
+                });
             }
             if (type === WEB_API) {
                 (_a = window[name[0]])[name[1]].apply(_a, prams);
@@ -166,7 +167,6 @@
         }
     }
     var getElement = function (index) { return elementMap[index] || null; };
-    //# sourceMappingURL=slave.js.map
 
     var _a;
     var MAIN = typeof window !== 'undefined';
@@ -282,7 +282,6 @@
             prams: prams,
         }), null);
     }
-    //# sourceMappingURL=master.js.map
 
     var toProxy = new WeakMap();
     var toRaw = new WeakMap();
@@ -323,7 +322,6 @@
         }
         return observed;
     }
-    //# sourceMappingURL=reactivity.js.map
 
     exports.h = h;
     exports.reactive = reactive;

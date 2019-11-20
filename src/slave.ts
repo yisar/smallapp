@@ -15,9 +15,11 @@ export function masochism() {
   worker.onmessage = e => {
     const { type, data, name, prams } = JSON.parse(e.data)
     if (type === COMMIT) {
-      for (const index in data) {
-        commit(data[index])
-      }
+      requestAnimationFrame(() => {
+        for (const index in data) {
+          commit(data[index])
+        }
+      })
     }
     if (type === WEB_API) {
       ;(window as any)[name[0]][name[1]](...prams)
