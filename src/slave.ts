@@ -5,12 +5,11 @@ export let worker = null
 const isNum = x => typeof x === 'number'
 
 export function masochism() {
-  const PATHNAME = (function() {
-    const scripts = document.getElementsByTagName('script')
-    return scripts[scripts.length - 1].src
-  })()
+  const scripts = document.getElementsByTagName('script')
+  const path = scripts[scripts.length - 1].src
+
   elementMap.push(document.body)
-  worker = new Worker(PATHNAME)
+  worker = new Worker(path)
 
   worker.onmessage = e => {
     const { type, data, name, prams } = JSON.parse(e.data)

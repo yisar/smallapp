@@ -67,6 +67,7 @@
             key: key,
         };
     }
+    //# sourceMappingURL=h.js.map
 
     function updateElement(dom, oldProps, newProps) {
         Object.keys(newProps)
@@ -128,17 +129,16 @@
         }
         return dom;
     }
+    //# sourceMappingURL=dom.js.map
 
     var elementMap = [];
     var worker = null;
     var isNum = function (x) { return typeof x === 'number'; };
     function masochism() {
-        var PATHNAME = (function () {
-            var scripts = document.getElementsByTagName('script');
-            return scripts[scripts.length - 1].src;
-        })();
+        var scripts = document.getElementsByTagName('script');
+        var path = scripts[scripts.length - 1].src;
         elementMap.push(document.body);
-        worker = new Worker(PATHNAME);
+        worker = new Worker(path);
         worker.onmessage = function (e) {
             var _a;
             var _b = JSON.parse(e.data), type = _b.type, data = _b.data, name = _b.name, prams = _b.prams;
@@ -282,6 +282,7 @@
             prams: prams,
         }), null);
     }
+    //# sourceMappingURL=master.js.map
 
     var toProxy = new WeakMap();
     var toRaw = new WeakMap();
@@ -322,6 +323,7 @@
         }
         return observed;
     }
+    //# sourceMappingURL=reactivity.js.map
 
     exports.h = h;
     exports.reactive = reactive;
