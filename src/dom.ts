@@ -25,33 +25,24 @@ export function updateProperty(
     }
   } else if (name[0] === 'o' && name[1] === 'n') {
     name = name.slice(2).toLowerCase()
-    let newHandler = event => {
-      const {
-        type,
-        x,
-        y,
-        clientX,
-        clientY,
-        offsetX,
-        offsetY,
-        pageX,
-        pageY,
-      } = event
-      worker.postMessage(JSON.stringify({
-        type: EVENT,
-        id: newValue,
-        data: {
-          type,
-          x,
-          y,
-          clientX,
-          clientY,
-          offsetX,
-          offsetY,
-          pageX,
-          pageY,
-        },
-      }))
+    let newHandler = e => {
+      worker.postMessage(
+        JSON.stringify({
+          type: EVENT,
+          id: newValue,
+          data: {
+            type: e.type,
+            x: e.x,
+            y: e.y,
+            clientX: e.clientX,
+            clientY: e.clientY,
+            offsetX: e.offsetX,
+            offsetY: e.offsetY,
+            pageX: e.pageX,
+            pageY: e.pageY,
+          },
+        })
+      )
     }
     dom.addEventListener(name, newHandler)
   } else if (name in dom && !isSvg) {
