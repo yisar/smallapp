@@ -4,7 +4,7 @@ import { EVENT } from './master'
 
 export function updateElement(dom, oldProps, newProps) {
   Object.keys(newProps)
-    .filter(() => {})
+    .filter((o, n) => k => o[k] !== n[k])
     .forEach(name => {
       updateProperty(dom, name, oldProps[name], newProps[name], false)
     })
@@ -39,8 +39,8 @@ export function updateProperty(
             offsetX: e.offsetX,
             offsetY: e.offsetY,
             pageX: e.pageX,
-            pageY: e.pageY,
-          },
+            pageY: e.pageY
+          }
         })
       )
     }
