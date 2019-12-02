@@ -13,11 +13,23 @@ export function h(tag: string | Function, attrs: any) {
   let props = attrs || {}
   let key = props.key || null
   let children = []
-
+  // use undefined tag, need throw error.
+  let newTag = tagMap.get(tag as string)
+  if (!newTag && typeof tag !== 'function') {
+    children.push({ tag: `<${tag}> does not exist，please check your code`, type: TEXT })
+    return {
+      tag: tag,
+      props,
+      children,
+      key,
+    }
+  }
   Object.keys(props).forEach((k, i) => {
-    let e = props[k]
-    handlerMap[i] = e
-    props[k] = i
+    if (k[0] === 'o' && k[1] === 'n') {
+      let e = props[k]
+      handlerMap[i] = e
+      props[k] = i
+    }
   })
 
   for (let i = 2; i < arguments.length; i++) {
@@ -30,11 +42,20 @@ export function h(tag: string | Function, attrs: any) {
     }
   }
 
-  let newTag = tagMap.get(tag as string)
-  if (newTag) tag === newTag
-
-  return {
-    tag: typeof tag === 'function' ? tag(props) : tag,
+  /**
+   * component render
+   * {
+   *  tag: {
+   *    tag: xxx,
+   *    ...
+   *  }
+   *  ...
+   * }
+   * @type {string}
+   */
+  const tagName = typeof tag === 'function' ? tag(props) : tag
+  return tagName.tag ? tagName : {
+    tag: tagMap.get(tagName as string) || tagName,
     props,
     children,
     key,
