@@ -1,22 +1,24 @@
 import { render, h, reactive } from '../dist/voe'
 
-
-const Hello = () => {
-  return (
-    <view>hello</view>
-  );
+const Hello = (props) => {
+  return <view>{props.count}</view>
 }
 
-function App (props) {
-  const state = reactive({ count: 0 })
+function App(props) {
+  const state = reactive({ count: 0,flag:true })
   return () => (
-    <view class="main">
+    <view class='main'>
       <text>{state.count}</text>
-      <button onClick={e => {
-        localStorage.setItem('name','132')
-        state.count++
-      }}>+</button>
-      <Hello/>
+      <button
+        onClick={e => {
+          // localStorage.setItem('name', '132')
+          state.count++
+          // state.flag = !state.flag
+        }}
+      >
+        +
+      </button>
+      {state.flag&&<Hello count={state.count}/>}
     </view>
   )
 }

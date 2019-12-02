@@ -2,9 +2,9 @@ import { trigger, track, targetMap } from './master'
 const toProxy = new WeakMap()
 const toRaw = new WeakMap()
 
-const isObj = obj => typeof obj === 'object'
+const isObj = (x: any): x is object => typeof x === 'object'
 
-export function reactive (target) {
+export function reactive(target) {
   if (!isObj(target)) return target
 
   let proxy = toProxy.get(target)
@@ -13,7 +13,7 @@ export function reactive (target) {
   if (toRaw.has(target)) return target
 
   const handlers = {
-    get (target, key, receiver) {
+    get(target, key, receiver) {
       let newValue = target[key]
 
       if (isObj(newValue)) {
@@ -23,13 +23,13 @@ export function reactive (target) {
       track(target, key)
       return res
     },
-    set (target, key, value, receiver) {
+    set(target, key, value, receiver) {
       let res = Reflect.set(target, key, value, receiver)
       if (key in target) trigger(target, key)
       return res
     },
-    deleteProperty (target, key, receiver) {
-      return Reflect.defineProperty(target, key,receiver)
+    deleteProperty(target, key, receiver) {
+      return Reflect.defineProperty(target, key, receiver)
     }
   }
 

@@ -18,9 +18,8 @@ function sadism(instance) {
     self.postMessage(
       JSON.stringify({
         type: COMMIT,
-        data: commit,
-      })
-      ,
+        data: commit
+      }),
       null
     )
   })
@@ -38,7 +37,7 @@ function sadism(instance) {
     },
     setItem(key, val) {
       callMethod(['localStorage', 'setItem'], [key, val])
-    },
+    }
   }
 }
 
@@ -55,16 +54,14 @@ function diff(parent, index, oldVnode, newVnode) {
   } else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
     commitQueue[index] = [parent, index - 1, newVnode]
     if (oldVnode != null) {
-      commitQueue[index] = [parent, index]
+      commitQueue[index] = [parent+1, index + 1]
     }
   } else {
     let oldChildren = oldVnode.children
     let children = newVnode.children
     commitQueue[index] = [index, oldVnode.props, newVnode.props]
-    if (children) {
-      for (let i = 0; i < children.length; i++) {
-        diff(parent, ++index + i, oldChildren[i], children[i])
-      }
+    for (let i = 0; i < oldChildren.length; i++) {
+      diff(parent, ++index + i, oldChildren[i], children[i] || {})
     }
   }
   return commitQueue
@@ -118,7 +115,7 @@ function callMethod(name: any, prams: any) {
     JSON.stringify({
       type: WEB_API,
       name,
-      prams,
+      prams
     }),
     null
   )

@@ -44,10 +44,23 @@
         var props = attrs || {};
         var key = props.key || null;
         var children = [];
+        // use undefined tag, need throw error.
+        var newTag = tagMap.get(tag);
+        if (!newTag && typeof tag !== 'function') {
+            children.push({ tag: "<" + tag + "> does not exist\uFF0Cplease check your code", type: TEXT });
+            return {
+                tag: tag,
+                props: props,
+                children: children,
+                key: key,
+            };
+        }
         Object.keys(props).forEach(function (k, i) {
-            var e = props[k];
-            handlerMap[i] = e;
-            props[k] = i;
+            if (k[0] === 'o' && k[1] === 'n') {
+                var e = props[k];
+                handlerMap[i] = e;
+                props[k] = i;
+            }
         });
         for (var i = 2; i < arguments.length; i++) {
             var vnode = arguments[i];
@@ -59,9 +72,20 @@
                 children.push(vnode);
             }
         }
-        var newTag = tagMap.get(tag);
-        return {
-            tag: typeof tag === 'function' ? tag(props) : tag,
+        /**
+         * component render
+         * {
+         *  tag: {
+         *    tag: xxx,
+         *    ...
+         *  }
+         *  ...
+         * }
+         * @type {string}
+         */
+        var tagName = typeof tag === 'function' ? tag(props) : tag;
+        return tagName.tag ? tagName : {
+            tag: tagMap.get(tagName) || tagName,
             props: props,
             children: children,
             key: key,
@@ -71,7 +95,7 @@
 
     function updateElement(dom, oldProps, newProps) {
         Object.keys(newProps)
-            .filter(function () { })
+            .filter(function (o, n) { return function (k) { return o[k] !== n[k]; }; })
             .forEach(function (name) {
             updateProperty(dom, name, oldProps[name], newProps[name], false);
         });
@@ -86,22 +110,21 @@
         }
         else if (name[0] === 'o' && name[1] === 'n') {
             name = name.slice(2).toLowerCase();
-            var newHandler = function (event) {
-                var type = event.type, x = event.x, y = event.y, clientX = event.clientX, clientY = event.clientY, offsetX = event.offsetX, offsetY = event.offsetY, pageX = event.pageX, pageY = event.pageY;
+            var newHandler = function (e) {
                 worker.postMessage(JSON.stringify({
                     type: EVENT,
                     id: newValue,
                     data: {
-                        type: type,
-                        x: x,
-                        y: y,
-                        clientX: clientX,
-                        clientY: clientY,
-                        offsetX: offsetX,
-                        offsetY: offsetY,
-                        pageX: pageX,
-                        pageY: pageY,
-                    },
+                        type: e.type,
+                        x: e.x,
+                        y: e.y,
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                        offsetX: e.offsetX,
+                        offsetY: e.offsetY,
+                        pageX: e.pageX,
+                        pageY: e.pageY
+                    }
                 }));
             };
             dom.addEventListener(name, newHandler);
@@ -161,8 +184,9 @@
                 : updateElement(getElement(op[0]), op[1], op[2]);
         }
         else {
+            console.log(op, elementMap);
             isNum(op[1])
-                ? getElement(op[0]).removeChild(op[1])
+                ? getElement(op[0]).removeChild(getElement(op[1]))
                 : (getElement(op[0]).nodeValue = op[1]);
         }
     }
@@ -185,7 +209,7 @@
             var commit = diff(0, index, oldVnode, newVnode);
             self.postMessage(JSON.stringify({
                 type: COMMIT,
-                data: commit,
+                data: commit
             }), null);
         });
         instance.update();
@@ -202,7 +226,7 @@
             },
             setItem: function (key, val) {
                 callMethod(['localStorage', 'setItem'], [key, val]);
-            },
+            }
         };
     }
     function diff(parent, index, oldVnode, newVnode) {
@@ -217,17 +241,15 @@
         else if (oldVnode == null || oldVnode.tag !== newVnode.tag) {
             commitQueue[index] = [parent, index - 1, newVnode];
             if (oldVnode != null) {
-                commitQueue[index] = [parent, index];
+                commitQueue[index] = [parent + 1, index + 1];
             }
         }
         else {
             var oldChildren = oldVnode.children;
             var children = newVnode.children;
             commitQueue[index] = [index, oldVnode.props, newVnode.props];
-            if (children) {
-                for (var i = 0; i < children.length; i++) {
-                    diff(parent, ++index + i, oldChildren[i], children[i]);
-                }
+            for (var i = 0; i < oldChildren.length; i++) {
+                diff(parent, ++index + i, oldChildren[i], children[i] || {});
             }
         }
         return commitQueue;
@@ -279,14 +301,14 @@
         self.postMessage(JSON.stringify({
             type: WEB_API,
             name: name,
-            prams: prams,
+            prams: prams
         }), null);
     }
     //# sourceMappingURL=master.js.map
 
     var toProxy = new WeakMap();
     var toRaw = new WeakMap();
-    var isObj = function (obj) { return typeof obj === 'object'; };
+    var isObj = function (x) { return typeof x === 'object'; };
     function reactive(target) {
         if (!isObj(target))
             return target;
