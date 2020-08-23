@@ -1,21 +1,21 @@
 if (!self.master) self.master = {}
 
-const pendingGetResolves = new Map()
-const pendingFlushResolves = new Map()
+const getRes = new Map()
+const flushRes = new Map()
 const queue = []
-let isPendingFlush = false
-let nextFlushId = 0
+let dirty = false
+let flushid = 0
 
-let nextCallbackId = 0
-let nextId = 1
+let callbackid = 0
+let returnid = 1
 const callbackToId = new Map()
 const idToCallback = new Map()
 
 master.targetSymbol = Symbol('target')
 master.objectSymbol = Symbol('object')
 
-master.getNextid = () => {
-  return nextId++
+master.getReturnId = () => {
+  return returnid++
 }
 
 function canClone(o) {
@@ -34,8 +34,8 @@ function canClone(o) {
 
 master.enqueue = function (d) {
   queue.push(d)
-  if (!isPendingFlush) {
-    isPendingFlush = true
+  if (!dirty) {
+    dirty = true
     Promise.resolve().then(master.flush)
   }
 }
@@ -55,16 +55,16 @@ master.onmessage = function (data) {
 
 function done(data) {
   for (const [getId, valueData] of data.res) {
-    const resolve = pendingGetResolves.get(getId)
+    const resolve = getRes.get(getId)
     if (!resolve) throw new Error('invalid get id')
-    pendingGetResolves.delete(getId)
+    getRes.delete(getId)
     resolve(master.unwrap(valueData))
   }
   const flushId = data.flushId
-  const flushResolve = pendingFlushResolves.get(flushId)
+  const flushResolve = flushRes.get(flushId)
   if (!flushResolve) throw new Error('invalid flush id')
 
-  pendingFlushResolves.delete(flushId)
+  flushRes.delete(flushId)
   flushResolve()
 }
 
@@ -87,9 +87,9 @@ master.unwrap = function (arr) {
 }
 
 master.flush = function () {
-  isPendingFlush = false
+  dirty = false
   if (!queue.length) return Promise.resolve()
-  const flushId = nextFlushId++
+  const flushId = flushid++
 
   master.postMessage({
     type: 'cmds',
@@ -99,7 +99,7 @@ master.flush = function () {
 
   queue.length = 0
   return new Promise((resolve) => {
-    pendingFlushResolves.set(flushId, resolve)
+    flushRes.set(flushId, resolve)
   })
 }
 
@@ -120,7 +120,7 @@ master.wrap = function (arg) {
 function getCid(fn) {
   let id = callbackToId.get(fn)
   if (typeof id === 'undefined') {
-    id = nextCallbackId++
+    id = callbackid++
     callbackToId.set(fn, id)
     idToCallback.set(id, fn)
   }
@@ -160,13 +160,13 @@ const propHandler = {
   },
 
   apply(target, thisArg, args) {
-    const returnid = master.getNextid()
+    const returnid = master.getReturnId()
     master.enqueue([0, target.id, target.path, args.map(master.wrap), returnid])
     return master.makeObj(returnid)
   },
 
   construct(target, args) {
-    const returnid = master.getNextid()
+    const returnid = master.getReturnId()
     master.enqueue([3, target.id, target.path, args.map(master.wrap), returnid])
     return master.makeObj(returnid)
   },
