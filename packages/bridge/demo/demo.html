@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Voe contract demo</title>
-    <script src="../dist/voe-bridge.js"></script>
+    <script src="../src/slave.js"></script>
   </head>
   <body>
     <script>
-      let worker = new Worker('worker.js', { type: 'module' })
-      connect(worker)
+      document.addEventListener('DOMContentLoaded', function () {
+        let worker = new Worker('worker.js')
+        slave.connect(worker)
+      })
     </script>
   </body>
 </html>

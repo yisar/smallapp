@@ -1,6 +1,4 @@
-import { canClone } from './shared'
-
-self.slave = {}
+if (!self.slave) self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
 
@@ -27,7 +25,7 @@ slave.unwrap = (arr) => {
   }
 }
 
-export function connect(worker) {
+slave.connect = function connect(worker) {
   worker.onmessage = (e) => slave.onmessage(e.data)
   slave.postMessage = (data) => worker.postMessage(data)
   worker.postMessage('start')
@@ -109,9 +107,9 @@ function RunCommand(arr, res) {
   }
 }
 
-function call(id, path, args, returnid) {
+function call(id, path, arg, returnid) {
   const obj = id2obj(id)
-  const args = args.map(slave.unwrap)
+  const args = arg.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0, len = path.length - 1; i < len; ++i) {
@@ -121,9 +119,9 @@ function call(id, path, args, returnid) {
   idMap.set(returnid, ret)
 }
 
-function construct(id, path, args, returnid) {
+function construct(id, path, arg, returnid) {
   const obj = id2obj(id)
-  const args = args.map(slave.unwrap)
+  const args = arg.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0, len = path.length - 1; i < len; ++i) {
@@ -161,4 +159,18 @@ function get(getId, id, path, res) {
 
 function cleanup(data) {
   for (const id of data.ids) idMap.delete(id)
+}
+
+function canClone(o) {
+  const t = typeof o
+  return (
+    t === 'undefined' ||
+    o === null ||
+    t === 'boolean' ||
+    t === 'number' ||
+    t === 'string' ||
+    o instanceof Blob ||
+    o instanceof ArrayBuffer ||
+    o instanceof ImageData
+  )
 }
