@@ -3,8 +3,7 @@
 > 基于 proxy 的跨线程通信方案
 
 ```js
-import { docuemnt } from '@voe/bridge'
-
+const document = context.document
 const div = document.createElement('div')
 div.innerHTML = 'hello voe'
 document.body.appendChild(div)
