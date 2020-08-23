@@ -1,8 +1,10 @@
+import { wrap, unwrap } from './shared'
+
 self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
 
-function connect(worker) {
+export function connect(worker) {
   worker.onmessage = (e) => slave.onmessage(e.data)
   slave.postMessage = (data) => worker.postMessage(data)
   worker.postMessage('start')
@@ -28,28 +30,6 @@ function id2prop(id, path) {
   return base
 }
 
-function canClone(o) {
-  const t = typeof o
-  return (
-    t === 'undefined' ||
-    o === null ||
-    t === 'boolean' ||
-    t === 'number' ||
-    t === 'string' ||
-    o instanceof Blob ||
-    o instanceof ArrayBuffer ||
-    o instanceof ImageData
-  )
-}
-
-function wrap(arg) {
-  if (canClone(arg)) {
-    return [0, arg]
-  } else {
-    return [1, obj2id(arg)]
-  }
-}
-
 function getCb(id) {
   return (...args) =>
     slave.postMessage({
@@ -57,21 +37,6 @@ function getCb(id) {
       id: id,
       args: args.map(wrap),
     })
-}
-
-function unwrap(arr) {
-  switch (arr[0]) {
-    case 0: // primitive
-      return arr[1]
-    case 1: // object
-      return id2obj(arr[1])
-    case 2: // callback
-      return getCb(arr[1])
-    case 3: // property
-      return id2prop(arr[1], arr[2])
-    default:
-      throw new Error('invalid arg type')
-  }
 }
 
 slave.onmessage = function (data) {
