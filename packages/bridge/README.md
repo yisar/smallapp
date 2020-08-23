@@ -1,6 +1,6 @@
-# bridge
+# @voe/bridge
 
-> 基于 proxy 的通信方案
+> 基于 proxy 的跨线程通信方案
 
 ```js
 import { docuemnt } from '@voe/bridge'

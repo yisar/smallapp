@@ -1,9 +1,10 @@
-export default {
-  input: './src/index.ts',
-  output: {
-    file: './dist/voe.js',
-    format: 'umd',
-    name: 'voe',
+export default [
+  {
+    input: './packages/bridge/src/index.js',
+    output: {
+      file: './packages/bridge/dist/voe-bridge.js',
+      format: 'umd',
+      name: 'voe-bridge',
+    },
   },
-  plugins: [],
-}
+]
