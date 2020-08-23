@@ -78,7 +78,6 @@ function command(data) {
   console.log(data)
   const res = []
   for (const cmd of data.cmds) run(cmd, res)
-
   slave.postMessage({
     type: 'done',
     flushId: data.flushId,
@@ -99,35 +98,20 @@ function run(arr, res) {
       get(arr[1], arr[2], arr[3], res)
       break
     case 3: // constructor
-      construct(arr[1], arr[2], arr[3], arr[4])
+      call(arr[1], arr[2], arr[3], arr[4], true)
       break
     default:
       throw new Error('invalid cmd type: ' + type)
   }
 }
 
-function call(id, path, arg, returnid) {
+function call(id, path, arg, returnid, isConstruct) {
   const obj = id2obj(id)
   const args = arg.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
-  for (let i = 0; i < path.length - 1; i++) {
-    base = base[path[i]]
-  }
-  const ret = base[name](...args)
-  console.log(ret,1)
-  idMap.set(returnid, ret)
-}
-
-function construct(id, path, arg, returnid) {
-  const obj = id2obj(id)
-  const args = arg.map(slave.unwrap)
-  const name = path[path.length - 1]
-  let base = obj
-  for (let i = 0, len = path.length - 1; i < len; ++i) {
-    base = base[path[i]]
-  }
-  const ret = new base[name](...args)
+  path.forEach((key) => (base = base[key]))
+  const ret = isConstruct ? new base[name](...args) : base[name](...args)
   idMap.set(returnid, ret)
 }
 
@@ -136,9 +120,7 @@ function set(id, path, valueData) {
   const value = slave.unwrap(valueData)
   const name = path[path.length - 1]
   let base = obj
-  for (let i = 0, len = path.length - 1; i < len; ++i) {
-    base = base[path[i]]
-  }
+  path.forEach((key) => (base = base[key]))
   base[name] = value
 }
 
@@ -150,9 +132,7 @@ function get(getId, id, path, res) {
   }
   const name = path[path.length - 1]
   let base = obj
-  for (let i = 0, len = path.length - 1; i < len; ++i) {
-    base = base[path[i]]
-  }
+  path.forEach((key) => (base = base[key]))
   const value = base[name]
   res.push([getId, slave.wrap(value)])
 }

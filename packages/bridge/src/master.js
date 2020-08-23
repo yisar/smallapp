@@ -9,7 +9,7 @@ const queue = []
 let dirty = false
 let flushId = 0
 
-let cbId = 0
+let callbackId = 0
 let returnId = 1
 
 master.targetSimbol = Symbol('target')
@@ -89,13 +89,11 @@ master.flush = function () {
   dirty = false
   if (!queue.length) return Promise.resolve()
   const flushId = flushId++
-
   master.postMessage({
     type: 'cmds',
     cmds: queue,
-    flushId: flushId,
+    flushId,
   })
-
   queue.length = 0
   return new Promise((resolve) => {
     flushRes.set(flushId, resolve)
@@ -117,7 +115,7 @@ master.wrap = function (arg) {
 function getCid(fn) {
   let id = cb2id.get(fn)
   if (typeof id === 'undefined') {
-    id = cbId++
+    id = callbackId++
     cb2id.set(fn, id)
     id2cb.set(id, fn)
   }
