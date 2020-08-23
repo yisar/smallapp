@@ -1,4 +1,4 @@
-import { docuemnt } from '@voe/bridge'
+import { document } from '../dist/voe-bridge'
 
 const div = document.createElement('div')
 div.innerHTML = 'hello voe'
