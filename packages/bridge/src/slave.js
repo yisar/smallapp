@@ -75,10 +75,9 @@ slave.onmessage = function (data) {
 }
 
 function command(data) {
+  console.log(data)
   const res = []
-  for (const cmd of data.cmds) {
-    RunCommand(cmd, res)
-  }
+  for (const cmd of data.cmds) run(cmd, res)
 
   slave.postMessage({
     type: 'done',
@@ -87,7 +86,7 @@ function command(data) {
   })
 }
 
-function RunCommand(arr, res) {
+function run(arr, res) {
   const type = arr[0]
   switch (type) {
     case 0: // call
@@ -112,10 +111,11 @@ function call(id, path, arg, returnid) {
   const args = arg.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
-  for (let i = 0, len = path.length - 1; i < len; ++i) {
+  for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
   const ret = base[name](...args)
+  console.log(ret,1)
   idMap.set(returnid, ret)
 }
 

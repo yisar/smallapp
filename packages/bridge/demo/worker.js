@@ -15,13 +15,13 @@ async function start() {
   h1.style.cssText = 'color:#009688'
   document.body.appendChild(h1)
 
-  const p = document.createElement('p')
-  p.textContent = 'all run in worker'
-  document.body.appendChild(p)
+  // const p = document.createElement('p')
+  // p.textContent = 'all run in worker'
+  // document.body.appendChild(p)
 
-  const button = document.createElement('button')
-  button.textContent = 'click me'
-  button.style.fontWeight = 'bold'
-  button.addEventListener('click', () => console.log('click from worker'))
-  document.body.appendChild(button)
+  // const button = document.createElement('button')
+  // button.textContent = 'click me'
+  // button.style.fontWeight = 'bold'
+  // button.addEventListener('click', () => console.log('click from worker'))
+  // document.body.appendChild(button)
 }

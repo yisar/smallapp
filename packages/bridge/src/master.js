@@ -1,22 +1,21 @@
 if (!self.master) self.master = {}
 
-const pendingGetResolves = new Map()
-const pendingFlushResolves = new Map()
-const queue = []
-let isPendingFlush = false
-let nextFlushId = 0
+const cb2id = new Map()
+const id2cb = new Map()
+const getRes = new Map()
+const flushRes = new Map()
 
-let nextCallbackId = 0
-let nextId = 0
-const callbackToId = new Map()
-const idToCallback = new Map()
+const queue = []
+let dirty = false
+let flushId = 0
+
+let cbId = 0
+let returnId = 1
 
 master.targetSimbol = Symbol('target')
 master.idSymbol = Symbol('id')
 
-master.getNextid = () => {
-  return nextId++
-}
+master.getReturnId = () => returnId++
 
 function canClone(o) {
   const t = typeof o
@@ -34,8 +33,8 @@ function canClone(o) {
 
 master.enqueue = function (d) {
   queue.push(d)
-  if (!isPendingFlush) {
-    isPendingFlush = true
+  if (!dirty) {
+    dirty = true
     Promise.resolve().then(master.flush)
   }
 }
@@ -55,21 +54,21 @@ master.onmessage = function (data) {
 
 function done(data) {
   for (const [getId, valueData] of data.res) {
-    const resolve = pendingGetResolves.get(getId)
+    const resolve = getRes.get(getId)
     if (!resolve) throw new Error('invalid get id')
-    pendingGetResolves.delete(getId)
+    getRes.delete(getId)
     resolve(master.unwrap(valueData))
   }
   const flushId = data.flushId
-  const flushResolve = pendingFlushResolves.get(flushId)
+  const flushResolve = flushRes.get(flushId)
   if (!flushResolve) throw new Error('invalid flush id')
 
-  pendingFlushResolves.delete(flushId)
+  flushRes.delete(flushId)
   flushResolve()
 }
 
 function callback(data) {
-  const fn = idToCallback.get(data.id)
+  const fn = id2cb.get(data.id)
   if (!fn) throw new Error('invalid callback id')
   const args = data.args.map(master.unwrap)
   fn(...args)
@@ -87,9 +86,9 @@ master.unwrap = function (arr) {
 }
 
 master.flush = function () {
-  isPendingFlush = false
+  dirty = false
   if (!queue.length) return Promise.resolve()
-  const flushId = nextFlushId++
+  const flushId = flushId++
 
   master.postMessage({
     type: 'cmds',
@@ -99,7 +98,7 @@ master.flush = function () {
 
   queue.length = 0
   return new Promise((resolve) => {
-    pendingFlushResolves.set(flushId, resolve)
+    flushRes.set(flushId, resolve)
   })
 }
 
@@ -116,11 +115,11 @@ master.wrap = function (arg) {
 }
 
 function getCid(fn) {
-  let id = callbackToId.get(fn)
+  let id = cb2id.get(fn)
   if (typeof id === 'undefined') {
-    id = nextCallbackId++
-    callbackToId.set(fn, id)
-    idToCallback.set(id, fn)
+    id = cbId++
+    cb2id.set(fn, id)
+    id2cb.set(id, fn)
   }
   return id
 }
@@ -157,14 +156,13 @@ const propHandler = {
   },
 
   apply(target, thisArg, args) {
-    const returnid = master.getNextid()
-    master.enqueue([0, target.id, target.path, args.map(master.wrap), returnid])
+    const returnid = 
+    master.enqueue([0, target.id, target.path, args.map(master.wrap), master.getReturnId()])
     return master.makeObj(returnid)
   },
 
   construct(target, args) {
-    const returnid = master.getNextid()
-    master.enqueue([3, target.id, target.path, args.map(master.wrap), returnid])
+    master.enqueue([3, target.id, target.path, args.map(master.wrap), getReturnId()])
     return master.makeObj(returnid)
   },
 }
