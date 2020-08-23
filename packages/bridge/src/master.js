@@ -3,6 +3,7 @@ const { canClone } = require('./shared')
 if (!self.master) self.master = {}
 
 const pendingGetResolves = new Map()
+const pendingFlushResolves = new Map()
 const queue = []
 let isPendingFlush = false
 let nextFlushId = 0
@@ -165,3 +166,5 @@ function getCid(fn) {
   }
   return id
 }
+
+export const context = (self.via = master.makeObj(0))
