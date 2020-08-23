@@ -1,8 +1,31 @@
-import { wrap, unwrap } from './shared'
+import { canClone } from './shared'
 
 self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
+
+slave.wrap = (arg) => {
+  if (canClone(arg)) {
+    return [0, arg]
+  } else {
+    return [1, obj2id(arg)]
+  }
+}
+
+slave.unwrap = (arr) => {
+  switch (arr[0]) {
+    case 0: // primitive
+      return arr[1]
+    case 1: // object
+      return id2obj(arr[1])
+    case 2: // callback
+      return getCb(arr[1])
+    case 3: // property
+      return id2prop(arr[1], arr[2])
+    default:
+      throw new Error('invalid arg type')
+  }
+}
 
 export function connect(worker) {
   worker.onmessage = (e) => slave.onmessage(e.data)
@@ -34,8 +57,8 @@ function getCb(id) {
   return (...args) =>
     slave.postMessage({
       type: 'callback',
-      id: id,
-      args: args.map(wrap),
+      id,
+      args: args.map(slave.wrap),
     })
 }
 
@@ -88,7 +111,7 @@ function RunCommand(arr, res) {
 
 function call(id, path, args, returnid) {
   const obj = id2obj(id)
-  const args = args.map(unwrap)
+  const args = args.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0, len = path.length - 1; i < len; ++i) {
@@ -100,7 +123,7 @@ function call(id, path, args, returnid) {
 
 function construct(id, path, args, returnid) {
   const obj = id2obj(id)
-  const args = args.map(unwrap)
+  const args = args.map(slave.unwrap)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0, len = path.length - 1; i < len; ++i) {
@@ -112,7 +135,7 @@ function construct(id, path, args, returnid) {
 
 function set(id, path, valueData) {
   const obj = id2obj(id)
-  const value = unwrap(valueData)
+  const value = slave.unwrap(valueData)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0, len = path.length - 1; i < len; ++i) {
@@ -124,7 +147,7 @@ function set(id, path, valueData) {
 function get(getId, id, path, res) {
   const obj = id2obj(id)
   if (path === null) {
-    res.push([getId, wrap(obj)])
+    res.push([getId, slave.wrap(obj)])
     return
   }
   const name = path[path.length - 1]
@@ -133,7 +156,7 @@ function get(getId, id, path, res) {
     base = base[path[i]]
   }
   const value = base[name]
-  res.push([getId, wrap(value)])
+  res.push([getId, slave.wrap(value)])
 }
 
 function cleanup(data) {
