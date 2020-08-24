@@ -10,40 +10,12 @@ self.addEventListener('message', (e) => {
 
 async function start() {
   const document = context.document
-  // const h1 = document.createElement('h1')
-  // h1.textContent = 'hello Voe!'
-  // h1.style.cssText = 'color:#009688'
-  // document.body.appendChild(h1)
+  const customElements = context.customElements
 
-  // const p = document.createElement('p')
-  // p.textContent = 'all run in worker'
-  // document.body.appendChild(p)
-
-  // const button = document.createElement('button')
-  // button.textContent = 'click me'
-  // button.style.fontWeight = 'bold'
-  // button.addEventListener('click', click)
-  // document.body.appendChild(button)
-
-  // context.audioContext = new context.AudioContext()
-  // const response = await fetch('1.m4a')
-  // const arrayBuffer = await response.arrayBuffer()
-  // context.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-  //   self.audioBuffer = audioBuffer
-  // })
-  const tag = document.createElement('my-tag')
+  const tag = document.createElement('voe-component')
   document.body.appendChild(tag)
-  const shadow = context.customElements.define('my-tag', context['web-componet'])
+  const shadow = customElements.define('voe-component', context.VoeElement)
   const h1 = document.createElement('h1')
-  h1.textContent = 'hello web component'
-  // shadow.appendChild(h1)
-    // todo
-    shadow.appendChild(h1)
-}
-
-async function click(e) {
-  const source = context.audioContext.createBufferSource()
-  source.buffer = self.audioBuffer
-  source.connect(context.audioContext.destination)
-  source.start(0)
+  h1.textContent = 'hello Voe component'
+  shadow.appendChild(h1)
 }
