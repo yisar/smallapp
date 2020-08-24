@@ -47,7 +47,7 @@ function obj2id(object) {
 function id2prop(id, path) {
   const ret = idMap.get(id)
   if (!ret) throw new Error('missing object id: ' + id)
-  if (path[0] === 'HTMLElement') {
+  if (path[0] === 'web-component') {
     return class Voe extends HTMLElement {
       constructor() {
         super()

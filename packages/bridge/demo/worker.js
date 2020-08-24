@@ -33,7 +33,7 @@ async function start() {
   // })
   const tag = document.createElement('my-tag')
   document.body.appendChild(tag)
-  const shadow = context.customElements.define('my-tag', context.HTMLElement)
+  const shadow = context.customElements.define('my-tag', context['web-componet'])
   const h1 = document.createElement('h1')
   h1.textContent = 'hello web component'
   // shadow.appendChild(h1)
