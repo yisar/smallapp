@@ -10,27 +10,37 @@ self.addEventListener('message', (e) => {
 
 async function start() {
   const document = context.document
+  // const h1 = document.createElement('h1')
+  // h1.textContent = 'hello Voe!'
+  // h1.style.cssText = 'color:#009688'
+  // document.body.appendChild(h1)
+
+  // const p = document.createElement('p')
+  // p.textContent = 'all run in worker'
+  // document.body.appendChild(p)
+
+  // const button = document.createElement('button')
+  // button.textContent = 'click me'
+  // button.style.fontWeight = 'bold'
+  // button.addEventListener('click', click)
+  // document.body.appendChild(button)
+
+  // context.audioContext = new context.AudioContext()
+  // const response = await fetch('1.m4a')
+  // const arrayBuffer = await response.arrayBuffer()
+  // context.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+  //   self.audioBuffer = audioBuffer
+  // })
+  const tag = document.createElement('my-tag')
+  document.body.appendChild(tag)
+  const shadow = context.customElements.define('my-tag', context.HTMLElement)
   const h1 = document.createElement('h1')
-  h1.textContent = 'hello Voe!'
-  h1.style.cssText = 'color:#009688'
-  document.body.appendChild(h1)
-
-  const p = document.createElement('p')
-  p.textContent = 'all run in worker'
-  document.body.appendChild(p)
-
-  const button = document.createElement('button')
-  button.textContent = 'click me'
-  button.style.fontWeight = 'bold'
-  button.addEventListener('click', click)
-  document.body.appendChild(button)
-
-  context.audioContext = new context.AudioContext()
-  const response = await fetch('1.m4a')
-  const arrayBuffer = await response.arrayBuffer()
-  context.audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-    self.audioBuffer = audioBuffer
-  })
+  h1.textContent = 'hello web component'
+  // shadow.appendChild(h1)
+  setTimeout(() => {
+    // todo
+    shadow.appendChild(h1)
+  }, 1000)
 }
 
 async function click(e) {

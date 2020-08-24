@@ -43,9 +43,25 @@ function obj2id(object) {
   return id
 }
 
+let classMap = null
+
 function id2prop(id, path) {
   const ret = idMap.get(id)
   if (!ret) throw new Error('missing object id: ' + id)
+  if (path[0] === 'HTMLElement') {
+    return new Promise((resolve) => {
+      class Voe extends HTMLElement {
+        constructor() {
+          super()
+          this.attachShadow({ mode: 'open' })
+        }
+        connectedCallback() {
+          resolve(this)
+        }
+      }
+      classMap = Voe
+    })
+  }
   let base = ret
   for (let i = 0, len = path.length; i < len; ++i) base = base[path[i]]
   return base
@@ -113,8 +129,17 @@ function call(id, path, arg, returnid) {
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
-  const ret = base[name](...args)
-  idMap.set(returnid, ret)
+
+  if (name === 'define') {
+    base[name](args[0], classMap)
+    args[1].then((data) => {
+      idMap.set(returnid, data.shadowRoot)
+    })
+  } else {
+    let ret = base[name](...args)
+    idMap.set(returnid, ret)
+  }
+  // console.log(returnid, ret)
 }
 
 function construct(id, path, arg, returnid) {
