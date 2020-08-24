@@ -37,10 +37,8 @@ async function start() {
   const h1 = document.createElement('h1')
   h1.textContent = 'hello web component'
   // shadow.appendChild(h1)
-  setTimeout(() => {
     // todo
     shadow.appendChild(h1)
-  }, 1000)
 }
 
 async function click(e) {

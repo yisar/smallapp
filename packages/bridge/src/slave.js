@@ -1,6 +1,7 @@
 if (!self.slave) self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
+let shadows = []
 
 slave.wrap = (arg) => {
   if (canClone(arg)) {
@@ -43,24 +44,17 @@ function obj2id(object) {
   return id
 }
 
-let classMap = null
-
 function id2prop(id, path) {
   const ret = idMap.get(id)
   if (!ret) throw new Error('missing object id: ' + id)
   if (path[0] === 'HTMLElement') {
-    return new Promise((resolve) => {
-      class Voe extends HTMLElement {
-        constructor() {
-          super()
-          this.attachShadow({ mode: 'open' })
-        }
-        connectedCallback() {
-          resolve(this)
-        }
+    return class Voe extends HTMLElement {
+      constructor() {
+        super()
+        let shadow = this.attachShadow({ mode: 'open' })
+        shadows.push(shadow)
       }
-      classMap = Voe
-    })
+    }
   }
   let base = ret
   for (let i = 0, len = path.length; i < len; ++i) base = base[path[i]]
@@ -131,15 +125,12 @@ function call(id, path, arg, returnid) {
   }
 
   if (name === 'define') {
-    base[name](args[0], classMap)
-    args[1].then((data) => {
-      idMap.set(returnid, data.shadowRoot)
-    })
+    base[name](...args)
+    idMap.set(returnid, shadows[shadows.length - 1])
   } else {
     let ret = base[name](...args)
     idMap.set(returnid, ret)
   }
-  // console.log(returnid, ret)
 }
 
 function construct(id, path, arg, returnid) {
