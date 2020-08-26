@@ -1,7 +1,26 @@
 if (!self.slave) self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
-let shadows = []
+
+document.define = (tag, mount, unmount) => {
+  let host = null
+  customElements.define(
+    tag,
+    class extends HTMLElement {
+      constructor() {
+        super()
+        host = this.attachShadow({ mode: 'open' })
+      }
+      connectedCallback() {
+        mount()
+      }
+      disconnectedCallback() {
+        unmount()
+      }
+    }
+  )
+  return host
+}
 
 slave.wrap = (arg) => {
   if (canClone(arg)) {
@@ -45,15 +64,6 @@ function obj2id(object) {
 }
 
 function id2prop(id, path) {
-  if (path[0] === 'VoeElement') {
-    return class extends HTMLElement {
-      constructor() {
-        super()
-        let shadow = this.attachShadow({ mode: 'open' })
-        shadows.push(shadow)
-      }
-    }
-  }
   const ret = idMap.get(id)
   if (!ret) throw new Error('missing object id: ' + id)
   let base = ret
@@ -64,7 +74,7 @@ function id2prop(id, path) {
 function getCb(id) {
   return (...args) =>
     slave.postMessage({
-      type: 'callback',
+      type: 'cb',
       id,
       args: args.map(slave.wrap),
     })
@@ -86,7 +96,7 @@ slave.onmessage = function (data) {
 
 function command(data) {
   const res = []
-  for (const cmd of data.cmds) run(cmd, res)
+  for (const cmd of data.cmds) process(cmd, res)
 
   slave.postMessage({
     type: 'done',
@@ -95,27 +105,24 @@ function command(data) {
   })
 }
 
-function run(arr, res) {
+function process(arr) {
   const type = arr[0]
   switch (type) {
-    case 0: // call
-      call(arr[1], arr[2], arr[3], arr[4])
+    case 0:
+      call(arr[1], arr[2], arr[3], arr[4], type)
       break
-    case 1: // set
+    case 1:
       set(arr[1], arr[2], arr[3])
       break
-    case 2: // get
-      get(arr[1], arr[2], arr[3], res)
-      break
-    case 3: // constructor
-      construct(arr[1], arr[2], arr[3], arr[4])
+    case 2:
+      call(arr[1], arr[2], arr[3], arr[4], type)
       break
     default:
       throw new Error('invalid cmd type: ' + type)
   }
 }
 
-function call(id, path, arg, returnid) {
+function call(id, path, arg, returnid, isNew) {
   const obj = id2obj(id)
   const args = arg.map(slave.unwrap)
   const name = path[path.length - 1]
@@ -123,52 +130,19 @@ function call(id, path, arg, returnid) {
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
-
-  if (name === 'define') {
-    base[name](...args)
-    idMap.set(returnid, shadows[shadows.length - 1])
-  } else {
-    let ret = base[name](...args)
-    idMap.set(returnid, ret)
-  }
-}
-
-function construct(id, path, arg, returnid) {
-  const obj = id2obj(id)
-  const args = arg.map(slave.unwrap)
-  const name = path[path.length - 1]
-  let base = obj
-  for (let i = 0; i < path.length - 1; i++) {
-    base = base[path[i]]
-  }
-  const ret = new base[name](...args)
+  let ret = isNew ? new base[name](...args) : base[name](...args)
   idMap.set(returnid, ret)
 }
 
-function set(id, path, valueData) {
+function set(id, path, arg) {
   const obj = id2obj(id)
-  const value = slave.unwrap(valueData)
+  const value = slave.unwrap(arg)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
   base[name] = value
-}
-
-function get(getId, id, path, res) {
-  const obj = id2obj(id)
-  if (path === null) {
-    res.push([getId, slave.wrap(obj)])
-    return
-  }
-  const name = path[path.length - 1]
-  let base = obj
-  for (let i = 0; i < path.length - 1; i++) {
-    base = base[path[i]]
-  }
-  const value = base[name]
-  res.push([getId, slave.wrap(value)])
 }
 
 function cleanup(data) {

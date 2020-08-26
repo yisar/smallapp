@@ -45,7 +45,7 @@ master.onmessage = function (data) {
     case 'done':
       done(data)
       break
-    case 'callback':
+    case 'cb':
       callback(data)
       break
     default:
@@ -141,10 +141,9 @@ const objHandler = {
 const propHandler = {
   get(target, property) {
     if (property === master.targetSymbol) return target
-    
     const cache = target.cache
-    const existing = cache.get(property)
-    if (existing) return existing
+    const c = cache.get(property)
+    if (c) return c
     const path = target.path.slice(0)
     path.push(property)
     const ret = master.makeProp(target.id, path)
@@ -167,7 +166,7 @@ const propHandler = {
 
   construct(target, args) {
     const returnid = master.getReturnId()
-    master.enqueue([3, target.id, target.path, args.map(master.wrap), returnid])
+    master.enqueue([2, target.id, target.path, args.map(master.wrap), returnid])
     return master.makeObj(returnid)
   },
 }
@@ -186,4 +185,13 @@ master.makeProp = function (id, path) {
   return new Proxy(fn, propHandler)
 }
 
-self.context = master.makeObj(0)
+self.effect = (cb) => {
+  self.addEventListener('message', (e) => {
+    if (e.data === 'start') {
+      master.postMessage = (data) => self.postMessage(data)
+      cb(master.makeObj(0))
+    } else {
+      master.onmessage(e.data)
+    }
+  })
+}
