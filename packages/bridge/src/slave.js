@@ -4,21 +4,23 @@ let nextid = -1
 
 document.define = (tag, mount, unmount) => {
   let host = null
-  customElements.define(
-    tag,
-    class extends HTMLElement {
-      constructor() {
-        super()
-        host = this.attachShadow({ mode: 'open' })
+  const hasDef = customElements.get(tag)
+  !hasDef &&
+    customElements.define(
+      tag,
+      class extends HTMLElement {
+        constructor() {
+          super()
+          host = this.attachShadow({ mode: 'open' })
+        }
+        connectedCallback() {
+          mount()
+        }
+        disconnectedCallback() {
+          unmount()
+        }
       }
-      connectedCallback() {
-        mount()
-      }
-      disconnectedCallback() {
-        unmount()
-      }
-    }
-  )
+    )
   return host
 }
 
