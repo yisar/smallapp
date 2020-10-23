@@ -6,8 +6,6 @@
 
 voe （发音 `/vəʊ/`） 的双线程是小程序的底层架构，它通过 web-worker 隔离 web 环境，屏蔽 dom 能力，从而做到绝对的控制力
 
-顺便实现了 vue3 的响应式，依赖收集，状态更新等，但本质不同
-
 - [基于 web worker 的双线程架构](https://github.com/132yse/voe/issues/2)
 
 - [Run vdom in web worker](https://zhuanlan.zhihu.com/p/91594153)

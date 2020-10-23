@@ -11,10 +11,10 @@ let returnid = 1
 const callbackToId = new Map()
 const idToCallback = new Map()
 
-master.targetSymbol = Symbol('target')
-master.objectSymbol = Symbol('object')
+const targetSymbol = Symbol('target')
+const objectSymbol = Symbol('object')
 
-master.getReturnId = () => {
+const getReturnId = () => {
   return returnid++
 }
 
@@ -32,15 +32,15 @@ function canClone(o) {
   )
 }
 
-master.enqueue = function (d) {
+const enqueue = function (d) {
   queue.push(d)
   if (!dirty) {
     dirty = true
-    Promise.resolve().then(master.flush)
+    Promise.resolve().then(flush)
   }
 }
 
-master.onmessage = function (data) {
+const onmessage = function (data) {
   switch (data.type) {
     case 'done':
       done(data)
@@ -58,7 +58,7 @@ function done(data) {
     const resolve = getRes.get(getId)
     if (!resolve) throw new Error('invalid get id')
     getRes.delete(getId)
-    resolve(master.unwrap(valueData))
+    resolve(unwrap(valueData))
   }
   const flushId = data.flushId
   const flushResolve = flushRes.get(flushId)
@@ -71,27 +71,27 @@ function done(data) {
 function callback(data) {
   const fn = idToCallback.get(data.id)
   if (!fn) throw new Error('invalid callback id')
-  const args = data.args.map(master.unwrap)
+  const args = data.args.map(unwrap)
   fn(...args)
 }
 
-master.unwrap = function (arr) {
+const unwrap = function (arr) {
   switch (arr[0]) {
     case 0:
       return arr[1]
     case 1:
-      return master.makeObj(arr[1])
+      return makeObj(arr[1])
     default:
       throw new Error('invalid arg type')
   }
 }
 
-master.flush = function () {
+const flush = function () {
   dirty = false
   if (!queue.length) return Promise.resolve()
   const flushId = flushid++
 
-  master.postMessage({
+  postMessage({
     type: 'cmds',
     cmds: queue,
     flushId: flushId,
@@ -103,18 +103,20 @@ master.flush = function () {
   })
 }
 
-master.wrap = function (arg) {
+const wrap = function (arg) {
   if (typeof arg === 'function') {
-    const objectId = arg[master.objectSymbol]
+    const objectId = arg[objectSymbol]
     if (typeof objectId === 'number') return [1, objectId]
-    const target = arg[master.targetSymbol]
+    const target = arg[targetSymbol]
     if (target) {
       return [3, target.id, target.path]
     }
     return [2, getCid(arg)]
   } else if (canClone(arg)) {
     return [0, arg]
-  } else throw new Error('invalid argument')
+  } else {
+    throw new Error('invalid argument')
+  }
 }
 
 function getCid(fn) {
@@ -129,24 +131,24 @@ function getCid(fn) {
 
 const objHandler = {
   get(target, property) {
-    if (property === master.objectSymbol) return target.id
-    return master.makeProp(target.id, [property])
+    if (property === objectSymbol) return target.id
+    return makeProp(target.id, [property])
   },
   set(target, property, value) {
-    master.enqueue([1, target.id, [property], master.wrap(value)])
+    enqueue([1, target.id, [property], wrap(value)])
     return true
   },
 }
 
 const propHandler = {
   get(target, property) {
-    if (property === master.targetSymbol) return target
+    if (property === targetSymbol) return target
     const cache = target.cache
     const c = cache.get(property)
     if (c) return c
     const path = target.path.slice(0)
     path.push(property)
-    const ret = master.makeProp(target.id, path)
+    const ret = makeProp(target.id, path)
     cache.set(property, ret)
     return ret
   },
@@ -154,30 +156,30 @@ const propHandler = {
   set(target, property, value) {
     const path = target.path.slice(0)
     path.push(property)
-    master.enqueue([1, target.id, path, master.wrap(value)])
+    enqueue([1, target.id, path, wrap(value)])
     return true
   },
 
   apply(target, thisArg, args) {
-    const returnid = master.getReturnId()
-    master.enqueue([0, target.id, target.path, args.map(master.wrap), returnid])
-    return master.makeObj(returnid)
+    const returnid = getReturnId()
+    enqueue([0, target.id, target.path, args.map(wrap), returnid])
+    return makeObj(returnid)
   },
 
   construct(target, args) {
-    const returnid = master.getReturnId()
-    master.enqueue([2, target.id, target.path, args.map(master.wrap), returnid])
-    return master.makeObj(returnid)
+    const returnid = getReturnId()
+    enqueue([2, target.id, target.path, args.map(wrap), returnid])
+    return makeObj(returnid)
   },
 }
 
-master.makeObj = function (id) {
+const makeObj = function (id) {
   const fn = function () {}
   fn.id = id
   return new Proxy(fn, objHandler)
 }
 
-master.makeProp = function (id, path) {
+const makeProp = function (id, path) {
   const fn = function () {}
   fn.id = id
   fn.path = path
@@ -185,13 +187,15 @@ master.makeProp = function (id, path) {
   return new Proxy(fn, propHandler)
 }
 
-self.effect = (cb) => {
-  self.addEventListener('message', (e) => {
-    if (e.data === 'start') {
-      master.postMessage = (data) => self.postMessage(data)
-      cb(master.makeObj(0))
-    } else {
-      master.onmessage(e.data)
-    }
-  })
-}
+const postMessage = (data) => self.postMessage(data)
+
+self.addEventListener('message', (e) => {
+  if (e.data === 'start') {
+    console.log('start')
+  } else {
+    onmessage(e.data)
+  }
+})
+
+const context = makeObj(0)
+export { context }

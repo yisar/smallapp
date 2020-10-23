@@ -1,6 +1,6 @@
-if (!self.slave) self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
+let postMessage = () => {}
 
 document.define = (tag, mount, unmount) => {
   let host = null
@@ -24,7 +24,7 @@ document.define = (tag, mount, unmount) => {
   return host
 }
 
-slave.wrap = (arg) => {
+const wrap = (arg) => {
   if (canClone(arg)) {
     return [0, arg]
   } else {
@@ -32,7 +32,7 @@ slave.wrap = (arg) => {
   }
 }
 
-slave.unwrap = (arr) => {
+const unwrap = (arr) => {
   switch (arr[0]) {
     case 0: // primitive
       return arr[1]
@@ -47,9 +47,9 @@ slave.unwrap = (arr) => {
   }
 }
 
-slave.connect = function connect(worker) {
-  worker.onmessage = (e) => slave.onmessage(e.data)
-  slave.postMessage = (data) => worker.postMessage(data)
+const connect = function connect(worker) {
+  postMessage = (data) => worker.postMessage(data)
+  worker.onmessage = (e) => onmessage(e.data)
   worker.postMessage('start')
 }
 
@@ -75,14 +75,14 @@ function id2prop(id, path) {
 
 function getCb(id) {
   return (...args) =>
-    slave.postMessage({
+    postMessage({
       type: 'cb',
       id,
-      args: args.map(slave.wrap),
+      args: args.map(wrap),
     })
 }
 
-slave.onmessage = function (data) {
+self.onmessage = function (data) {
   switch (data.type) {
     case 'cmds':
       command(data)
@@ -100,7 +100,7 @@ function command(data) {
   const res = []
   for (const cmd of data.cmds) process(cmd, res)
 
-  slave.postMessage({
+  postMessage({
     type: 'done',
     flushId: data.flushId,
     res,
@@ -124,21 +124,34 @@ function process(arr) {
   }
 }
 
+Text.prototype.setAttribute = function (name, value) {
+  this[name] && (this[name] = value)
+}
+
+Element.prototype.setAttribute = function (name, value) {
+  if (this[name]) {
+    this[name] = value
+  } else {
+    this.setAttribute(name, value)
+  }
+}
+
 function call(id, path, arg, returnid, isNew) {
   const obj = id2obj(id)
-  const args = arg.map(slave.unwrap)
-  const name = path[path.length - 1]
+  const args = arg.map(unwrap)
+  let name = path[path.length - 1]
   let base = obj
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
+  console.log(base, args)
   let ret = isNew ? new base[name](...args) : base[name](...args)
   idMap.set(returnid, ret)
 }
 
 function set(id, path, arg) {
   const obj = id2obj(id)
-  const value = slave.unwrap(arg)
+  const value = unwrap(arg)
   const name = path[path.length - 1]
   let base = obj
   for (let i = 0; i < path.length - 1; i++) {
@@ -164,3 +177,5 @@ function canClone(o) {
     o instanceof ImageData
   )
 }
+
+export { connect }
