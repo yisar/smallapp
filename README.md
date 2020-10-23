@@ -6,40 +6,27 @@
 
 voe （发音 `/vəʊ/`） 的双线程是小程序的底层架构，它通过 web-worker 隔离 web 环境，屏蔽 dom 能力，从而做到绝对的控制力
 
+- [基于 Proxy 的线程通信新方案](https://zhuanlan.zhihu.com/p/198989762)
+
 - [基于 web worker 的双线程架构](https://github.com/132yse/voe/issues/2)
 
 - [Run vdom in web worker](https://zhuanlan.zhihu.com/p/91594153)
 
-### Use
+Feature
+
+- 使用 worker 的沙箱隔离方案
+
+- 基于 Proxy 的线程通信方案
+
+- 跑 fre 框架
+
+- no bundle server
+
+- 基于 electron 的 ide
+
 
 ```console
-yarn add voe
-```
-
-```js
-import { render, h, reactive } from '../src'
-
-function App (props) {
-  const state = reactive({ count: 0 })
-  return () => (
-    <view>
-      <text>{state.count}</text>
-      <button onClick={e => state.count++}>+</button>
-    </view>
-  )
-}
-
-render(<App />)
-```
-
-#### p.s.
-
-由于用户代码都在 worker 中运行，所以 document、window 等都不能用
-
-但是可以使用 fetch 和 indexDB，双线程的目的就在于此，不是不让用，而是真的没得用
-
-```console
-目前还是原型阶段，等我慢慢完善……
+目前还是原型阶段，我写个大概先……
 ```
 
 
