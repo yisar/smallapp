@@ -1,7 +1,5 @@
-/ignore
-/demo/dist/
-/demo/.cache/
-/demo/node_modules/
+/ide/dist/
+/ide/.cache/
 node_modules
 yarn.lock
 .idea
