@@ -4,7 +4,7 @@
 
 🎃 Multi thread javascript framework - 多线程小程序引擎
 
-> 工作日只处理 issue，节假日玩耍~
+> fard 是主命的意思，主人的命令绝对服从，色气满满~
 
 ```js
 
