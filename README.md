@@ -1,32 +1,51 @@
-<p align="center"><img src="https://ws1.sinaimg.cn/large/0065Zy9ely1g8xk4ktgctj30eg0cit9a.jpg" alt="voe logo" width="120"></p>
-<h1 align="center">Voe <a href="https://npmjs.com/package/voe"><img src="https://img.shields.io/npm/v/voe.svg?label=" alt="npm-v"></a></h1>
-<p align="center">:jack_o_lantern: Double thread javascript framework has the same API with Vue3.</p>
+<p align="center"><img src="https://ae01.alicdn.com/kf/HTB1gg8cc8aE3KVjSZLeq6xsSFXaQ.jpg" alt="fard logo" width="200px"></p>
 
-### Introduction
+# fard [![NPM version](https://img.shields.io/npm/v/fard.svg?style=flat-square)](https://npmjs.com/package/fard) [![NPM downloads](https://img.shields.io/npm/dt/fard.svg?style=flat-square)](https://npmjs.com/package/fard) [![QQ](https://img.shields.io/badge/qq.group-813783512-ff69b4.svg?maxAge=2592000&style=flat-square)](https://jq.qq.com/?_wv=1027&k=5Zyggbc)
 
-voe （发音 `/vəʊ/`） 的双线程是小程序的底层架构，它通过 web-worker 隔离 web 环境，屏蔽 dom 能力，从而做到绝对的控制力
+🎃 Multi thread javascript framework - 多线程小程序引擎
 
-- [基于 Proxy 的线程通信新方案](https://zhuanlan.zhihu.com/p/198989762)
+> 工作日只处理 issue，节假日玩耍~
 
-- [基于 web worker 的双线程架构](https://github.com/132yse/voe/issues/2)
+```js
 
-- [Run vdom in web worker](https://zhuanlan.zhihu.com/p/91594153)
+基本原理很简单，通过 worker 实现多线程，然后将 fre 和业务逻辑跑在 worker 中，从而隔离 dom 环境
+```
 
-Feature
+### Feature
 
-- 使用 worker 的沙箱隔离方案
+- 基于 Proxy 的跨线程通信思路
 
-- 基于 Proxy 的线程通信方案
+- 使用 worker 作为沙箱环境
 
 - 跑 fre 框架
 
 - no bundle server
 
-- 基于 electron 的 ide
+- electron ide
 
+### Run
 
-```console
-目前还是原型阶段，我写个大概先……
+```js
+
+$ cd runtime
+$ yarn start
+$ cd ../ide
+$ run start
+
 ```
 
+### References
 
+
+- [基于 Proxy 的线程通信新方案](https://zhuanlan.zhihu.com/p/198989762)
+
+- [小程序 ide 新思路：no webpack](https://zhuanlan.zhihu.com/p/203670830)
+
+- [基于 web worker 的双线程架构](https://github.com/132yse/voe/issues/2)
+
+- [Run vdom in web worker](https://zhuanlan.zhihu.com/p/91594153)
+
+
+### License
+
+MIT
