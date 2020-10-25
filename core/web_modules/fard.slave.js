@@ -124,17 +124,16 @@ function process(arr) {
   }
 }
 
-Text.prototype.setAttribute = function (name, value) {
-  this[name] && (this[name] = value)
-}
-
-Element.prototype.setAttribute = function (name, value) {
-  if (this[name]) {
+function setAttribute(name, value) {
+  if (name in this) {
     this[name] = value
   } else {
     this.setAttribute(name, value)
   }
 }
+
+Text.prototype.setAttribute = setAttribute
+Element.prototype.setAttribute = setAttribute
 
 function call(id, path, arg, returnid, isNew) {
   const obj = id2obj(id)
