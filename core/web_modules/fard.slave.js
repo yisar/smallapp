@@ -124,11 +124,11 @@ function process(arr) {
   }
 }
 
-function setAttribute(name, value) {
+function setAttribute(name, value, flag) {
   if (name in this) {
     this[name] = value
-  } else {
-    this.setAttribute(name, value)
+  } else if (!flag) {
+    this.setAttribute(name, value, true)
   }
 }
 
@@ -138,25 +138,26 @@ Element.prototype.setAttribute = setAttribute
 function call(id, path, arg, returnid, isNew) {
   const obj = id2obj(id)
   const args = arg.map(unwrap)
-  let name = path[path.length - 1]
+  let base = getBase(obj, path)
+
+  let ret = isNew ? new base(...args) : base(...args)
+  idMap.set(returnid, ret)
+}
+
+function getBase(obj, path) {
   let base = obj
+  let name = path[path.length - 1]
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
-  console.log(base, args)
-  let ret = isNew ? new base[name](...args) : base[name](...args)
-  idMap.set(returnid, ret)
+  return base[name].bind(base)
 }
 
 function set(id, path, arg) {
   const obj = id2obj(id)
   const value = unwrap(arg)
-  const name = path[path.length - 1]
-  let base = obj
-  for (let i = 0; i < path.length - 1; i++) {
-    base = base[path[i]]
-  }
-  base[name] = value
+  const base = getBase(obj, path)
+  base = value
 }
 
 function cleanup(data) {

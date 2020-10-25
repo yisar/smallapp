@@ -137,7 +137,7 @@ const objHandler = {
   set(target, property, value) {
     enqueue([1, target.id, [property], wrap(value)])
     return true
-  },
+  }
 }
 
 const propHandler = {
@@ -170,7 +170,7 @@ const propHandler = {
     const returnid = getReturnId()
     enqueue([2, target.id, target.path, args.map(wrap), returnid])
     return makeObj(returnid)
-  },
+  }
 }
 
 const makeObj = function (id) {
