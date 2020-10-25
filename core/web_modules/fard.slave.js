@@ -124,16 +124,16 @@ function process(arr) {
   }
 }
 
-function setAttribute(name, value, flag) {
+function setAttr(name, value) {
   if (name in this) {
     this[name] = value
-  } else if (!flag) {
-    this.setAttribute(name, value, true)
+  } else {
+    this.setAttribute(name, value)
   }
 }
 
-Text.prototype.setAttribute = setAttribute
-Element.prototype.setAttribute = setAttribute
+Text.prototype.setAttr = setAttr
+Element.prototype.setAttr = setAttr
 
 function call(id, path, arg, returnid, isNew) {
   const obj = id2obj(id)
@@ -150,6 +150,7 @@ function getBase(obj, path) {
   for (let i = 0; i < path.length - 1; i++) {
     base = base[path[i]]
   }
+  if (name === 'setAttribute') name = 'setAttr'
   return base[name].bind(base)
 }
 
