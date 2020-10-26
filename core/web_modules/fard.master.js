@@ -1,5 +1,3 @@
-if (!self.master) self.master = {}
-
 const getRes = new Map()
 const flushRes = new Map()
 const queue = []
