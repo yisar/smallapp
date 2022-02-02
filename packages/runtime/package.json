@@ -1,65 +1,22 @@
 {
-  "name": "@fre-miniapp/runtime",
-  "version": "2.4.5",
-  "type": "module",
-  "main": "dist/fre.js",
-  "unpkg": "dist/fre.umd.js",
-  "module": "dist/fre.js",
-  "exports": {
-    ".": {
-      "import": "./dist/fre.js",
-      "require": "./dist/fre.umd.js"
-    },
-    "./jsx-runtime": {
-      "import": "./jsx-runtime.js",
-      "require": "./jsx-runtime.js"
-    }
-  },
-  "typings": "./dist/types/index.d.ts",
-  "files": [
-    "src/**/*",
-    "dist/*.js",
-    "dist/*.map",
-    "dist/types",
-    "jsx-runtime.js"
-  ],
+  "name": "nfesmini",
+  "version": "0.0.0",
+  "description": "trappal 小程序 runtime 整理",
+  "main": "index.js",
   "scripts": {
-    "test": "cross-env pw-test test/*.spec.tsx --runner zora --extensions tsx --cov",
-    "report": "npx nyc report",
-    "build": "rollup -c",
-    "dev": "cd demo && yarn dev",
-    "prepublishOnly": "yarn build"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
   },
-  "description": "Tiny Concurrent UI library with Fiber.",
-  "keywords": [
-    "fre",
-    "frontend",
-    "framework",
-    "vdom",
-    "concurrent-mode",
-    "fiber",
-    "web",
-    "ui-library"
-  ],
-  "author": "132yse",
-  "license": "MIT",
-  "devDependencies": {
-    "@skypack/package-check": "^0.2.2",
-    "codecov": "^3.8.2",
-    "cross-env": "^5.2.0",
-    "nyc": "^15.1.0",
-    "playwright-test": "^7.2.2",
-    "rollup": "^2.11.2",
-    "rollup-plugin-size": "^0.2.2",
-    "rollup-plugin-terser": "^5.1.2",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "terser": "^4.1.2",
-    "typescript": "^4.0.2",
-    "yarpm": "^0.2.1",
-    "zora": "4.0.2"
+  "repository": {
+    "type": "git",
+    "url": "git@git.dev.sh.ctripcorp.com:mcjs/nfesmini.git"
   },
-  "repository": "yisar/fre",
-  "homepage": "https://fre.js.org",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "esbuild": "^0.12.8",
+    "fre": "^2.1.0-alpha",
+    "goober": "^2.0.37"
   }
 }
