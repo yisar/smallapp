@@ -4,36 +4,26 @@
   "description": "实验性 no bundle all streams",
   "main": "index.js",
   "dependencies": {
-    "fre": "1.13.3",
-    "pnpm": "^6.24.1",
-    "blueimp-md5": "^2.12.0",
-    "devtools-detector": "^1.0.21",
-    "snarkdown": "^1.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-transform-react-jsx": "^7.3.0",
-    "@babel/preset-env": "^7.6.3",
-    "babel-loader": "^8.0.6",
-    "clean-webpack-plugin": "^3.0.0",
-    "cross-env": "^6.0.3",
-    "css-loader": "^3.2.0",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.8.0",
-    "style-loader": "^1.0.1",
-    "stylus": "^0.54.7",
-    "stylus-loader": "^3.0.2",
-    "to-string-loader": "^1.1.6",
-    "webpack": "^4.41.1",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.8.2"
+    "chokidar": "^3.5.1",
+    "commander": "^7.1.0",
+    "cross-fetch": "^3.0.6",
+    "ejs": "^3.1.6",
+    "esbuild": "^0.12.1",
+    "md5": "^2.3.0",
+    "nanoid": "^3.1.21",
+    "nodemon": "^2.0.6",
+    "ora": "^5.4.1",
+    "polka": "^0.5.2",
+    "postcss": "^8.2.2",
+    "postcss-selector-parser": "^6.0.4",
+    "prettier": "^2.2.1",
+    "sirv": "^1.0.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:fre": "pnpm run build --filter @clicli/fre",
-    "dev:fre": "pnpm run start --filter @clicli/fre",
-    "build:admin":"pnpm run build --filter @clicli/admin",
-    "dev:admin":"pnpm run dev --filter @clicli/admin"
+    "compiler:debug": "pnpm run debug --filter @fre-miniapp/compiler"
   },
   "repository": {
     "type": "git",

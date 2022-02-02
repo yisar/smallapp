@@ -1,6 +1,5 @@
 const polka = require("polka")
 const { PORT = 1234 } = process.env
-const chalk = require("chalk")
 
 module.exports = function serve(options) {
   const app = polka()
@@ -14,7 +13,7 @@ module.exports = function serve(options) {
     })
     .listen(PORT, (err) => {
       if (err) throw err
-      console.log(chalk.green(`serve on localhost:${PORT}`))
+      console.log(`serve on localhost:${PORT}`)
     })
   return app.server
 }

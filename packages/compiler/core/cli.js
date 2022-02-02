@@ -45,11 +45,7 @@ async function start(options) {
   await pack(adt, options)
   const end = Date.now()
   spinner.succeed(`compile total time ${end - start}ms`)
-  // if (options.t === BUILD_TYPE.BUILD) {
-  //   console.log(chalk.green("build success"))
-  // } else {
-  //   options.old = serve(options)
-  // }
+
 }
 
 if (argv.version) {
