@@ -1,44 +1,65 @@
 {
-  "name": "loki-admin",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@gitee.com:masahiro/loki-admin.git",
-  "author": "132yse <1533540012@qq.com>",
-  "license": "MIT",
+  "name": "@fre-miniapp/runtime",
+  "version": "2.4.5",
+  "type": "module",
+  "main": "dist/fre.js",
+  "unpkg": "dist/fre.umd.js",
+  "module": "dist/fre.js",
+  "exports": {
+    ".": {
+      "import": "./dist/fre.js",
+      "require": "./dist/fre.umd.js"
+    },
+    "./jsx-runtime": {
+      "import": "./jsx-runtime.js",
+      "require": "./jsx-runtime.js"
+    }
+  },
+  "typings": "./dist/types/index.d.ts",
+  "files": [
+    "src/**/*",
+    "dist/*.js",
+    "dist/*.map",
+    "dist/types",
+    "jsx-runtime.js"
+  ],
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode production",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development"
+    "test": "cross-env pw-test test/*.spec.tsx --runner zora --extensions tsx --cov",
+    "report": "npx nyc report",
+    "build": "rollup -c",
+    "dev": "cd demo && yarn dev",
+    "prepublishOnly": "yarn build"
   },
-  "dependencies": {
-    "axios": "^0.21.2",
-    "blueimp-md5": "^2.10.0",
-    "js-base64": "^2.4.9",
-    "js-cookie": "^2.2.0",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-loadable": "^5.5.0",
-    "react-router-dom": "^4.3.1",
-    "simplemde": "^1.11.2",
-    "smox": "^1.3.3"
-  },
+  "description": "Tiny Concurrent UI library with Fiber.",
+  "keywords": [
+    "fre",
+    "frontend",
+    "framework",
+    "vdom",
+    "concurrent-mode",
+    "fiber",
+    "web",
+    "ui-library"
+  ],
+  "author": "132yse",
+  "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/plugin-proposal-decorators": "^7.1.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
-    "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/runtime": "^7.3.1",
-    "babel-loader": "^8.0.2",
+    "@skypack/package-check": "^0.2.2",
+    "codecov": "^3.8.2",
     "cross-env": "^5.2.0",
-    "css-loader": "^1.0.0",
-    "file-loader": "^2.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.4.3",
-    "style-loader": "^0.23.0",
-    "url-loader": "^1.1.1",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9"
+    "nyc": "^15.1.0",
+    "playwright-test": "^7.2.2",
+    "rollup": "^2.11.2",
+    "rollup-plugin-size": "^0.2.2",
+    "rollup-plugin-terser": "^5.1.2",
+    "rollup-plugin-typescript2": "^0.27.0",
+    "terser": "^4.1.2",
+    "typescript": "^4.0.2",
+    "yarpm": "^0.2.1",
+    "zora": "4.0.2"
+  },
+  "repository": "yisar/fre",
+  "homepage": "https://fre.js.org",
+  "dependencies": {
   }
 }

@@ -1,10 +1,6 @@
-# fre-clicli-home
-> 新版c站首页，fre 强力驱动
+# @fre-miniapp/runtime
 
-### 技术栈
-* webpack4
-* fre
-* stylus
+> fre 小程序基础包
 
 ### 启动
 

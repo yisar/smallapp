@@ -1,23 +1,37 @@
 {
-  "name": "@clicli/fre",
-  "version": "1.0.0",
-  "description": "clicli new home page with fre",
+  "name": "@fre-miniapp/compiler",
+  "version": "0.0.1",
+  "description": "",
   "main": "index.js",
+  "bin": {
+    "wean": "bin/index.js"
+  },
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --mode production",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development"
+    "dev": "wean -e ./demo/app.json -o ./dist/",
+    "build": "wean build -e ./demo/app.json -o ./dist/ -m",
+    "debug": "node --inspect ./core/cli.js -e ./demo/app.json -o ./dist/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cliclitv/fre-clicli-home.git"
+    "url": "git@github.com/yisar/fre-miniapp.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cliclitv/fre-clicli-home/issues"
-  },
-  "homepage": "https://github.com/cliclitv/fre-clicli-home#readme",
-  "dependencies": {},
-  "devDependencies": {}
+  "license": "MIT",
+  "devDependencies": {
+    "chokidar": "^3.5.1",
+    "commander": "^7.1.0",
+    "cross-fetch": "^3.0.6",
+    "ejs": "^3.1.6",
+    "esbuild": "^0.12.1",
+    "md5": "^2.3.0",
+    "nanoid": "^3.1.21",
+    "nodemon": "^2.0.6",
+    "ora": "^5.4.1",
+    "polka": "^0.5.2",
+    "postcss": "^8.2.2",
+    "postcss-selector-parser": "^6.0.4",
+    "prettier": "^2.2.1",
+    "sirv": "^1.0.10"
+  }
 }
