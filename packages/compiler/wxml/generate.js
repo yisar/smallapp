@@ -192,7 +192,6 @@ function compileExpression(expression, type) {
 }
 
 const titleCase = str =>
-  'remotes.' +
   str.slice(0, 1).toUpperCase() +
   str.replace(/\-(\w)/g, (_, letter) => letter.toUpperCase()).slice(1)
 

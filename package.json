@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "description": "实验性 no bundle all streams",
   "main": "index.js",
-  "dependencies": {
-  },
   "devDependencies": {
     "chokidar": "^3.5.1",
     "commander": "^7.1.0",
     "cross-fetch": "^3.0.6",
     "ejs": "^3.1.6",
-    "esbuild": "^0.12.1",
+    "esbuild": "^0.14.17",
     "md5": "^2.3.0",
     "nanoid": "^3.1.21",
     "nodemon": "^2.0.6",
