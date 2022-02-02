@@ -1,16 +1,16 @@
-const { promises } = require("fs")
-const ejs = require("ejs")
-const Path = require("path")
+const { promises } = require('fs')
+const ejs = require('ejs')
+const Path = require('path')
 const esbuild = require('esbuild')
 
 const manifest = []
 
 module.exports.manifest = manifest
 
-const packJs = require("./packagers/js.js")
-const packWxss = require("./packagers/wxss.js")
-const packWxml = require("./packagers/wxml.js")
-const packBerial = require("./packagers/berial.js")
+const packJs = require('./packagers/js.js')
+const packWxss = require('./packagers/wxss.js')
+const packWxml = require('./packagers/wxml.js')
+const packBerial = require('./packagers/berial.js')
 
 module.exports = async function pack(asset, options) {
   await packageAsset(asset, options)
@@ -20,7 +20,7 @@ module.exports = async function pack(asset, options) {
 
 async function writeAsset(asset, options) {
   asset.outputPath = Path.resolve(options.o, asset.hash)
-  asset.output.js = asset.siblingAssets.get(".js").code
+  asset.output.js = asset.siblingAssets.get('.js').code
   await write(asset, options)
 
   const childs = Array.from(asset.childAssets.values()).map(async (page) => {
@@ -33,10 +33,10 @@ async function writeAsset(asset, options) {
 async function packageAsset(asset, options) {
   await packageJson(asset, options)
   const page = getPage(asset)
-  if (asset.type === "component" && page) {
-    page.output.jsx += asset.output.jsx
-    page.output.js += asset.output.js
-    page.output.css += asset.output.css
+  if (asset.type === 'component' && page) {
+    page.output.jsx += asset.output.jsx || ''
+    page.output.js += asset.output.js || ''
+    page.output.css += asset.output.css || ''
   }
   const all = Array.from(asset.childAssets.values()).map(async (child) => {
     await packageAsset(child, options)
@@ -63,7 +63,7 @@ async function write(asset, options) {
     if (options.m) {
       code = await esbuild.transform(code, {
         loader: key,
-        minify: true
+        minify: true,
       })
     }
 
@@ -77,13 +77,13 @@ async function packageJson(asset, options) {
     const all = Array.from(siblings.keys()).map(async (key) => {
       const value = siblings.get(key)
       switch (key) {
-        case ".js":
+        case '.js':
           asset.output.js = await packJs(value, options)
           break
-        case ".wxml":
+        case '.wxml':
           asset.output.jsx = await packWxml(value, options)
           break
-        case ".wxss":
+        case '.wxss':
           asset.output.css = await packWxss(value)
           break
       }
@@ -97,7 +97,7 @@ async function generateEntry(asset, options) {
   await promises.mkdir(Path.join(o, 'public'), { recursive: true })
 
   const tabbars = asset.ast.tabBar.list
-  const all = tabbars.map(async item => {
+  const all = tabbars.map(async (item) => {
     let { iconPath, selectedIconPath } = item
     const $1 = Path.join(o, 'public', Path.basename(iconPath))
     const $2 = Path.join(o, 'public', Path.basename(selectedIconPath))
@@ -114,8 +114,5 @@ async function generateEntry(asset, options) {
     pages,
   }
   let out = JSON.stringify(json)
-  await promises.writeFile(
-    Path.join(Path.resolve(options.o), "manifest.json"),
-    out
-  )
+  await promises.writeFile(Path.join(Path.resolve(options.o), 'manifest.json'), out)
 }

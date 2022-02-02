@@ -3,13 +3,9 @@ const { random } = require("./util")
 const Path = require("path")
 
 module.exports = async function packBerial(asset, options) {
-  asset.output.jsx = `
-    (function({C,directs,wx}, remotes) {
-      ${asset.output.jsx}
-      render(fre.h($${asset.id},{data:data}),document.getElementById('root'))
-    })(window,window.remotes);
-    `
   const edir = Path.resolve(Path.dirname(options.e))
+
+  asset.output.jsx = String(asset.output.jsx)
 
   const path = asset.path
     .replace(edir, "")
@@ -26,5 +22,4 @@ module.exports = async function packBerial(asset, options) {
     styles: [hash + ".css"],
     path: `${basename + path}`,
   })
-  return asset.output.jsx
 }
