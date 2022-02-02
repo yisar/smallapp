@@ -1,0 +1,6 @@
+{
+    "usingComponents": {
+        "use-item": "/pages/item/index"
+      }
+
+}

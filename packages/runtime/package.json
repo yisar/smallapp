@@ -1,0 +1,44 @@
+{
+  "name": "loki-admin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@gitee.com:masahiro/loki-admin.git",
+  "author": "132yse <1533540012@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development"
+  },
+  "dependencies": {
+    "axios": "^0.21.2",
+    "blueimp-md5": "^2.10.0",
+    "js-base64": "^2.4.9",
+    "js-cookie": "^2.2.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-loadable": "^5.5.0",
+    "react-router-dom": "^4.3.1",
+    "simplemde": "^1.11.2",
+    "smox": "^1.3.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.3.1",
+    "babel-loader": "^8.0.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.3",
+    "style-loader": "^0.23.0",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.9"
+  }
+}

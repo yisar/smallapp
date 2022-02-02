@@ -1,5 +1,1 @@
-/ide/dist/
-/ide/.cache/
-node_modules
-yarn.lock
-.idea
+**/**/node_modules/

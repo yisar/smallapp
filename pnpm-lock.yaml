@@ -1,0 +1,155 @@
+lockfileVersion: 5.3
+
+importers:
+
+  .:
+    specifiers:
+      react: ^0.0.0-experimental-1314299c7-20210901
+      react-dom: ^0.0.0-experimental-1314299c7-20210901
+    dependencies:
+      react: 0.0.0-experimental-1314299c7-20210901
+      react-dom: 0.0.0-experimental-1314299c7-20210901_e51ce3ac058c0d2f1ad274f789274e97
+
+  packages/create-nfes:
+    specifiers:
+      '@ctrip/nfes': workspace:^1.0.0
+    dependencies:
+      '@ctrip/nfes': link:../nfes
+
+  packages/nfes:
+    specifiers:
+      '@types/node': ^16.7.12
+      esbuild: ^0.12.25
+      esbuild-register: ^3.0.0
+      fs-extra: ^10.0.0
+      polka: ^0.5.2
+    dependencies:
+      fs-extra: 10.0.0
+      polka: 0.5.2
+    devDependencies:
+      '@types/node': 16.7.12
+      esbuild: 0.12.25
+      esbuild-register: 3.0.0_esbuild@0.12.25
+
+packages:
+
+  /@arr/every/1.0.1:
+    resolution: {integrity: sha512-UQFQ6SgyJ6LX42W8rHCs8KVc0JS0tzVL9ct4XYedJukskYVWTo49tNiMEK9C2HTyarbNiT/RVIRSY82vH+6sTg==}
+    engines: {node: '>=4'}
+    dev: false
+
+  /@polka/url/0.5.0:
+    resolution: {integrity: sha512-oZLYFEAzUKyi3SKnXvj32ZCEGH6RDnao7COuCVhDydMS9NrCSVXhM79VaKyP5+Zc33m0QXEd2DN3UkU7OsHcfw==}
+    dev: false
+
+  /@types/node/16.7.12:
+    resolution: {integrity: sha512-IrhrusVM9QJAn1xLFFqbZH+XCI8L6eZoVHjR4sZeGTBBvjQSuchXGgKpown1jP75TCMSndcbudYBDTekOhcIZA==}
+    dev: true
+
+  /esbuild-register/3.0.0_esbuild@0.12.25:
+    resolution: {integrity: sha512-No7U3ZUd6gPrrC6gqdb3XFcf2lNqzn8nvQXcgcyOl8szMVuN6YUvOplnmakxWyogI9d8SiJMl0uzBzJck+Aoxw==}
+    peerDependencies:
+      esbuild: '>=0.12 <1'
+    dependencies:
+      esbuild: 0.12.25
+      jsonc-parser: 3.0.0
+    dev: true
+
+  /esbuild/0.12.25:
+    resolution: {integrity: sha512-woie0PosbRSoN8gQytrdCzUbS2ByKgO8nD1xCZkEup3D9q92miCze4PqEI9TZDYAuwn6CruEnQpJxgTRWdooAg==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
+
+  /fs-extra/10.0.0:
+    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.8
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: false
+
+  /graceful-fs/4.2.8:
+    resolution: {integrity: sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==}
+    dev: false
+
+  /js-tokens/4.0.0:
+    resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+    dev: false
+
+  /jsonc-parser/3.0.0:
+    resolution: {integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==}
+    dev: true
+
+  /jsonfile/6.1.0:
+    resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
+    dependencies:
+      universalify: 2.0.0
+    optionalDependencies:
+      graceful-fs: 4.2.8
+    dev: false
+
+  /loose-envify/1.4.0:
+    resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
+    hasBin: true
+    dependencies:
+      js-tokens: 4.0.0
+    dev: false
+
+  /matchit/1.1.0:
+    resolution: {integrity: sha512-+nGYoOlfHmxe5BW5tE0EMJppXEwdSf8uBA1GTZC7Q77kbT35+VKLYJMzVNWCHSsga1ps1tPYFtFyvxvKzWVmMA==}
+    engines: {node: '>=6'}
+    dependencies:
+      '@arr/every': 1.0.1
+    dev: false
+
+  /object-assign/4.1.1:
+    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /polka/0.5.2:
+    resolution: {integrity: sha512-FVg3vDmCqP80tOrs+OeNlgXYmFppTXdjD5E7I4ET1NjvtNmQrb1/mJibybKkb/d4NA7YWAr1ojxuhpL3FHqdlw==}
+    dependencies:
+      '@polka/url': 0.5.0
+      trouter: 2.0.1
+    dev: false
+
+  /react-dom/0.0.0-experimental-1314299c7-20210901_e51ce3ac058c0d2f1ad274f789274e97:
+    resolution: {integrity: sha512-hKxIBZb0oZYUoFaDuhcwIG+Xtk/3bkd+Jtuf0KXakKKFGVrPTR77S9sJDW2mTqADDP+5oKHm8vYONE0Ua3z38Q==}
+    peerDependencies:
+      react: 0.0.0-experimental-1314299c7-20210901
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react: 0.0.0-experimental-1314299c7-20210901
+      scheduler: 0.0.0-experimental-1314299c7-20210901
+    dev: false
+
+  /react/0.0.0-experimental-1314299c7-20210901:
+    resolution: {integrity: sha512-A7oXsm7J0SerEWEwt5j6No3jDFaWAhgBerhwSWh2Si81opJb4UpgQ8LfgtLoHItK3VFlVySH2WCViKAVbOzbNQ==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false
+
+  /scheduler/0.0.0-experimental-1314299c7-20210901:
+    resolution: {integrity: sha512-ZE2wFqqPnGL2d4GRgZ/0AEwBSpg7fHOe+nY5dZFI/RpjDZmKN+13/Yldn/sM5Fz0SyqliqmMy4vQzyb+ndBi5g==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false
+
+  /trouter/2.0.1:
+    resolution: {integrity: sha512-kr8SKKw94OI+xTGOkfsvwZQ8mWoikZDd2n8XZHjJVZUARZT+4/VV6cacRS6CLsH9bNm+HFIPU1Zx4CnNnb4qlQ==}
+    engines: {node: '>=6'}
+    dependencies:
+      matchit: 1.1.0
+    dev: false
+
+  /universalify/2.0.0:
+    resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
+    engines: {node: '>= 10.0.0'}
+    dev: false
