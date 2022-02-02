@@ -1,5 +1,4 @@
 const { titleCase } = require('./util')
-const esbuild = require('esbuild')
 
 module.exports = async function packWxml(asset) {
   const walk = async (child) => {
@@ -13,7 +12,7 @@ module.exports = async function packWxml(asset) {
   asset.out = ''
   wiredBlock(asset.blocks, asset)
   walk(asset)
-  const pre =
+  const code =
     asset.parent.type === 'page'
       ? `export default (props) => {
     const [state, setState] = fre.useState(props.data)
@@ -23,7 +22,7 @@ module.exports = async function packWxml(asset) {
       return () => $unmount(${asset.parent.id})
     },[])
       return <>${asset.out}</>
-  }\n`
+  };\n`
       : `const ${titleCase(asset.parent.tag)} = (props) =>{
     const [state, setState] = fre.useState({})
     fre.useEffect(()=>{
@@ -32,16 +31,7 @@ module.exports = async function packWxml(asset) {
       return () => $unmount(${asset.parent.id})
     },[])
       return <>${asset.out}</>
-  }`
-  try {
-    var { code } = await esbuild.transform(pre, {
-      jsxFactory: 'fre.h',
-      jsxFragment: 'fre.Fragment',
-      loader: 'jsx',
-      format: 'cjs',
-    })
-  } catch (e) {
-  }
+  };`
 
   return code
 }
