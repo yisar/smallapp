@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html>
+
+<head> </head>
+
+<body>
+    <script type="module">
+        import workerdom from './dom.js'
+        const worker = new Worker('worker.js', { type: "module" })
+        workerdom({worker})
+        console.log(worker)
+    </script>
+</body>
+
+</html>

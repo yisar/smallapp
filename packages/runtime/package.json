@@ -1,22 +1,21 @@
 {
-  "name": "nfesmini",
-  "version": "0.0.0",
-  "description": "trappal 小程序 runtime 整理",
-  "main": "index.js",
+  "name": "fre-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "worker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js"
+    "start": "serve ./"
   },
   "repository": {
     "type": "git",
-    "url": "git@git.dev.sh.ctripcorp.com:mcjs/nfesmini.git"
+    "url": "git+https://github.com/yisar/fre-worker.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "esbuild": "^0.12.8",
-    "fre": "^2.1.0-alpha",
-    "goober": "^2.0.37"
-  }
+  "bugs": {
+    "url": "https://github.com/yisar/fre-worker/issues"
+  },
+  "homepage": "https://github.com/yisar/fre-worker#readme"
 }

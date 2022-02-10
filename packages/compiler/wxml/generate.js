@@ -192,7 +192,7 @@ function compileExpression(expression, type) {
 }
 
 const titleCase = str =>
-  str.slice(0, 1).toUpperCase() +
+  'comp.' + str.slice(0, 1).toUpperCase() +
   str.replace(/\-(\w)/g, (_, letter) => letter.toUpperCase()).slice(1)
 
 module.exports = generate

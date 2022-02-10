@@ -16,20 +16,10 @@ module.exports = async function packWxml(asset) {
     asset.parent.type === 'page'
       ? `export default (props) => {
     const [state, setState] = fre.useState(props.data)
-    fre.useEffect(()=>{
-      window.components[${asset.parent.id}] = (data) => setState(data)
-      $mount(${asset.parent.id})
-      return () => $unmount(${asset.parent.id})
-    },[])
       return <>${asset.out}</>
   };\n`
       : `const ${titleCase(asset.parent.tag)} = (props) =>{
     const [state, setState] = fre.useState({})
-    fre.useEffect(()=>{
-      window.components[${asset.parent.id}] = (data) => setState(data)
-      $mount(${asset.parent.id})
-      return () => $unmount(${asset.parent.id})
-    },[])
       return <>${asset.out}</>
   };`
 
