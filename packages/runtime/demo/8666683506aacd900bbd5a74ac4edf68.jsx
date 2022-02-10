@@ -26,6 +26,6 @@ __export(stdin_exports, {
 });
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(fre.Text, null, "kid"));
+  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "kid"));
 };
 module.exports = __toCommonJS(stdin_exports);

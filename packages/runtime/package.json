@@ -1,5 +1,5 @@
 {
-  "name": "fre-worker",
+  "name": "@fre-miniapp/runtime",
   "version": "1.0.0",
   "description": "",
   "main": "worker.js",

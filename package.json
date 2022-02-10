@@ -21,7 +21,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compiler:debug": "pnpm run debug --filter @fre-miniapp/compiler"
+    "debug": "pnpm run debug --filter @fre-miniapp/compiler",
+    "serve": "pnpm run start --filter @fre-miniapp/runtime"
   },
   "repository": {
     "type": "git",

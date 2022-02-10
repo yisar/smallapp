@@ -117,7 +117,6 @@ function sanitize(obj) {
 
 /** Send messages to the page */
 function send(message) {
-    console.log(message)
     postMessage(JSON.parse(JSON.stringify(message)));
 }
 
@@ -140,8 +139,11 @@ const ref = {
         Page: {},
     },
     fre: {
-        h, render, useEffect, useState, Fragment, Text: (props) => {
-            return h('span', {}, props.children)
+        h, render, useEffect, useState, Fragment
+    },
+    comp: {
+        Button: (props) => {
+            return h('button', props)
         }
     },
     JSSDK: {
@@ -158,7 +160,7 @@ const ref = {
 
 const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
 
-const scripts = JSON.parse(manifest).pages[1].scripts
+const scripts = JSON.parse(manifest).pages[0].scripts
 
 console.log(scripts)
 
