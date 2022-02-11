@@ -1,16 +1,12 @@
-const graph = {}
-const stack = []
-let currentPage = null
+import {getApp} from './app'
 
+let currentPage = null
+const app = getApp()
 export function Page(option) {
     const pageid = Page.id
     const page = new _Page(pageid, option)
-    graph[pageid] = page
+    app.graph[pageid] = page
     currentPage = page
-}
-
-export function getPageById(id){
-    return graph[id]
 }
 
 export function getCurrentPage() {

@@ -1,14 +1,15 @@
-import { getPageById } from "./page"
-
-const graph = {}
+import { getInsById,getApp } from "./app"
 let currentComponent = null
+
+const app = getApp()
 
 export function Component(option) {
     const { pid, tag, id } = Component
-    const parent = getPageById(pid)
+    const parent = getInsById(pid)
     const c = new _Component(id, tag, pid, option)
     parent.children.set(id, c)
     currentComponent = c
+    app.graph[id] = c
 }
 
 export function getCurrentPage() {

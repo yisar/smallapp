@@ -2,6 +2,7 @@ import { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useRed
 import comp from './components/index'
 import { Page } from './page'
 import { getApp } from './app.js'
+import { Component } from './component.js'
 
 const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
 
@@ -9,6 +10,7 @@ export const global = {
     modules: {},
     Page,
     getApp,
+    Component,
     fre,
     comp,
     JSSDK: {

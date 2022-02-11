@@ -1,7 +1,8 @@
 import workerdom from './worker-dom.js';
 import { execScript } from './exec-script.js'
 import { getCurrentPage } from './page.js'
-import {global as ref} from './global'
+import { global as ref } from './global'
+import { render, h } from './fre-esm'
 
 let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
@@ -96,7 +97,6 @@ addEventListener('message', ({ data }) => {
 const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
 
 const { scripts, styles } = JSON.parse(manifest).pages[0]
-console.log(styles)
 
 execScript('demo' + scripts[1], ref)
 execScript('demo' + scripts[0], ref)
@@ -104,8 +104,6 @@ execScript('demo' + scripts[0], ref)
 const page = getCurrentPage()
 
 console.log(page)
-
-console.log(ref)
 
 const c = ref.modules['demo' + scripts[1]].default
 let link = document.createElement('link')
