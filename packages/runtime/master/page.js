@@ -1,4 +1,5 @@
 import {getApp} from './app'
+import {Component} from './fre-class'
 
 let currentPage = null
 const app = getApp()
@@ -13,7 +14,7 @@ export function getCurrentPage() {
     return currentPage
 }
 
-class _Page {
+class _Page{
     constructor(id, option) {
         this.id = id
         this.children = new Map()
@@ -25,5 +26,10 @@ class _Page {
             }
             
         }
+    }
+
+    setData(data){
+        this.data = {...data, ...this.data}
+        const setState = 
     }
 }

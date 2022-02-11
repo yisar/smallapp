@@ -146,8 +146,8 @@ function generateProps(node, state, asset) {
       if (state.methods.indexOf(value) < 0) {
         state.methods.push(value)
       }
-      const [key, alias] = wriedName(name)
-      code += ` ${key}={$handleEvent("${value}", "${getId(asset)}", "${alias}")} `
+      const key = wriedName(name)
+      code += ` ${key}={$handleEvent("${value}", "${getId(asset)}")} `
     } else if (node.name === 'import') {
       state.imports.push(value)
     } else {
@@ -161,8 +161,8 @@ function generateProps(node, state, asset) {
 function wriedName(key) {
   key = key.replace(/(bind|catch)\:?/g, '')
   return key in eventMap
-    ? [eventMap[key], key]
-    : ['on' + key[0].toUpperCase() + key.substr(1), key]
+    ? eventMap[key]
+    : 'on' + key[0].toUpperCase() + key.substr(1)
 }
 
 function compileExpression(expression, type) {

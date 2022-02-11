@@ -15,6 +15,7 @@ export const global = {
     fre,
     comp,
     $handleEvent,
+    setStates: {},
     JSSDK: {
         readFileSync(path) {
             var request = new XMLHttpRequest();

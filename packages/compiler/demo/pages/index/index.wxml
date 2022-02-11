@@ -1,2 +1,2 @@
-  <text class="count">0</text>
+  <text class="count">{{count}}</text>
   <button type="primary" bindtap="log">+1</button>

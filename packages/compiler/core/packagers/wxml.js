@@ -16,6 +16,9 @@ module.exports = async function packWxml(asset) {
     asset.parent.type === 'page'
       ? `export default (props) => {
     const [state, setState] = fre.useState(props.data)
+    useEffect(()=>{
+      setStates[${asset.parent.id}] = setState
+    },[])
       return <>${asset.out}</>
   };\n`
       : `const ${titleCase(asset.parent.tag)} = (props) =>{

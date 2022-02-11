@@ -26,11 +26,14 @@ __export(stdin_exports, {
 });
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
+  useEffect(() => {
+    setStates[2] = setState;
+  }, []);
   return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
     class: `count`
-  }, "0"), /* @__PURE__ */ fre.h(comp.Button, {
+  }, count), /* @__PURE__ */ fre.h(comp.Button, {
     type: `primary`,
-    onClick: $handleEvent("log", "2", "tap")
+    onClick: $handleEvent("log", "2")
   }, "+1"));
 };
 const UseItem = (props) => {
@@ -39,28 +42,28 @@ const UseItem = (props) => {
     class: `list-items`
   }, /* @__PURE__ */ fre.h(comp.Icon, {
     type: `${iitem.completed ? "success" : "circle"}`,
-    onClick: $handleEvent("clickIco", "7", "tap"),
+    onClick: $handleEvent("clickIco", "10"),
     "data-id": `${iitem.id}`
   }), /* @__PURE__ */ fre.h(comp.Input, {
     class: `aaa ${iitem.completed ? "completed" : ""}`,
-    onKeyDown: $handleEvent("edittodo", "7", "confirm"),
+    onKeyDown: $handleEvent("edittodo", "10"),
     "data-id": `${iitem.id}`,
     value: `${iitem.name}`
   }), /* @__PURE__ */ fre.h(comp.Icon, {
     type: `clear`,
-    onClick: $handleEvent("clear", "7", "tap")
+    onClick: $handleEvent("clear", "10")
   }), /* @__PURE__ */ fre.h(comp.View, {
     slot: `aaa`
   }, "111"), /* @__PURE__ */ fre.h(comp.ChildChild, {
-    onEee: $handleEvent("eee", "7", "eee")
+    onEee: $handleEvent("eee", "10")
   }), /* @__PURE__ */ fre.h(comp.Button, {
-    onClick: $handleEvent("clear", "7", "tap")
+    onClick: $handleEvent("clear", "10")
   }, "aaa")));
 };
 const ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-    onClick: $handleEvent("emmm", "14", "tap")
+    onClick: $handleEvent("emmm", "16")
   }, "pages/kid/index.wxml"));
 };
 module.exports = __toCommonJS(stdin_exports);

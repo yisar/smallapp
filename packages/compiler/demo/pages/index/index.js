@@ -18,29 +18,30 @@ Page({
     leftcount: 0,
     a: true,
     b: true,
-    c: false
+    c: false,
+    count: 0
   },
 
   onLoad() {
     console.log('onLoad')
   },
 
-  eeevent(detail,option){
-    console.log('triggerEvent',detail)
+  eeevent(detail, option) {
+    console.log('triggerEvent', detail)
   },
 
-  eee(e){
+  eee(e) {
     console.log(123)
   },
 
-  navigateTo(){
+  navigateTo() {
     wx.navigateTo({
       url: '/pages/child/index?aaa=1&bbb=2',
-      success: (result) => {},
+      success: (result) => { },
       fail: (res) => {
         console.log(res)
       },
-      complete: (res) => {},
+      complete: (res) => { },
     })
   },
 
@@ -69,7 +70,7 @@ Page({
     this.setData(this.data)
   },
 
-  log(){
+  log() {
     console.log(123)
   },
 
@@ -115,7 +116,7 @@ Page({
 
   toast() {
     wx.showToast({
-      title: "222", 
+      title: "222",
       success(res) {
         console.log(res)
       }
