@@ -18,8 +18,12 @@ class _Page {
         this.id = id
         this.children = new Map()
         this.parent = null
+        this.methods = {}
         for (const key in option) {
-            this[key] = option
+            if(key != 'data' && !key.startsWith('on')){
+               this.methods[key] = option[key] 
+            }
+            
         }
     }
 }

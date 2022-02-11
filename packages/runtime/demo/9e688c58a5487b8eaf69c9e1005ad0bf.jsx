@@ -29,7 +29,8 @@ var stdin_default = (props) => {
   return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
     class: `count`
   }, "0"), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `primary`
+    type: `primary`,
+    onClick: $handleEvent("log", "2", "tap")
   }, "+1"));
 };
 const UseItem = (props) => {
@@ -59,7 +60,7 @@ const UseItem = (props) => {
 const ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-    onClick: $handleEvent("emmm", "16", "tap")
+    onClick: $handleEvent("emmm", "14", "tap")
   }, "pages/kid/index.wxml"));
 };
 module.exports = __toCommonJS(stdin_exports);

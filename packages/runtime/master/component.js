@@ -24,7 +24,7 @@ class _Component {
         this.children = new Map()
         this.parent = null
         for (const key in option) {
-            this[key] = option
+            this[key] = option[key]
         }
     }
 }

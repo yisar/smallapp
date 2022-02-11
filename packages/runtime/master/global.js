@@ -3,6 +3,7 @@ import comp from './components/index'
 import { Page } from './page'
 import { getApp } from './app.js'
 import { Component } from './component.js'
+import { $handleEvent } from './helper.js'
 
 const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
 
@@ -13,6 +14,7 @@ export const global = {
     Component,
     fre,
     comp,
+    $handleEvent,
     JSSDK: {
         readFileSync(path) {
             var request = new XMLHttpRequest();

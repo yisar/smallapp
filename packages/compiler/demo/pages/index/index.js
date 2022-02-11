@@ -69,6 +69,10 @@ Page({
     this.setData(this.data)
   },
 
+  log(){
+    console.log(123)
+  },
+
   addtodo(e) {
     let addtodo = e.detail.value
     this.data.list.push({
