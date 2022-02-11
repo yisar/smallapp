@@ -26,7 +26,9 @@ __export(stdin_exports, {
 });
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "0"), /* @__PURE__ */ fre.h(comp.Button, {
+  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+    class: `count`
+  }, "0"), /* @__PURE__ */ fre.h(comp.Button, {
     type: `primary`
   }, "+1"));
 };

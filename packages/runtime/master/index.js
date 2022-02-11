@@ -114,12 +114,16 @@ const ref = {
 
 const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
 
-const scripts = JSON.parse(manifest).pages[0].scripts
+const { scripts, styles } = JSON.parse(manifest).pages[0]
+console.log(styles)
 
 execScript('demo' + scripts[1], ref)
 
 console.log(ref)
 
 const c = ref.modules['demo' + scripts[1]].default
-
+let link = document.createElement('link')
+link.setAttribute('href', 'http://localhost:5000/' + 'demo' + styles[0])
+link.setAttribute('rel', 'stylesheet')
+document.body.appendChild(link)
 render(h(c, null), document.body)

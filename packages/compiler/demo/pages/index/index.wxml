@@ -1,2 +1,2 @@
-  <text>0</text>
+  <text class="count">0</text>
   <button type="primary">+1</button>
