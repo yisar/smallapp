@@ -9,49 +9,14 @@ for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) 
 
 let url = '/';
 
-let location = {
-    _current: '/',
-    get href() {
-        return url;
-    },
-    get pathname() {
-        return url.replace(/^(([a-z0-9]+\:)?\/\/[^/]+|[?#].*$)/g, '');
-    },
-    get search() {
-        return (url.match(/\?([^#]*)(#.*)?$/) || [])[1];
-    },
-    get hash() {
-        return (url.match(/#(.*)$/) || [])[1];
-    }
-};
-
-let history = {
-    pushState(a, b, url) {
-        send({ type: 'pushState', url });
-    },
-    replaceState(a, b, url) {
-        send({ type: 'replaceState', url });
-    }
-};
-
-
-// used to create UUIDs for Elements
 let COUNTER = 0;
 
-/** MutationObserver properties to sanitize as (collections of) DOM Elements */
 const TO_SANITIZE = ['addedNodes', 'removedNodes', 'nextSibling', 'previousSibling', 'target'];
 
-/** Properties to strip when serializing for postMessage */
 const PROP_BLACKLIST = ['children', 'parentNode', '__handlers', '_component', '_componentConstructor'];
 
-/** Mapping of global IDs to Elements */
 const NODES = new Map();
 
-
-/** Returns the worker DOM Element corresponding to a serialized Element object.
- *	@param {String|Object} node		An `id`, or an object with an `__id` property.
- *	@returns {Element} element
- */
 function getNode(node) {
     let id;
     if (node && typeof node === 'object') id = node.__id;
@@ -61,8 +26,6 @@ function getNode(node) {
     return NODES.get(id);
 }
 
-
-/** Receives Event messages and refires them in the worker's DOM. */
 function handleEvent(event) {
     let target = getNode(event.target);
     if (target) {
@@ -72,10 +35,6 @@ function handleEvent(event) {
     }
 }
 
-
-/** Normalize messages (MutationRecords mainly)
- *  Replaces previously-sent Elements with their IDs.
- */
 function sanitize(obj) {
     if (!obj || typeof obj !== 'object') return obj;
 
@@ -102,7 +61,6 @@ function sanitize(obj) {
 }
 
 
-/** Observe DOM mutations and send MutationRecords to parent page. */
 (new MutationObserver(mutations => {
     for (let i = mutations.length; i--;) {
         let mutation = mutations[i];
@@ -115,7 +73,6 @@ function sanitize(obj) {
 })).observe(document, { subtree: true });
 
 
-/** Send messages to the page */
 function send(message) {
     postMessage(JSON.parse(JSON.stringify(message)));
 }
@@ -164,13 +121,10 @@ const scripts = JSON.parse(manifest).pages[0].scripts
 
 console.log(scripts)
 
-// execScript('demo' + scripts[0], ref)
 execScript('demo' + scripts[1], ref)
 
 console.log(ref)
 
 const comp = ref.modules['demo' + scripts[1]].default
-
-// execScript(, ref)
 
 render(h(comp, null), document.body)

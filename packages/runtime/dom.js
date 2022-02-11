@@ -10,7 +10,6 @@ const EVENT_OPTS = {
 export default ({ worker }) => {
     const NODES = new Map();
 
-    /** Returns the real DOM Element corresponding to a serialized Element object. */
     function getNode(node) {
         if (!node) return null;
         if (node.nodeName === 'BODY') return document.body;
@@ -18,7 +17,6 @@ export default ({ worker }) => {
     }
 
 
-    // feature-detect support for event listener options
     let supportsPassive = false;
     try {
         addEventListener('test', null, {
@@ -27,8 +25,7 @@ export default ({ worker }) => {
     } catch (e) { }
 
 
-    /** Loop over all "on*" event names on Window and set up a proxy handler for each. */
-    // eslint-disable-next-line guard-for-in
+
     for (let i in window) {
         let m = i.substring(2);
         if (i.substring(0, 2) === 'on' && i === i.toLowerCase() && EVENT_BLACKLIST.indexOf(m) < 0 && (window[i] === null || typeof window[i] === 'function')) {
@@ -39,19 +36,16 @@ export default ({ worker }) => {
 
     let touch;
 
-    /** Derives {pageX,pageY} coordinates from a mouse or touch event. */
     function getTouch(e) {
         let t = (e.changedTouches && e.changedTouches[0]) || (e.touches && e.touches[0]) || e;
         return t && { pageX: t.pageX, pageY: t.pageY };
     }
 
-    /** Forward a DOM Event into the Worker as a message */
     function proxyEvent(e) {
         if (e.type === 'click' && touch) return false;
 
         let event = { type: e.type };
         if (e.target) event.target = e.target.__id;
-        // eslint-disable-next-line guard-for-in
         for (let i in e) {
             let v = e[i];
             if (typeof v !== 'object' && typeof v !== 'function' && i !== i.toUpperCase() && !event.hasOwnProperty(i)) {
@@ -114,9 +108,7 @@ export default ({ worker }) => {
     }
 
 
-    /** Apply MutationRecord mutations, keyed by type. */
     const MUTATIONS = {
-        /** Handles element insertion & deletion */
         childList({ target, removedNodes, addedNodes, previousSibling, nextSibling }) {
             let parent = getNode(target);
             if (removedNodes) {
@@ -134,7 +126,6 @@ export default ({ worker }) => {
                 }
             }
         },
-        /** Handles attribute addition, change, removal */
         attributes({ target, attributeName }) {
             let val;
             for (let i = target.attributes.length; i--;) {
@@ -146,24 +137,20 @@ export default ({ worker }) => {
             }
             getNode(target).setAttribute(attributeName, val);
         },
-        /** Handles Text node content changes */
         characterData({ target, oldValue }) {
             getNode(target).nodeValue = target.data;
         }
     };
 
 
-    /** Apply a MutationRecord to the DOM */
     function applyMutation(mutation) {
         MUTATIONS[mutation.type](mutation);
     }
 
     let timer;
 
-    // stores pending DOM changes (MutationRecord objects)
     let MUTATION_QUEUE = [];
 
-    // Check if an Element is at least partially visible
     function isElementInViewport(el, cache) {
         if (el.nodeType === 3) el = el.parentNode;
         let bbox = el.getBoundingClientRect();
@@ -176,7 +163,6 @@ export default ({ worker }) => {
     }
 
 
-    // requestIdleCallback sortof-polyfill
     if (!self.requestIdleCallback) {
         const IDLE_TIMEOUT = 10;
         self.requestIdleCallback = cb => {
@@ -188,7 +174,6 @@ export default ({ worker }) => {
     }
 
 
-    // Attempt to flush & process as many MutationRecords as possible from the queue
     function processMutationQueue(deadline) {
         clearTimeout(timer);
         let q = MUTATION_QUEUE,
@@ -202,36 +187,29 @@ export default ({ worker }) => {
 
             let m = q[i];
 
-            // if the element is offscreen, skip any text or attribute changes:
             if (useVis && (m.type === 'characterData' || m.type === 'attributes')) {
                 let target = getNode(m.target);
                 if (target && !isElementInViewport(target, cache)) continue;
             }
 
-            // remove mutation from the queue and apply it:
             applyMutation(q.splice(i--, 1)[0]);
         }
 
-        // still remaining work to be done
         if (q.length) doProcessMutationQueue();
     }
 
 
     function doProcessMutationQueue() {
-        // requestAnimationFrame(processMutationQueue);
         clearTimeout(timer);
         timer = setTimeout(processMutationQueue, 100);
         requestIdleCallback(processMutationQueue);
     }
 
 
-    // Add a MutationRecord to the queue
     function queueMutation(mutation) {
-        // for single-node updates, merge into pending updates
         if (mutation.type === 'characterData' || mutation.type === 'attributes') {
             for (let i = MUTATION_QUEUE.length; i--;) {
                 let m = MUTATION_QUEUE[i];
-                // eslint-disable-next-line eqeqeq
                 if (m.type == mutation.type && m.target.__id == mutation.target.__id) {
                     if (m.type === 'attributes') {
                         MUTATION_QUEUE.splice(i + 1, 0, mutation);
