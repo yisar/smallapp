@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-export function workerdom ({ worker }) {
+function workerdom ({ worker }) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -240,3 +240,5 @@ export function workerdom ({ worker }) {
         location: location.href
     });
 };
+
+workerdom.umd = true

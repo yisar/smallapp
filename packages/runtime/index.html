@@ -14,7 +14,7 @@
     <script src="./dist/slave.js"></script>
     <script>
         const worker = new Worker('./dist/master.js')
-        window.freminiapp.workerdom({ worker })
+        workerdom({ worker })
     </script>
     <!-- <script type="module">
         import workerdom from './slave/index.js'

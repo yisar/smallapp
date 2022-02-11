@@ -100,7 +100,7 @@ const ref = {
     },
     comp: {
         Button: (props) => {
-            return h('button', props)
+            return <button {...props}/>
         }
     },
     JSSDK: {
