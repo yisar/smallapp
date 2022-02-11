@@ -13,6 +13,7 @@ module.exports = async function packBerial(asset, options) {
       format: 'cjs',
     })
   } catch (e) {
+    console.log(e)
   }
 
   asset.output.jsx = String(code)

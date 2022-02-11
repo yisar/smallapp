@@ -103,11 +103,9 @@ execScript('demo' + scripts[0], ref)
 
 const page = getCurrentPage()
 
-console.log(page)
-
 const c = ref.modules['demo' + scripts[1]].default
 let link = document.createElement('link')
 link.setAttribute('href', 'http://localhost:5000/' + 'demo' + styles[0])
 link.setAttribute('rel', 'stylesheet')
 document.body.appendChild(link)
-render(h(c, null), document.body)
+render(h(c, {data:page.data}), document.body)

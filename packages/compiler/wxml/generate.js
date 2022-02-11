@@ -174,7 +174,7 @@ function compileExpression(expression, type) {
       return tokens.map(t => (exp.test(t) ? t.match(exp)[0] : t)).join(' ')
     case 'text':
       return tokens
-        .map(t => (exp.test(t) ? `{${t.match(exp)[0]}}` : t))
+        .map(t => (exp.test(t) ? `{${'state.'+t.match(exp)[0]}}` :t))
         .join(' ')
     case 'component':
       return tokens
@@ -182,7 +182,7 @@ function compileExpression(expression, type) {
         .join(' ')
     case 'node':
       return (
-        '{`' +
+        '{`' + // 暂时修改
         tokens
           .map(t => (exp.test(t) ? '${' + t.match(exp)[0] + '}' : `${t}`))
           .join(' ') +

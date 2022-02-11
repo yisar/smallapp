@@ -70,8 +70,10 @@ Page({
     this.setData(this.data)
   },
 
-  log() {
-    console.log(123)
+  add() {
+    this.setData({
+      count: this.data.count + 1
+    })
   },
 
   addtodo(e) {

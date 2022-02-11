@@ -1,5 +1,5 @@
-import {getApp} from './app'
-import {Component} from './fre-class'
+import { getApp } from './app'
+import { global } from './global'
 
 let currentPage = null
 const app = getApp()
@@ -14,22 +14,25 @@ export function getCurrentPage() {
     return currentPage
 }
 
-class _Page{
+class _Page {
     constructor(id, option) {
         this.id = id
         this.children = new Map()
         this.parent = null
         this.methods = {}
         for (const key in option) {
-            if(key != 'data' && !key.startsWith('on')){
-               this.methods[key] = option[key] 
+            if (key != 'data' && !key.startsWith('on')) {
+                this.methods[key] = option[key]
+            } else {
+                this[key] = option[key]
             }
-            
+
         }
     }
 
-    setData(data){
-        this.data = {...data, ...this.data}
-        const setState = 
+    setData(data) {
+        this.data = { ...this.data, ...data }
+        const setState = global.setStates[this.id]
+        setState(this.data)
     }
 }
