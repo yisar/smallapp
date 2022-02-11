@@ -1,7 +1,7 @@
-import { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState } from './fre-esm.js'
 import workerdom from './worker-dom.js';
 import { execScript } from './exec-script.js'
-import comp from './components/index'
+import { getCurrentPage } from './page.js'
+import {global as ref} from './global'
 
 let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
@@ -91,26 +91,7 @@ addEventListener('message', ({ data }) => {
     }
 });
 
-const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
 
-const ref = {
-    modules: {},
-    global: {
-        Page: {},
-    },
-    fre,
-    comp,
-    JSSDK: {
-        readFileSync(path) {
-            var request = new XMLHttpRequest();
-            request.open('GET', 'http://localhost:5000/' + path, false);
-            request.send(null);
-            if (request.status === 200) {
-                return request.responseText
-            }
-        }
-    }
-}
 
 const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
 
@@ -118,6 +99,11 @@ const { scripts, styles } = JSON.parse(manifest).pages[0]
 console.log(styles)
 
 execScript('demo' + scripts[1], ref)
+execScript('demo' + scripts[0], ref)
+
+const page = getCurrentPage()
+
+console.log(page)
 
 console.log(ref)
 
