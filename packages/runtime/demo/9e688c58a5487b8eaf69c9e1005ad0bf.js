@@ -290,7 +290,6 @@ Page({
     this.setData(this.data);
   },
   add() {
-    console.log(this.data.count);
     this.setData({
       count: this.data.count + 1
     });

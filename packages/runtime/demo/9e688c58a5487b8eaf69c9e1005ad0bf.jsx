@@ -29,12 +29,14 @@ var stdin_default = (props) => {
   useEffect(() => {
     setStates[2] = setState;
   }, []);
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-    class: `count`
-  }, state.count), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `primary`,
-    onClick: $handleEvent("add", "2")
-  }, "+1"));
+  with (state) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+      class: `count`
+    }, count), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`,
+      onClick: $handleEvent("add", "2")
+    }, "+1"));
+  }
 };
 const UseItem = (props) => {
   const [state, setState] = fre.useState({});

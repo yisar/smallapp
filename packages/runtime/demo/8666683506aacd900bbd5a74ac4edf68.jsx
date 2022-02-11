@@ -29,6 +29,8 @@ var stdin_default = (props) => {
   useEffect(() => {
     setStates[3] = setState;
   }, []);
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "kid"));
+  with (state) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "kid"));
+  }
 };
 module.exports = __toCommonJS(stdin_exports);

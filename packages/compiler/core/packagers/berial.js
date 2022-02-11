@@ -16,7 +16,7 @@ module.exports = async function packBerial(asset, options) {
     console.log(e)
   }
 
-  asset.output.jsx = String(code)
+  asset.output.jsx = String(code.replace('while (state)','with (state)'))
 
   const path = asset.path.replace(edir, '').replace(/\\/g, '/').replace('.json', '')
 
