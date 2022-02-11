@@ -16,12 +16,6 @@
         const worker = new Worker('./dist/master.js')
         workerdom({ worker })
     </script>
-    <!-- <script type="module">
-        import workerdom from './slave/index.js'
-        const worker = new Worker('./master/index.js', { type: "module" })
-        workerdom({ worker })
-        console.log(worker)
-    </script> -->
 </body>
 
 </html>

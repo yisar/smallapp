@@ -1,6 +1,2 @@
-<button>default</button>
-  <button type="primary">primary</button>
-  <button type="warn">warn</button>
-  <button type="primary" size="mini">mini</button>
-  <button type="primary" disabled="{{true}}">disabled</button>
-  <button type="primary" loading="{{true}}" loading="true">loading</button>
+  <text>0</text>
+  <button type="primary">+1</button>

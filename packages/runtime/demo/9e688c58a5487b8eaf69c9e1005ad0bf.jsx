@@ -26,20 +26,9 @@ __export(stdin_exports, {
 });
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Button, null, "default"), /* @__PURE__ */ fre.h(comp.Button, {
+  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "0"), /* @__PURE__ */ fre.h(comp.Button, {
     type: `primary`
-  }, "primary"), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `warn`
-  }, "warn"), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `primary`,
-    size: `mini`
-  }, "mini"), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `primary`,
-    disabled: `${true}`
-  }, "disabled"), /* @__PURE__ */ fre.h(comp.Button, {
-    type: `primary`,
-    loading: `true`
-  }, "loading"));
+  }, "+1"));
 };
 const UseItem = (props) => {
   const [state, setState] = fre.useState({});
@@ -47,22 +36,22 @@ const UseItem = (props) => {
     class: `list-items`
   }, /* @__PURE__ */ fre.h(comp.Icon, {
     type: `${iitem.completed ? "success" : "circle"}`,
-    onClick: $handleEvent("clickIco", "10", "tap"),
+    onClick: $handleEvent("clickIco", "7", "tap"),
     "data-id": `${iitem.id}`
   }), /* @__PURE__ */ fre.h(comp.Input, {
     class: `aaa ${iitem.completed ? "completed" : ""}`,
-    onKeyDown: $handleEvent("edittodo", "10", "confirm"),
+    onKeyDown: $handleEvent("edittodo", "7", "confirm"),
     "data-id": `${iitem.id}`,
     value: `${iitem.name}`
   }), /* @__PURE__ */ fre.h(comp.Icon, {
     type: `clear`,
-    onClick: $handleEvent("clear", "10", "tap")
+    onClick: $handleEvent("clear", "7", "tap")
   }), /* @__PURE__ */ fre.h(comp.View, {
     slot: `aaa`
   }, "111"), /* @__PURE__ */ fre.h(comp.ChildChild, {
-    onEee: $handleEvent("eee", "10", "eee")
+    onEee: $handleEvent("eee", "7", "eee")
   }), /* @__PURE__ */ fre.h(comp.Button, {
-    onClick: $handleEvent("clear", "10", "tap")
+    onClick: $handleEvent("clear", "7", "tap")
   }, "aaa")));
 };
 const ChildChild = (props) => {
