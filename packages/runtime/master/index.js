@@ -1,6 +1,6 @@
-import { h, render, useEffect, useState, Fragment } from './web_modules/fre-esm.js'
-import workerdom from './web_modules/worker-dom.js';
-import { execScript } from './web_modules/exec-script.js'
+import { h, render, useEffect, useState, Fragment } from '../web_modules/fre-esm.js'
+import workerdom from '../web_modules/worker-dom.js';
+import { execScript } from '../web_modules/exec-script.js'
 
 let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
@@ -106,7 +106,7 @@ const ref = {
     JSSDK: {
         readFileSync(path) {
             var request = new XMLHttpRequest();
-            request.open('GET', path, false);
+            request.open('GET', 'http://localhost:5000/' + path, false);
             request.send(null);
             if (request.status === 200) {
                 return request.responseText

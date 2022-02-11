@@ -5,7 +5,8 @@
   "main": "worker.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "serve ./"
+    "start": "serve ./",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/yisar/fre-worker/issues"
   },
-  "homepage": "https://github.com/yisar/fre-worker#readme"
+  "homepage": "https://github.com/yisar/fre-worker#readme",
+  "dependencies": {
+    "rollup": "^2.67.2"
+  }
 }

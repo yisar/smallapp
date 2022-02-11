@@ -28,7 +28,7 @@ button {
   outline: none;
   font-weight: bold;
 }
-button:not([_size='mini']) {
+button:not([size='mini']) {
   width: 184px;
 }
 button[type='primary'] {

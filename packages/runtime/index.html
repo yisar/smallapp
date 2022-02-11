@@ -11,12 +11,17 @@
 </head>
 
 <body>
-    <script type="module">
-        import workerdom from './dom.js'
-        const worker = new Worker('worker.js', { type: "module" })
+    <script src="./dist/slave.js"></script>
+    <script>
+        const worker = new Worker('./dist/master.js')
+        window.freminiapp.workerdom({ worker })
+    </script>
+    <!-- <script type="module">
+        import workerdom from './slave/index.js'
+        const worker = new Worker('./master/index.js', { type: "module" })
         workerdom({ worker })
         console.log(worker)
-    </script>
+    </script> -->
 </body>
 
 </html>

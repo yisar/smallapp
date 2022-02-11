@@ -47,22 +47,22 @@ const UseItem = (props) => {
     class: `list-items`
   }, /* @__PURE__ */ fre.h(comp.Icon, {
     type: `${iitem.completed ? "success" : "circle"}`,
-    onClick: $handleEvent("clickIco", "7", "tap"),
+    onClick: $handleEvent("clickIco", "10", "tap"),
     "data-id": `${iitem.id}`
   }), /* @__PURE__ */ fre.h(comp.Input, {
     class: `aaa ${iitem.completed ? "completed" : ""}`,
-    onKeyDown: $handleEvent("edittodo", "7", "confirm"),
+    onKeyDown: $handleEvent("edittodo", "10", "confirm"),
     "data-id": `${iitem.id}`,
     value: `${iitem.name}`
   }), /* @__PURE__ */ fre.h(comp.Icon, {
     type: `clear`,
-    onClick: $handleEvent("clear", "7", "tap")
+    onClick: $handleEvent("clear", "10", "tap")
   }), /* @__PURE__ */ fre.h(comp.View, {
     slot: `aaa`
   }, "111"), /* @__PURE__ */ fre.h(comp.ChildChild, {
-    onEee: $handleEvent("eee", "7", "eee")
+    onEee: $handleEvent("eee", "10", "eee")
   }), /* @__PURE__ */ fre.h(comp.Button, {
-    onClick: $handleEvent("clear", "7", "tap")
+    onClick: $handleEvent("clear", "10", "tap")
   }, "aaa")));
 };
 const ChildChild = (props) => {

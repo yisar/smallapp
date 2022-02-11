@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-export default ({ worker }) => {
+export function workerdom ({ worker }) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -15,7 +15,6 @@ export default ({ worker }) => {
         if (node.nodeName === 'BODY') return document.body;
         return NODES.get(node.__id);
     }
-
 
     let supportsPassive = false;
     try {

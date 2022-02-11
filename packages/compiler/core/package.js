@@ -108,9 +108,9 @@ async function generateEntry(asset, options) {
   })
   await Promise.all(all)
 
-  const pages = manifest
+  const pages = asset.ast.pages.map(path => manifest.find(i => i.path=== '/' + path))
   const json = {
-    info: asset.ast,
+    origin: asset.ast,
     pages,
   }
   let out = JSON.stringify(json)
