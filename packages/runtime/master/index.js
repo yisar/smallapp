@@ -1,6 +1,7 @@
-import { h, render, useEffect, useState, Fragment } from '../web_modules/fre-esm.js'
-import workerdom from '../web_modules/worker-dom.js';
-import { execScript } from '../web_modules/exec-script.js'
+import { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState } from './fre-esm.js'
+import workerdom from './worker-dom.js';
+import { execScript } from './exec-script.js'
+import comp from './components/index'
 
 let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
@@ -90,19 +91,15 @@ addEventListener('message', ({ data }) => {
     }
 });
 
+const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
+
 const ref = {
     modules: {},
     global: {
         Page: {},
     },
-    fre: {
-        h, render, useEffect, useState, Fragment
-    },
-    comp: {
-        Button: (props) => {
-            return <button {...props}/>
-        }
-    },
+    fre,
+    comp,
     JSSDK: {
         readFileSync(path) {
             var request = new XMLHttpRequest();
@@ -119,12 +116,10 @@ const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
 
 const scripts = JSON.parse(manifest).pages[0].scripts
 
-console.log(scripts)
-
 execScript('demo' + scripts[1], ref)
 
 console.log(ref)
 
-const comp = ref.modules['demo' + scripts[1]].default
+const c = ref.modules['demo' + scripts[1]].default
 
-render(h(comp, null), document.body)
+render(h(c, null), document.body)
