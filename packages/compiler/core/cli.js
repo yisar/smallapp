@@ -5,6 +5,7 @@ const pack = require("./package")
 const serve = require("./serve")
 const argv = require("./commander")
 const ora = require('ora')
+const { spawn, execFile, execFileSync } = require("child_process")
 const BUILD_TYPE = {
   BUILD: 'build'
 }
@@ -45,7 +46,8 @@ async function start(options) {
   await pack(adt, options)
   const end = Date.now()
   spinner.succeed(`compile total time ${end - start}ms`)
-
+  serve()
+  execFile(Path.join(__dirname, '../flutter/fre_miniapp.exe'))
 }
 
 if (argv.version) {

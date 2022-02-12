@@ -346,7 +346,7 @@ Page({
 
 
 // demo/pages/item/index.js
-Component.id = "7";
+Component.id = "10";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -377,7 +377,7 @@ Component({
 
 // demo/pages/kid/index.js
 Component.id = "16";
-Component.pid = "7";
+Component.pid = "10";
 Component.tag = "child-child";
 Component({
   properties: {},
