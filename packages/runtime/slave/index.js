@@ -46,8 +46,10 @@ function workerdom({ worker }) {
         let event = { type: e.type };
         if (e.target) {
             event.target = e.target.__id;
-            event.checked = e.target.checked
-            event.value = e.target.value
+        }
+        event.detail = {
+            value: e.target.value,
+            checked: e.target.checked
         }
         for (let i in e) {
             let v = e[i];

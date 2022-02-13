@@ -54,6 +54,7 @@ button{
   height: 100rpx;
   font-size: 40rpx;
   border-bottom: 1px solid #e6e6e6;
+  flex: 1;
 }
 
 .list-items input {
