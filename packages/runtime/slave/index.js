@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-function workerdom ({ worker }) {
+function workerdom({ worker }) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -44,14 +44,17 @@ function workerdom ({ worker }) {
         if (e.type === 'click' && touch) return false;
 
         let event = { type: e.type };
-        if (e.target) event.target = e.target.__id;
+        if (e.target) {
+            event.target = e.target.__id;
+            event.checked = e.target.checked
+            event.value = e.target.value
+        }
         for (let i in e) {
             let v = e[i];
             if (typeof v !== 'object' && typeof v !== 'function' && i !== i.toUpperCase() && !event.hasOwnProperty(i)) {
                 event[i] = v;
             }
         }
-
         worker.postMessage({
             type: 'event',
             event

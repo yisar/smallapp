@@ -30,12 +30,16 @@ var stdin_default = (props) => {
     setStates[2] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Text, {
       class: `count`
     }, count), /* @__PURE__ */ fre.h(comp.Button, {
       type: `primary`,
       onClick: $handleEvent("add", "2")
-    }, "+1"));
+    }, "+"), /* @__PURE__ */ fre.h(comp.Switch, {
+      checked: `false`,
+      type: `switch`,
+      onChange: $handleEvent("change", "2")
+    })));
   }
 };
 const UseItem = (props) => {

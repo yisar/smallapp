@@ -12,9 +12,13 @@
 
 <body>
     <script src="./dist/slave.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.9.0/vconsole.min.js"></script>
     <script>
         const worker = new Worker('./dist/master.js')
         workerdom({ worker })
+    </script>
+    <script>
+        var vConsole = new VConsole();
     </script>
 </body>
 
