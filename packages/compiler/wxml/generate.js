@@ -147,7 +147,7 @@ function generateProps(node, state, asset) {
         state.methods.push(value)
       }
       const key = wriedName(name)
-      code += ` ${key}={$handleEvent("${value}", "${getId(asset)}")} `
+      code += ` ${key}={$handleEvent("${value}", "${getId(asset)}", "${name}")} `
     } else if (node.name === 'import') {
       state.imports.push(value)
     } else {

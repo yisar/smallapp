@@ -13,7 +13,7 @@ Component({
       this.triggerEvent("myevent", e)
     },
     clear(e) {
-      this.triggerEvent("myevent", e)
+      this.triggerEvent("clear", e)
     },
   },
   lifetimes: {

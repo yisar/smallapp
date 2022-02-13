@@ -49,7 +49,11 @@ function workerdom({ worker }) {
         }
         event.detail = {
             value: e.target.value,
-            checked: e.target.checked
+            checked: e.target.checked,
+        }
+        event.dataset = {}
+        for (let d in e.target.dataset) {
+            event.dataset[d] = e.target.dataset[d]
         }
         for (let i in e) {
             let v = e[i];

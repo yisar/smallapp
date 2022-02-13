@@ -39,55 +39,55 @@ var stdin_default = (props) => {
     }, /* @__PURE__ */ fre.h(comp.View, {
       class: `list-items`
     }, /* @__PURE__ */ fre.h(comp.Input, {
-      onKeyDown: $handleEvent("addtodo", "2"),
+      onKeyDown: $handleEvent("addtodo", "2", "bindconfirm"),
       placeholder: `What needs to be done?`,
       value: `${name}`,
       id: `test`
     })), $for(list, (item) => /* @__PURE__ */ fre.h(comp.Block, null, /* @__PURE__ */ fre.h(comp.UseItem, {
       iitem: item,
-      onMyevent: $handleEvent("eeevent", "2"),
-      onClear: $handleEvent("clear", "2")
+      onMyevent: $handleEvent("eeevent", "2", "bindmyevent"),
+      onClear: $handleEvent("clear", "2", "bindclear")
     }))), /* @__PURE__ */ fre.h(comp.View, {
       class: `footer`
     }, /* @__PURE__ */ fre.h(comp.Text, null, leftcount, " items left"), list.length - leftcount > 0 ? /* @__PURE__ */ fre.h(comp.View, {
       class: `clear`,
-      onClick: $handleEvent("clearCompleted", "2")
+      onClick: $handleEvent("clearCompleted", "2", "bind:tap")
     }, "clear completed") : null))));
   }
 };
 comp.UseItem = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[7] = setState;
+    setStates[10] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
       class: `list-items`
+    }, /* @__PURE__ */ fre.h(comp.View, {
+      slot: `aaa`
     }, /* @__PURE__ */ fre.h(comp.Icon, {
       type: `${iitem.completed ? "success" : "circle"}`,
-      onClick: $handleEvent("clickIco", "7"),
+      onClick: $handleEvent("clickIco", "10", "bind:tap"),
       "data-id": `${iitem.id}`
-    }), /* @__PURE__ */ fre.h(comp.View, {
-      slot: `aaa`
-    }, "slot"), /* @__PURE__ */ fre.h(comp.Input, {
+    })), /* @__PURE__ */ fre.h(comp.Input, {
       class: `aaa ${iitem.completed ? "completed" : ""}`,
-      onKeyDown: $handleEvent("edittodo", "7"),
+      onKeyDown: $handleEvent("edittodo", "10", "bindconfirm"),
       "data-id": `${iitem.id}`,
       value: `${iitem.name}`
     }), /* @__PURE__ */ fre.h(comp.Icon, {
       type: `clear`,
-      onClick: $handleEvent("clear", "7")
+      onClick: $handleEvent("clear", "10", "bind:tap")
     })));
   }
 };
 comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[15] = setState;
+    setStates[17] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-      onClick: $handleEvent("emmm", "15")
+      onClick: $handleEvent("emmm", "17", "bindtap")
     }, "pages/kid/index.wxml"));
   }
 };

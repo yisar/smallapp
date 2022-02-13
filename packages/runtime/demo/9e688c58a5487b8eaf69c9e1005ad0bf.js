@@ -349,7 +349,7 @@ Page({
 
 
 // demo/pages/item/index.js
-Component.id = "7";
+Component.id = "10";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -363,9 +363,10 @@ Component({
   methods: {
     clickIco(e) {
       console.log(123);
+      this.triggerEvent("myevent", e);
     },
     clear(e) {
-      this.triggerEvent("myevent", e);
+      this.triggerEvent("clear", e);
     }
   },
   lifetimes: {
@@ -379,8 +380,8 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "15";
-Component.pid = "7";
+Component.id = "17";
+Component.pid = "10";
 Component.tag = "child-child";
 Component({
   properties: {},

@@ -19,7 +19,7 @@ class _Page {
         this.id = id
         this.children = new Map()
         this.parent = null
-        this.methods = {}
+        this.eventMap = {}
         for (const key in option) {
             this[key] = option[key]
         }

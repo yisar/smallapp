@@ -1,4 +1,4 @@
-import { getInsById,getApp } from "./app"
+import { getInsById, getApp } from "./app"
 let currentComponent = null
 
 const app = getApp()
@@ -23,8 +23,23 @@ class _Component {
         this.pid = pid
         this.children = new Map()
         this.parent = null
+        this.eventMap = {}
         for (const key in option) {
             this[key] = option[key]
         }
+    }
+
+    setData(data) {
+        this.data = { ...this.data, ...data }
+        const setState = global.setStates[this.id]
+        setState(this.data)
+    }
+
+    triggerEvent(name, e) {
+        const parent = getInsById(this.pid)
+        const realname = parent.eventMap['bind' + name]
+        e.target.dataset = e.dataset
+        console.log(e)
+        parent[realname].call(parent, e)
     }
 }
