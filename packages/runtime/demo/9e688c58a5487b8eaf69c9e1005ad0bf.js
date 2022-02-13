@@ -362,7 +362,7 @@ Component({
   },
   methods: {
     clickIco(e) {
-      this.triggerEvent("myevent", e);
+      console.log(123);
     },
     clear(e) {
       this.triggerEvent("myevent", e);
@@ -379,7 +379,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "14";
+Component.id = "17";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({

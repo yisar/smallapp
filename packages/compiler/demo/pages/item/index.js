@@ -9,7 +9,8 @@ Component({
   },
   methods: {
     clickIco(e) {
-      this.triggerEvent("myevent", e)
+      console.log(123)
+      // this.triggerEvent("myevent", e)
     },
     clear(e) {
       this.triggerEvent("myevent", e)

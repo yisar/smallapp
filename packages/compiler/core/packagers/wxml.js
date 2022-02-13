@@ -23,10 +23,15 @@ module.exports = async function packWxml(asset) {
         return <>${asset.out}</>
       }
   };\n`
-      : `const ${titleCase(asset.parent.tag)} = (props) =>{
+      : `comp.${titleCase(asset.parent.tag)} = (props) =>{
     const [state, setState] = fre.useState({})
-      return <>${asset.out}</>
-  };`
+    useEffect(()=>{
+      setStates[${asset.parent.id}] = setState
+    },[]);
+      while({...props,...state}){
+        return <>${asset.out}</>
+      }
+  };\n`
 
   return code
 }

@@ -52,47 +52,43 @@ var stdin_default = (props) => {
     }, /* @__PURE__ */ fre.h(comp.Text, null, leftcount, " items left"), list.length - leftcount > 0 ? /* @__PURE__ */ fre.h(comp.View, {
       class: `clear`,
       onClick: $handleEvent("clearCompleted", "2")
-    }, "clear completed") : null)), /* @__PURE__ */ fre.h(comp.Button, {
-      type: `warn`,
-      onClick: $handleEvent("toast", "2"),
-      style: `margin-top:30px`
-    }, "showToast"), /* @__PURE__ */ fre.h(comp.Button, {
-      type: `primary`,
-      onClick: $handleEvent("motal", "2")
-    }, "showMotal"), /* @__PURE__ */ fre.h(comp.Button, {
-      type: `primary`,
-      onClick: $handleEvent("navigateTo", "2")
-    }, "navigateTo")));
+    }, "clear completed") : null))));
   }
 };
-const UseItem = (props) => {
+comp.UseItem = (props) => {
   const [state, setState] = fre.useState({});
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
-    class: `list-items`
-  }, /* @__PURE__ */ fre.h(comp.Icon, {
-    type: `${iitem.completed ? "success" : "circle"}`,
-    onClick: $handleEvent("clickIco", "7"),
-    "data-id": `${iitem.id}`
-  }), /* @__PURE__ */ fre.h(comp.Input, {
-    class: `aaa ${iitem.completed ? "completed" : ""}`,
-    onKeyDown: $handleEvent("edittodo", "7"),
-    "data-id": `${iitem.id}`,
-    value: `${iitem.name}`
-  }), /* @__PURE__ */ fre.h(comp.Icon, {
-    type: `clear`,
-    onClick: $handleEvent("clear", "7")
-  }), /* @__PURE__ */ fre.h(comp.View, {
-    slot: `aaa`
-  }, "111"), /* @__PURE__ */ fre.h(comp.ChildChild, {
-    onEee: $handleEvent("eee", "7")
-  }), /* @__PURE__ */ fre.h(comp.Button, {
-    onClick: $handleEvent("clear", "7")
-  }, "aaa")));
+  useEffect(() => {
+    setStates[7] = setState;
+  }, []);
+  with ({ ...props, ...state }) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
+      class: `list-items`
+    }, /* @__PURE__ */ fre.h(comp.Icon, {
+      type: `${iitem.completed ? "success" : "circle"}`,
+      onClick: $handleEvent("clickIco", "7"),
+      "data-id": `${iitem.id}`
+    }), /* @__PURE__ */ fre.h(comp.View, {
+      slot: `aaa`
+    }, "slot"), /* @__PURE__ */ fre.h(comp.Input, {
+      class: `aaa ${iitem.completed ? "completed" : ""}`,
+      onKeyDown: $handleEvent("edittodo", "7"),
+      "data-id": `${iitem.id}`,
+      value: `${iitem.name}`
+    }), /* @__PURE__ */ fre.h(comp.Icon, {
+      type: `clear`,
+      onClick: $handleEvent("clear", "7")
+    })));
+  }
 };
-const ChildChild = (props) => {
+comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
-  return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-    onClick: $handleEvent("emmm", "14")
-  }, "pages/kid/index.wxml"));
+  useEffect(() => {
+    setStates[17] = setState;
+  }, []);
+  with ({ ...props, ...state }) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+      onClick: $handleEvent("emmm", "17")
+    }, "pages/kid/index.wxml"));
+  }
 };
 module.exports = __toCommonJS(stdin_exports);
