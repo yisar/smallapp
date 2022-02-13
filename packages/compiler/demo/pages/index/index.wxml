@@ -2,4 +2,5 @@
   <text class="count">{{count}}</text>
   <button type="primary" bindtap="add">+</button>
   <switch checked="false" type="switch" bindchange="change"></switch>
+  <icon></icon>
 </view>
