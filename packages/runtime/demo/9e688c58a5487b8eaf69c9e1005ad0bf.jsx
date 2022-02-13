@@ -4,8 +4,8 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
+  for (var name2 in all)
+    __defProp(target, name2, { get: all[name2], enumerable: true });
 };
 var __reExport = (target, module2, copyDefault, desc) => {
   if (module2 && typeof module2 === "object" || typeof module2 === "function") {
@@ -30,16 +30,39 @@ var stdin_default = (props) => {
     setStates[2] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Text, {
-      class: `count`
-    }, count), /* @__PURE__ */ fre.h(comp.Button, {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
+      class: `container`
+    }, /* @__PURE__ */ fre.h(comp.View, {
+      class: `title`
+    }, /* @__PURE__ */ fre.h(comp.Text, null, "todos")), /* @__PURE__ */ fre.h(comp.View, {
+      class: `list`
+    }, /* @__PURE__ */ fre.h(comp.View, {
+      class: `list-items`
+    }, /* @__PURE__ */ fre.h(comp.Input, {
+      onKeyDown: $handleEvent("addtodo", "2"),
+      placeholder: `What needs to be done?`,
+      value: `${name}`,
+      id: `test`
+    })), $for(list, (item) => /* @__PURE__ */ fre.h(comp.Block, null, /* @__PURE__ */ fre.h(comp.UseItem, {
+      iitem: item,
+      onMyevent: $handleEvent("eeevent", "2"),
+      onClear: $handleEvent("clear", "2")
+    }))), /* @__PURE__ */ fre.h(comp.View, {
+      class: `footer`
+    }, /* @__PURE__ */ fre.h(comp.Text, null, leftcount, " items left"), list.length - leftcount > 0 ? /* @__PURE__ */ fre.h(comp.View, {
+      class: `clear`,
+      onClick: $handleEvent("clearCompleted", "2")
+    }, "clear completed") : null)), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `warn`,
+      onClick: $handleEvent("toast", "2"),
+      style: `margin-top:30px`
+    }, "showToast"), /* @__PURE__ */ fre.h(comp.Button, {
       type: `primary`,
-      onClick: $handleEvent("add", "2")
-    }, "+"), /* @__PURE__ */ fre.h(comp.Switch, {
-      checked: `false`,
-      type: `switch`,
-      onChange: $handleEvent("change", "2")
-    }), /* @__PURE__ */ fre.h(comp.Icon, null)));
+      onClick: $handleEvent("motal", "2")
+    }, "showMotal"), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`,
+      onClick: $handleEvent("navigateTo", "2")
+    }, "navigateTo")));
   }
 };
 const UseItem = (props) => {
@@ -69,7 +92,7 @@ const UseItem = (props) => {
 const ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-    onClick: $handleEvent("emmm", "16")
+    onClick: $handleEvent("emmm", "14")
   }, "pages/kid/index.wxml"));
 };
 module.exports = __toCommonJS(stdin_exports);

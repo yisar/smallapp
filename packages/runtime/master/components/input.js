@@ -1,4 +1,4 @@
-import {h} from '../fre-esm'
+import { h } from '../fre-esm'
 
 export default function Input(props) {
 
@@ -10,8 +10,9 @@ export default function Input(props) {
             "box-sizing": " border-box",
             outline: " none",
             "border-radius": "2px",
-            ...style
+            ...props.style
         }}
         type="text"
-        {...props}></input>
+        {...props}
+    ></input>
 }

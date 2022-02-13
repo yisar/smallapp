@@ -16,6 +16,9 @@ body {
   margin: 0;
   padding: 0;
 }
+html {
+  font-size: calc(100vw / 7.50);
+}
 button {
   display: block;
   margin: 0 auto;

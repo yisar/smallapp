@@ -21,12 +21,7 @@ class _Page {
         this.parent = null
         this.methods = {}
         for (const key in option) {
-            if (key != 'data' && !key.startsWith('on')) {
-                this.methods[key] = option[key]
-            } else {
-                this[key] = option[key]
-            }
-
+            this[key] = option[key]
         }
     }
 
