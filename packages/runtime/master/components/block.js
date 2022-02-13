@@ -1,5 +1,5 @@
-import {h} from '../fre-esm'
+import {h,Fragment} from '../fre-esm'
 
-export function Block(props) {
-    return props.children
+export default function Block(props) {
+    return <div>{props.children}</div>
   }

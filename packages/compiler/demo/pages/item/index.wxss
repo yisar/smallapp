@@ -11,10 +11,7 @@
   width: 50rpx;
   height: 50rpx;
 }
-.list-items input {
-  flex: auto;
-  margin-left: 30rpx;
-}
+
 .completed {
   text-decoration: line-through;
   color: #d9d9d9;

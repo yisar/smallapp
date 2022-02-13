@@ -43,11 +43,11 @@ var stdin_default = (props) => {
       placeholder: `What needs to be done?`,
       value: `${name}`,
       id: `test`
-    })), $for(list, (item) => /* @__PURE__ */ fre.h(comp.Block, null, /* @__PURE__ */ fre.h(comp.UseItem, {
+    })), /* @__PURE__ */ fre.h(comp.View, null, $for(list, (item) => /* @__PURE__ */ fre.h(comp.Block, null, /* @__PURE__ */ fre.h(comp.UseItem, {
       iitem: item,
-      onMyevent: $handleEvent("eeevent", "2", "bindmyevent"),
+      onMyevent: $handleEvent("clickIco", "2", "bindmyevent"),
       onClear: $handleEvent("clear", "2", "bindclear")
-    }))), /* @__PURE__ */ fre.h(comp.View, {
+    })))), /* @__PURE__ */ fre.h(comp.View, {
       class: `footer`
     }, /* @__PURE__ */ fre.h(comp.Text, null, leftcount, " items left"), list.length - leftcount > 0 ? /* @__PURE__ */ fre.h(comp.View, {
       class: `clear`,
@@ -58,7 +58,7 @@ var stdin_default = (props) => {
 comp.UseItem = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[10] = setState;
+    setStates[7] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
@@ -67,16 +67,16 @@ comp.UseItem = (props) => {
       slot: `aaa`
     }, /* @__PURE__ */ fre.h(comp.Icon, {
       type: `${iitem.completed ? "success" : "circle"}`,
-      onClick: $handleEvent("clickIco", "10", "bind:tap"),
+      onClick: $handleEvent("clickIco", "7", "bind:tap"),
       "data-id": `${iitem.id}`
     })), /* @__PURE__ */ fre.h(comp.Input, {
       class: `aaa ${iitem.completed ? "completed" : ""}`,
-      onKeyDown: $handleEvent("edittodo", "10", "bindconfirm"),
+      onKeyDown: $handleEvent("edittodo", "7", "bindconfirm"),
       "data-id": `${iitem.id}`,
       value: `${iitem.name}`
     }), /* @__PURE__ */ fre.h(comp.Icon, {
       type: `clear`,
-      onClick: $handleEvent("clear", "10", "bind:tap")
+      onClick: $handleEvent("clear", "7", "bind:tap")
     })));
   }
 };

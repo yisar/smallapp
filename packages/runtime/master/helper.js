@@ -13,7 +13,12 @@ export function $handleEvent(name, id, custom) {
     }
 }
 
-export const $for = (arr, fn, key) => {
+export const $for = (arr, fn,key) => {
+    console.log(arr,key)
     arr = arr || []
-    return arr.map((item) => fn(item))
+    return arr.map((item,index) => {
+        const vdom = fn(item)
+        vdom.key = key || index
+        return vdom
+    })
 }

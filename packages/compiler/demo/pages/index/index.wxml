@@ -7,10 +7,11 @@
     <view class="list-items">
       <input bindconfirm="addtodo" placeholder="What needs to be done?" value="{{name}}" id="test"></input>
     </view>
-    <block wx:for="{{list}}" wx:key="id">
-      <use-item iitem="{{item}}" bindmyevent="eeevent" bindclear="clear">
+    <view>
+    <block wx:for="{{list}}" wx:key="{{item.name}}">
+      <use-item iitem="{{item}}" bindmyevent="clickIco" bindclear="clear">
       </use-item>
-    </block>
+    </block></view>
     <template is="footer" data="{{leftcount}}"></template>
   </view>
   <!-- <button type="warn" bindtap="toast" style="margin-top:30px">showToast</button>

@@ -96,10 +96,7 @@ button{
   width: 0.5rem;
   height: 0.5rem;
 }
-.list-items input {
-  flex: auto;
-  margin-left: 0.3rem;
-}
+
 .completed {
   text-decoration: line-through;
   color: #d9d9d9;
