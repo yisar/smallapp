@@ -4,6 +4,10 @@ import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
 import { render, h } from './fre-esm'
 
+self.send = function send(message) {
+    postMessage(JSON.parse(JSON.stringify(message)));
+}
+
 let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
     self[i] = document.defaultView[i];
@@ -73,11 +77,6 @@ function sanitize(obj) {
     }
     send({ type: 'MutationRecord', mutations });
 })).observe(document, { subtree: true });
-
-
-function send(message) {
-    postMessage(JSON.parse(JSON.stringify(message)));
-}
 
 
 /** Receive messages from the page */

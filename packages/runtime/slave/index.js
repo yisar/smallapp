@@ -240,8 +240,14 @@ function workerdom({ worker }) {
             for (let i = 0; i < data.mutations.length; i++) {
                 queueMutation(data.mutations[i]);
             }
+        } else if (data.type === 'wxapi') {
+            window.chrome && window.chrome.postMessage(data)
         }
     };
+
+    window.chrome && window.chrome.webview.addEventListener('message', function ({data}) {
+        alert("messagereceived: " + JSON.stringify(data));
+    })
 
 
     worker.postMessage({
