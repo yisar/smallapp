@@ -30,7 +30,9 @@ var stdin_default = (props) => {
     setStates[3] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Switch, {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+      class: `switch`
+    }, "Switch"), /* @__PURE__ */ fre.h(comp.Switch, {
       checked: `false`,
       type: `switch`,
       onChange: $handleEvent("change", "3", "bindchange"),

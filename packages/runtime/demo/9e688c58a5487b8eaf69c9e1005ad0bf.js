@@ -377,7 +377,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "15";
+Component.id = "17";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({

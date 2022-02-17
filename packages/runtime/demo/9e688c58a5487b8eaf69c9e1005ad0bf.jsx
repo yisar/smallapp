@@ -59,7 +59,7 @@ var stdin_default = (props) => {
     }, "showToast"), /* @__PURE__ */ fre.h(comp.Button, {
       type: `primary`,
       onClick: $handleEvent("navigateTo", "2", "bindtap")
-    }, "navigateTo")));
+    }, "Switch")));
   }
 };
 comp.UseItem = (props) => {
@@ -90,11 +90,11 @@ comp.UseItem = (props) => {
 comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[15] = setState;
+    setStates[17] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-      onClick: $handleEvent("emmm", "15", "bindtap")
+      onClick: $handleEvent("emmm", "17", "bindtap")
     }, "pages/kid/index.wxml"));
   }
 };
