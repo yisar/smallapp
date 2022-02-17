@@ -261,7 +261,7 @@ Page({
   },
   navigateTo() {
     wx.navigateTo({
-      url: "/pages/child/index?aaa=1&bbb=2",
+      url: "pages/child/index?aaa=1&bbb=2",
       success: (result) => {
       },
       fail: (res) => {

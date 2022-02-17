@@ -1,4 +1,6 @@
 const polka = require("polka")
+const fs = require('fs')
+const path = require('path')
 const { PORT = 5000 } = process.env
 
 module.exports = function serve(options) {
@@ -9,7 +11,8 @@ module.exports = function serve(options) {
       res.end('hello world')
     })
     .get("*", (req, res) => {
-      res.redirect("/")
+      const html = fs.readFileSync(path.join(__dirname,'../../runtime/index.html')).toString()
+      res.end(html)
     })
     .listen(PORT, (err) => {
       if (err) throw err

@@ -1,2 +1,1 @@
-<!--pages/child/index.wxml-->
-<text>kid</text>
+<switch checked="false" type="switch" bindchange="change"></switch>

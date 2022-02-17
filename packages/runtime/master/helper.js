@@ -1,5 +1,6 @@
 import { getInsById } from "./app";
 
+
 export function $handleEvent(name, id, custom) {
     const ins = getInsById(id)
     const method = ins[name] || ins.methods[name] || function () { }
@@ -14,7 +15,6 @@ export function $handleEvent(name, id, custom) {
 }
 
 export const $for = (arr, fn,key) => {
-    console.log(arr,key)
     arr = arr || []
     return arr.map((item,index) => {
         const vdom = fn(item)

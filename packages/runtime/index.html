@@ -11,10 +11,9 @@
 </head>
 
 <body>
-    <script src="./dist/slave.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.9.0/vconsole.min.js"></script>
+    <script src="http://localhost:5000/dist/slave.js"></script>
     <script>
-        const worker = new Worker('./dist/master.js')
+        const worker = new Worker('http://localhost:5000/dist/master.js')
         workerdom({ worker })
     </script>
     <script>

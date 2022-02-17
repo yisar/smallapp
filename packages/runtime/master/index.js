@@ -1,9 +1,6 @@
 import workerdom from './worker-dom.js';
-import { execScript } from './exec-script.js'
-import { getCurrentPage } from './page.js'
-import { global as ref } from './global'
-import { render, h } from './fre-esm'
 import { handleWxEvent } from './wxapi'
+import {init} from './init'
 
 self.send = function send(message) {
     postMessage(JSON.parse(JSON.stringify(message)));
@@ -79,34 +76,16 @@ function sanitize(obj) {
 
 
 addEventListener('message', ({ data }) => {
+    console.log(data);
     switch (data.type) {
         case 'init':
-            url = data.url;
+            init(data.location)
             break;
         case 'event':
             handleEvent(data.event);
             break;
-        case 'wxapi-callback':
+        case 'wxcallback':
             handleWxEvent(data)
             break;
     }
 });
-
-
-
-const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
-
-const { scripts, styles } = JSON.parse(manifest).pages[0]
-
-execScript('demo' + scripts[1], ref)
-execScript('demo' + scripts[0], ref)
-
-const page = getCurrentPage()
-
-const c = ref.modules['demo' + scripts[1]].default
-let link = document.createElement('link')
-link.setAttribute('href', 'http://localhost:5000/' + 'demo' + styles[0])
-link.setAttribute('rel', 'stylesheet')
-document.body.appendChild(link)
-
-render(h(c, { data: page.data }), document.body)

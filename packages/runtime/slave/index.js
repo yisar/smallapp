@@ -241,26 +241,27 @@ function workerdom({ worker }) {
                 queueMutation(data.mutations[i]);
             }
         } else if (data.type === 'wxapi') {
-            if (typeof window.chrome.webview !== 'undefined'){
-                alert(111)
+            if (typeof window.chrome.webview !== 'undefined') {
                 window.chrome.webview.postMessage(data)
             }
         }
     };
 
     if (typeof window.chrome.webview !== 'undefined') { // 接受来自 webview 的消息
-        window.chrome.webview.addEventListener('message', function ({ data }) {
-            alert("messagereceived: " + JSON.stringify(data));
-            if (data.type === 'wxapi-callback') {
-                worker.postMessage(data)
-            }
+        window.chrome.webview.addEventListener('message', function (id) {
+            worker.postMessage({ type: 'wxcallback', id })
+
         })
     }
 
 
     worker.postMessage({
         type: 'init',
-        location: location.href
+        location: {
+            pathname: location.pathname,
+            href: location.href,
+            search: location.search
+        }
     });
 };
 
