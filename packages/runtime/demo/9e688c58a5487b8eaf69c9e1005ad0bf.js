@@ -380,7 +380,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "14";
+Component.id = "17";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({

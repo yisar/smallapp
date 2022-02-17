@@ -17,6 +17,8 @@
   <!-- <button type="warn" bindtap="toast" style="margin-top:30px">showToast</button>
   <button type="primary" bindtap="motal">showMotal</button>
   <button type="primary" bindtap="navigateTo">navigateTo</button> -->
+  <button type="warn" bindtap="toast" style="margin-top:30px">showToast</button>
+  <button type="primary" bindtap="navigateTo">navigateTo</button>
 </view>
 
 <template name="footer">

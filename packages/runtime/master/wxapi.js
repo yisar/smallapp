@@ -4,11 +4,10 @@ let index = 0;
 
 export const wx = {
     navigateTo(options) {
-        send({
-            type: 'wxapi',
-            name: 'navigateTo',
-            options: serOptions(options)
-        })
+        sendMessage('navigateTo', options)
+    },
+    showToast(options) {
+        sendMessage('showToast', options)
     }
 }
 
@@ -26,7 +25,17 @@ function serOptions(options) {
     return out
 }
 
-export function handleWxEvent(data){
+function sendMessage(name, options) {
+    const args = {
+        type: 'wxapi',
+        name: name,
+        options: serOptions(options)
+    }
+    send(args)
+}
+
+export function handleWxEvent(data) {
     let callback = callbacks[data.id]
     callback(data.res)
+    callbacks[data.id] = undefined
 }

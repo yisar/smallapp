@@ -52,7 +52,14 @@ var stdin_default = (props) => {
     }, /* @__PURE__ */ fre.h(comp.Text, null, leftcount, " items left"), list.length - leftcount > 0 ? /* @__PURE__ */ fre.h(comp.View, {
       class: `clear`,
       onClick: $handleEvent("clearCompleted", "2", "bind:tap")
-    }, "clear completed") : null))));
+    }, "clear completed") : null)), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `warn`,
+      onClick: $handleEvent("toast", "2", "bindtap"),
+      style: `margin-top:30px`
+    }, "showToast"), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`,
+      onClick: $handleEvent("navigateTo", "2", "bindtap")
+    }, "navigateTo")));
   }
 };
 comp.UseItem = (props) => {
@@ -83,11 +90,11 @@ comp.UseItem = (props) => {
 comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[14] = setState;
+    setStates[17] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-      onClick: $handleEvent("emmm", "14", "bindtap")
+      onClick: $handleEvent("emmm", "17", "bindtap")
     }, "pages/kid/index.wxml"));
   }
 };
