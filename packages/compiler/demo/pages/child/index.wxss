@@ -1,1 +1,3 @@
-/* pages/child/index.wxss */
+.switch{
+    margin: 30px;
+}

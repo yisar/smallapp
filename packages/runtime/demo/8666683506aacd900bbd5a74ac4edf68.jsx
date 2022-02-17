@@ -30,7 +30,12 @@ var stdin_default = (props) => {
     setStates[3] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, null, "kid"));
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Switch, {
+      checked: `false`,
+      type: `switch`,
+      onChange: $handleEvent("change", "3", "bindchange"),
+      class: `switch`
+    }));
   }
 };
 module.exports = __toCommonJS(stdin_exports);

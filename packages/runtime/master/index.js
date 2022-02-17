@@ -76,7 +76,6 @@ function sanitize(obj) {
 
 
 addEventListener('message', ({ data }) => {
-    console.log(data);
     switch (data.type) {
         case 'init':
             init(data.location)

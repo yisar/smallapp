@@ -26,10 +26,6 @@ Page({
     console.log('onLoad')
   },
 
-  change(e){
-    console.log(e)
-  },
-
   eeevent(detail, option) {
     console.log('triggerEvent', detail)
   },

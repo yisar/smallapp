@@ -250,9 +250,6 @@ Page({
   onLoad() {
     console.log("onLoad");
   },
-  change(e) {
-    console.log(e);
-  },
   eeevent(detail, option) {
     console.log("triggerEvent", detail);
   },
@@ -380,7 +377,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "17";
+Component.id = "15";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({

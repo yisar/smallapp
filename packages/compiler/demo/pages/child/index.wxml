@@ -1,1 +1,2 @@
-<switch checked="false" type="switch" bindchange="change"></switch>
+<text class="switch">Switch</text>
+<switch checked="false" type="switch" bindchange="change" class="switch"></switch>

@@ -7,7 +7,7 @@ export default function Switch(props) {
       props.onChange && props.onChange({ detail: { value: e.detail.checked } })
     }
     return (
-      <input type="checkbox" tag="switch" onInput={onChange} checked={checked}></input>
+      <input {...props} type="checkbox" tag="switch" onInput={onChange} checked={checked}></input>
     )
   }
   
