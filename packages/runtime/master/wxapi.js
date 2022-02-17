@@ -25,3 +25,8 @@ function serOptions(options) {
     }
     return out
 }
+
+export function handleWxEvent(data){
+    let callback = callbacks[data.id]
+    callback(data.res)
+}

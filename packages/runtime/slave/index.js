@@ -245,8 +245,11 @@ function workerdom({ worker }) {
         }
     };
 
-    window.chrome && window.chrome.webview.addEventListener('message', function ({data}) {
+    window.chrome && window.chrome.webview.addEventListener('message', function ({ data }) {
         alert("messagereceived: " + JSON.stringify(data));
+        if (data.type === 'wxapi-callback') {
+            worker.postMessage(data)
+        }
     })
 
 

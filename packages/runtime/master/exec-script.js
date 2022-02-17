@@ -1,7 +1,7 @@
 export function execScript(path, ref) {
-    const { modules, JSSDK, fre, comp, getApp, Page, Component, App, $handleEvent, setStates, $for, } = ref
+    const { modules, JSSDK, fre, comp, getApp, Page, Component, App, $handleEvent, setStates, $for, wx } = ref
     const str = JSSDK.readFileSync(path)
-    const fn = new Function('module', 'require', 'fre', 'comp', 'getApp', 'Page', 'Component', 'App', '$handleEvent', '$for', 'setStates', str)
+    const fn = new Function('module', 'require', 'fre', 'comp', 'getApp', 'Page', 'Component', 'App', '$handleEvent', '$for', 'setStates', wx, str)
 
     const relative = function (parent) {
         const resolve = function (path) {
@@ -32,6 +32,6 @@ export function execScript(path, ref) {
     };
 
     fn.exports = {};
-    fn.call(fn.exports, fn, relative(path), fre, comp, getApp, Page, Component, App, $handleEvent, $for, setStates);
+    fn.call(fn.exports, fn, relative(path), fre, comp, getApp, Page, Component, App, $handleEvent, $for, setStates, wx);
     modules[path] = fn.exports
 }

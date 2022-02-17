@@ -3,6 +3,7 @@ import { execScript } from './exec-script.js'
 import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
 import { render, h } from './fre-esm'
+import { handleWxEvent } from './wxapi'
 
 self.send = function send(message) {
     postMessage(JSON.parse(JSON.stringify(message)));
@@ -12,8 +13,6 @@ let document = self.document = workerdom();
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
     self[i] = document.defaultView[i];
 }
-
-let url = '/';
 
 let COUNTER = 0;
 
@@ -79,7 +78,6 @@ function sanitize(obj) {
 })).observe(document, { subtree: true });
 
 
-/** Receive messages from the page */
 addEventListener('message', ({ data }) => {
     switch (data.type) {
         case 'init':
@@ -87,6 +85,9 @@ addEventListener('message', ({ data }) => {
             break;
         case 'event':
             handleEvent(data.event);
+            break;
+        case 'wxapi-callback':
+            handleWxEvent(data)
             break;
     }
 });
@@ -108,4 +109,4 @@ link.setAttribute('href', 'http://localhost:5000/' + 'demo' + styles[0])
 link.setAttribute('rel', 'stylesheet')
 document.body.appendChild(link)
 
-render(h(c, {data:page.data}), document.body)
+render(h(c, { data: page.data }), document.body)

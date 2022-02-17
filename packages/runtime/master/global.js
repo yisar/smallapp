@@ -4,6 +4,7 @@ import { Page } from './page'
 import { getApp } from './app.js'
 import { Component } from './component.js'
 import { $handleEvent, $for } from './helper.js'
+import {wx} from './wxapi'
 
 const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
 
@@ -17,6 +18,7 @@ export const global = {
     $handleEvent,
     $for,
     setStates: {},
+    wx,
     JSSDK: {
         readFileSync(path) {
             var request = new XMLHttpRequest();
