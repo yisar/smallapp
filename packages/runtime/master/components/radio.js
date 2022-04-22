@@ -25,8 +25,8 @@ function Radio(props) {
     }
   }
 
-  if (props.checked === 'undefined'){
-    props.checked = false // why??
+  if (props.checked === 'undefined'){  // why??
+    props.checked = false 
   }
 
   return (
