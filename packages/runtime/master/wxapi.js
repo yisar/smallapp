@@ -8,6 +8,9 @@ export const wx = {
     },
     showToast(options) {
         sendMessage('showToast', options)
+    },
+    showPicker(options){
+        sendMessage('showPicker', options)
     }
 }
 

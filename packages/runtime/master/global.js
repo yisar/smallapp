@@ -27,6 +27,9 @@ export const global = {
             if (request.status === 200) {
                 return request.responseText
             }
+        },
+        log(msg){
+            
         }
     }
 }

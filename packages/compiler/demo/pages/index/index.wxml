@@ -1,6 +1,4 @@
-  <radio-group class="radio-group" bindchange="radioChange">
-  <label class="radio" wx:for="{{items}}">
-    <radio value="{{item.name}}" checked="{{item.checked}}" />
-    {{item.value}}
-  </label>
-</radio-group>
+<view>
+<button type="primary" bind:tap="showPicker">Time picker</button>
+<button type="primary" bind:tap="showToast">Date picker</button>
+</view>

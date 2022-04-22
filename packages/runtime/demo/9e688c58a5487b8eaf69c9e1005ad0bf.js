@@ -249,6 +249,11 @@ Page({
   },
   radioChange(e) {
     console.log("radio\u53D1\u751Fchange\u4E8B\u4EF6\uFF0C\u643A\u5E26value\u503C\u4E3A\uFF1A", e.detail.value);
+  },
+  showPicker(e) {
+    wx.showPicker({
+      title: "\u563F\u563F\u563F"
+    });
   }
 });
 

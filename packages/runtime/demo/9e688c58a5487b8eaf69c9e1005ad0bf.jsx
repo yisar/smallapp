@@ -26,15 +26,13 @@ var stdin_default = (props) => {
     setStates[2] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.RadioGroup, {
-      class: "radio-group",
-      onChange: $handleEvent("radioChange", "2", "bindchange")
-    }, $for(items, (item) => /* @__PURE__ */ fre.h(comp.Label, {
-      class: `radio`
-    }, /* @__PURE__ */ fre.h(comp.Radio, {
-      value: `${item.name}`,
-      checked: `${item.checked}`
-    }), item.value))));
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`,
+      onClick: $handleEvent("showPicker", "2", "bind:tap")
+    }, "Time picker"), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`,
+      onClick: $handleEvent("showToast", "2", "bind:tap")
+    }, "Date picker")));
   }
 };
 comp.UseItem = (props) => {
