@@ -1,11 +1,11 @@
-const polka = require("polka")
 const fs = require('fs')
 const path = require('path')
+const express = require('express')
 const { PORT = 5000 } = process.env
 
 module.exports = function serve(options) {
-  const app = polka()
-    .use(require("sirv")('../runtime'))
+  const app = express()
+    .use(express.static('../runtime'))
     .use(redirect)
     .get("/",(req,res)=>{
       res.end('hello world')

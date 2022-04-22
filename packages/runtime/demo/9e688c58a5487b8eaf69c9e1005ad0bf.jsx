@@ -2,28 +2,24 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __export = (target, all) => {
   for (var name2 in all)
     __defProp(target, name2, { get: all[name2], enumerable: true });
 };
-var __reExport = (target, module2, copyDefault, desc) => {
-  if (module2 && typeof module2 === "object" || typeof module2 === "function") {
-    for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
-        __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
-  return target;
+  return to;
 };
-var __toCommonJS = /* @__PURE__ */ ((cache) => {
-  return (module2, temp) => {
-    return cache && cache.get(module2) || (temp = __reExport(__markAsModule({}), module2, 1), cache && cache.set(module2, temp), temp);
-  };
-})(typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : 0);
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var stdin_exports = {};
 __export(stdin_exports, {
   default: () => stdin_default
 });
+module.exports = __toCommonJS(stdin_exports);
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
   useEffect(() => {
@@ -65,7 +61,7 @@ var stdin_default = (props) => {
 comp.UseItem = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[7] = setState;
+    setStates[10] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
@@ -74,16 +70,16 @@ comp.UseItem = (props) => {
       slot: `aaa`
     }, /* @__PURE__ */ fre.h(comp.Icon, {
       type: `${iitem.completed ? "success" : "circle"}`,
-      onClick: $handleEvent("clickIco", "7", "bind:tap"),
+      onClick: $handleEvent("clickIco", "10", "bind:tap"),
       "data-id": `${iitem.id}`
     })), /* @__PURE__ */ fre.h(comp.Input, {
       class: `aaa ${iitem.completed ? "completed" : ""}`,
-      onKeyDown: $handleEvent("edittodo", "7", "bindconfirm"),
+      onKeyDown: $handleEvent("edittodo", "10", "bindconfirm"),
       "data-id": `${iitem.id}`,
       value: `${iitem.name}`
     }), /* @__PURE__ */ fre.h(comp.Icon, {
       type: `clear`,
-      onClick: $handleEvent("clear", "7", "bind:tap")
+      onClick: $handleEvent("clear", "10", "bind:tap")
     })));
   }
 };
@@ -98,4 +94,3 @@ comp.ChildChild = (props) => {
     }, "pages/kid/index.wxml"));
   }
 };
-module.exports = __toCommonJS(stdin_exports);
