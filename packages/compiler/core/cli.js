@@ -47,7 +47,7 @@ async function start(options) {
   const end = Date.now()
   spinner.succeed(`compile total time ${end - start}ms`)
   serve()
-  execFile(Path.join(__dirname, '../flutter/fre_miniapp.exe'))
+  execFile(Path.join(__dirname, '../../container/fre_miniapp.exe'))
 }
 
 if (argv.version) {
