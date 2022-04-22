@@ -19,7 +19,7 @@ export const global = {
     $for,
     setStates: {},
     wx,
-    JSSDK: {
+    native: {
         readFileSync(path) {
             var request = new XMLHttpRequest();
             request.open('GET', 'http://localhost:5000/' + path, false);

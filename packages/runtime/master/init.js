@@ -8,7 +8,7 @@ export function init(location) {
 
     let p = ''
 
-    const manifest = ref.JSSDK.readFileSync('demo/manifest.json')
+    const manifest = ref.native.readFileSync('demo/manifest.json')
     const pages = JSON.parse(manifest).pages
     console.log(path, pages)
     if (path === '/') {
