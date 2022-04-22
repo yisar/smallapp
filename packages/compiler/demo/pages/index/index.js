@@ -12,129 +12,16 @@ const app = getApp()
 
 Page({
   data: {
-    name: "",
-    editname: "",
-    list: [],
-    leftcount: 0,
-    a: true,
-    b: true,
-    c: false,
-    count: 0
+    items: [
+      {name: 'USA', value: '美国'},
+      {name: 'CHN', value: '中国', checked: 'true'},
+      {name: 'BRA', value: '巴西'},
+      {name: 'JPN', value: '日本'},
+      {name: 'ENG', value: '英国'},
+      {name: 'TUR', value: '法国'},
+    ]
   },
-
-  onLoad() {
-    console.log('onLoad')
-  },
-
-  eeevent(detail, option) {
-    console.log('triggerEvent', detail)
-  },
-
-  eee(e) {
-    console.log(123)
-  },
-
-  navigateTo() {
-    wx.navigateTo({
-      url: 'pages/child/index?aaa=1&bbb=2',
-      success: (result) => { },
-      fail: (res) => {
-        console.log(res)
-      },
-      complete: (res) => { },
-    })
-  },
-
-  onShow: function () {
-    console.log('onShow')
-    this.setleftcount()
-    this.setData(this.data)
-  },
-
-  onReady: function () {
-    console.log('onReady')
-  },
-
-  selectAll() {
-    let flag = this.data.list.some((item) => !item.completed)
-    this.data.list.forEach((item) => (item.completed = flag))
-    this.setleftcount()
-    this.setData(this.data)
-  },
-
-  clickIco(e) {
-    let itemId = e.target.dataset.id
-    console.log(this.data.list)
-    let item = this.data.list.find((item) => item.id == itemId)
-    item.completed = !item.completed
-    this.setData(this.data)
-  },
-
-  add() {
-    this.setData({
-      count: this.data.count + 1
-    })
-  },
-
-  addtodo(e) {
-    let addtodo = e.detail.value
-    this.data.list.push({
-      id:
-        this.data.list.length > 0
-          ? this.data.list[this.data.list.length - 1].id + 1
-          : 0,
-      name: addtodo,
-      completed: false,
-    })
-    this.data.name = ""
-    this.setleftcount()
-    this.setData(this.data)
-  },
-
-  clearCompleted() {
-    this.data.list = this.data.list.filter((item) => !item.completed)
-    this.setData(this.data)
-  },
-
-  reset() {
-    this.data.name = ""
-    this.data.editname = ""
-    this.setData(this.data)
-  },
-
-  edittodo(e) {
-    let itemId = e.target.dataset.id
-    this.data.list.find((item) => item.id === itemId).name = e.detail.value
-    this.setData(this.data)
-  },
-
-  clear(e) {
-    let itemId = e.target.dataset.id
-    let itemIndex = this.data.list.findIndex((item) => item.id === itemId)
-    this.data.list.splice(itemIndex, 1)
-    this.setleftcount()
-    this.setData(this.data)
-  },
-
-  toast() {
-    wx.showToast({
-      title: "222",
-      success(res) {
-        console.log(res)
-      }
-    })
-  },
-
-  motal() {
-    wx.showModal({
-      title: '333',
-    })
-  },
-
-
-  setleftcount() {
-    this.data.leftcount = this.data.list.filter(
-      (item) => !item.completed
-    ).length
-  },
+  radioChange(e) {
+    console.log('radio发生change事件，携带value值为：', e.detail.value)
+  }
 })

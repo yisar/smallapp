@@ -238,115 +238,23 @@ b();
 var app = getApp();
 Page({
   data: {
-    name: "",
-    editname: "",
-    list: [],
-    leftcount: 0,
-    a: true,
-    b: true,
-    c: false,
-    count: 0
+    items: [
+      { name: "USA", value: "\u7F8E\u56FD" },
+      { name: "CHN", value: "\u4E2D\u56FD", checked: "true" },
+      { name: "BRA", value: "\u5DF4\u897F" },
+      { name: "JPN", value: "\u65E5\u672C" },
+      { name: "ENG", value: "\u82F1\u56FD" },
+      { name: "TUR", value: "\u6CD5\u56FD" }
+    ]
   },
-  onLoad() {
-    console.log("onLoad");
-  },
-  eeevent(detail, option) {
-    console.log("triggerEvent", detail);
-  },
-  eee(e) {
-    console.log(123);
-  },
-  navigateTo() {
-    wx.navigateTo({
-      url: "pages/child/index?aaa=1&bbb=2",
-      success: (result) => {
-      },
-      fail: (res) => {
-        console.log(res);
-      },
-      complete: (res) => {
-      }
-    });
-  },
-  onShow: function() {
-    console.log("onShow");
-    this.setleftcount();
-    this.setData(this.data);
-  },
-  onReady: function() {
-    console.log("onReady");
-  },
-  selectAll() {
-    let flag = this.data.list.some((item) => !item.completed);
-    this.data.list.forEach((item) => item.completed = flag);
-    this.setleftcount();
-    this.setData(this.data);
-  },
-  clickIco(e) {
-    let itemId = e.target.dataset.id;
-    console.log(this.data.list);
-    let item = this.data.list.find((item2) => item2.id == itemId);
-    item.completed = !item.completed;
-    this.setData(this.data);
-  },
-  add() {
-    this.setData({
-      count: this.data.count + 1
-    });
-  },
-  addtodo(e) {
-    let addtodo = e.detail.value;
-    this.data.list.push({
-      id: this.data.list.length > 0 ? this.data.list[this.data.list.length - 1].id + 1 : 0,
-      name: addtodo,
-      completed: false
-    });
-    this.data.name = "";
-    this.setleftcount();
-    this.setData(this.data);
-  },
-  clearCompleted() {
-    this.data.list = this.data.list.filter((item) => !item.completed);
-    this.setData(this.data);
-  },
-  reset() {
-    this.data.name = "";
-    this.data.editname = "";
-    this.setData(this.data);
-  },
-  edittodo(e) {
-    let itemId = e.target.dataset.id;
-    this.data.list.find((item) => item.id === itemId).name = e.detail.value;
-    this.setData(this.data);
-  },
-  clear(e) {
-    let itemId = e.target.dataset.id;
-    let itemIndex = this.data.list.findIndex((item) => item.id === itemId);
-    this.data.list.splice(itemIndex, 1);
-    this.setleftcount();
-    this.setData(this.data);
-  },
-  toast() {
-    wx.showToast({
-      title: "222",
-      success(res) {
-        console.log(res);
-      }
-    });
-  },
-  motal() {
-    wx.showModal({
-      title: "333"
-    });
-  },
-  setleftcount() {
-    this.data.leftcount = this.data.list.filter((item) => !item.completed).length;
+  radioChange(e) {
+    console.log("radio\u53D1\u751Fchange\u4E8B\u4EF6\uFF0C\u643A\u5E26value\u503C\u4E3A\uFF1A", e.detail.value);
   }
 });
 
 
 // demo/pages/item/index.js
-Component.id = "10";
+Component.id = "7";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -378,7 +286,7 @@ Component({
 
 // demo/pages/kid/index.js
 Component.id = "16";
-Component.pid = "10";
+Component.pid = "7";
 Component.tag = "child-child";
 Component({
   properties: {},

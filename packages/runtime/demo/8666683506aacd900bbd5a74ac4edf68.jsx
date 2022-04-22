@@ -28,11 +28,14 @@ var stdin_default = (props) => {
   with (state) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
       class: `switch`
-    }, "Switch"), /* @__PURE__ */ fre.h(comp.Switch, {
-      checked: `false`,
-      type: `switch`,
-      onChange: $handleEvent("change", "3", "bindchange"),
-      class: `switch`
-    }));
+    }, "Switch"), /* @__PURE__ */ fre.h(comp.RadioGroup, {
+      class: "radio-group",
+      onChange: $handleEvent("radioChange", "3", "bindchange")
+    }, $for(items, (item) => /* @__PURE__ */ fre.h(comp.Label, {
+      class: `radio`
+    }, /* @__PURE__ */ fre.h(comp.Radio, {
+      value: `${item.name}`,
+      checked: `${item.checked}`
+    }), item.value))));
   }
 };

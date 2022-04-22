@@ -1,31 +1,6 @@
-<view class="container">
-  <import src="./footer.wxml"></import>
-  <view class="title">
-    <text>todos</text>
-  </view>
-  <view class="list">
-    <view class="list-items">
-      <input bindconfirm="addtodo" placeholder="What needs to be done?" value="{{name}}" id="test"></input>
-    </view>
-    <view>
-    <block wx:for="{{list}}" wx:key="{{item.name}}">
-      <use-item iitem="{{item}}" bindmyevent="clickIco" bindclear="clear">
-      </use-item>
-    </block></view>
-    <template is="footer" data="{{leftcount}}"></template>
-  </view>
-  <!-- <button type="warn" bindtap="toast" style="margin-top:30px">showToast</button>
-  <button type="primary" bindtap="motal">showMotal</button>
-  <button type="primary" bindtap="navigateTo">navigateTo</button> -->
-  <button type="warn" bindtap="toast" style="margin-top:30px">showToast</button>
-  <button type="primary" bindtap="navigateTo">Switch</button>
-</view>
-
-<template name="footer">
-    <view class="footer">
-        <text>{{leftcount}} items left</text>
-        <view class="clear" bind:tap="clearCompleted" wx:if='{{list.length-leftcount>0}}'>
-            clear completed
-        </view>
-    </view>
-</template>
+  <radio-group class="radio-group" bindchange="radioChange">
+  <label class="radio" wx:for="{{items}}">
+    <radio value="{{item.name}}" checked="{{item.checked}}" />
+    {{item.value}}
+  </label>
+</radio-group>

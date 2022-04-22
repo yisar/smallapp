@@ -5,7 +5,10 @@ import Switch from "./switch";
 import Icon from './icon'
 import Input from "./input";
 import Block from './block'
+import Label from "./label";
+import RadioGroup from "./radio-group";
+import Radio from "./radio";
 
-const comp = { Button, Text, View, Switch, Icon, Input, Block }
+const comp = { Button, Text, View, Switch, Icon, Input, Block, Label, Radio, RadioGroup }
 
 export default comp
