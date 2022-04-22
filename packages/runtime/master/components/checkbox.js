@@ -1,4 +1,6 @@
-import {h, useState, useEffect } from '../fre-esm'
+import { useState, useEffect } from '../fre-esm'
+import { useContext } from '../context'
+import { CheckboxContext } from './checkbox-group.js'
 
 function Checkbox(props) {
   let { change, value: newValue } = useContext(CheckboxContext)
@@ -16,6 +18,7 @@ function Checkbox(props) {
   }, [checked])
 
   const onChange = e => {
+    e.stopPropagation && e.stopPropagation()
     setChecked(e.target.checked)
     if (props.onChange) {
       props.onChange({
@@ -34,7 +37,8 @@ function Checkbox(props) {
       tag="checkbox"
       style={{ color, ...style }}
       checked={checked}
-      onInput={onChange}
+      onClick={props.onClick}
+      onChange={onChange}
     />
   )
 }
