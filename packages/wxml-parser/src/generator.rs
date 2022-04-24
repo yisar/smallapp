@@ -138,8 +138,8 @@ impl Generator {
     }
 
     fn wried_prop(&mut self, p: String) -> String {
-        if p.starts_with("bind") {
-            let n = p.replace("bind", "");
+        if p.starts_with("bind") || p.starts_with("bind:") {
+            let n = p.replace("bind:", "").replace("bind", "");
             return format!(
                 "on{}",
                 match n.as_str() {

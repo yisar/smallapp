@@ -63,11 +63,11 @@ comp.UseItem = (props) => {
 comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[14] = setState;
+    setStates[16] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-      onClick: $handleEvent("emmm", "14", "bindtap")
+      onClick: $handleEvent("emmm", "16", "bindtap")
     }, "pages/kid/index.wxml"));
   }
 };
