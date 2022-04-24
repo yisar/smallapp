@@ -252,7 +252,13 @@ Page({
   },
   showPicker(e) {
     wx.showPicker({
-      title: "\u563F\u563F\u563F"
+      title: "\u563F\u563F\u563F",
+      change: (index) => {
+        console.log(index);
+      },
+      success: (index) => {
+        console.log(index);
+      }
     });
   }
 });
@@ -290,7 +296,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "16";
+Component.id = "14";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({
