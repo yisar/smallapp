@@ -12,7 +12,7 @@ pub struct Node {
 }
 
 impl Parser {
-    pub fn new(code: &str) -> Parser {
+    pub fn new(code: String) -> Parser {
         Parser {
             lexer: Lexer::new(code.to_string()),
         }

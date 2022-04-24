@@ -1,6 +1,8 @@
-extern crate wasm_bindgen;
+#[macro_use]
+extern crate napi;
 
-use wasm_bindgen::prelude::*;
+/// import the preludes
+use napi::bindgen_prelude::*;
 
 pub mod generator;
 pub mod lexer;

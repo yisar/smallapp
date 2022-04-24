@@ -9,7 +9,7 @@ fn main() {
     <text wx:if=\"{{a}}\">a</text>
     <text wx:elseif=\"{{b}}\">b</text>
     <text wx:else />
-</view>",
+</view>".to_string(),
   );
   let res = parser.parse_all();
   match res {
