@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "child-child": "/pages/kid/index"
-  }
-}

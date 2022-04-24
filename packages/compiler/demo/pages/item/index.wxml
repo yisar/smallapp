@@ -1,6 +1,0 @@
-<view class="list-items">
-    <import src="./slot.wxml"></import>
-    <slot name="aaa"></slot>
-    <input class="aaa {{iitem.completed?'completed':''}}" bindconfirm="edittodo" data-id="{{iitem.id}}" value="{{iitem.name}}"></input>
-    <icon type="clear" bind:tap="clear"></icon>
-</view>

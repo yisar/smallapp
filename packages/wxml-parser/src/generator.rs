@@ -5,13 +5,15 @@ use std::collections::VecDeque;
 #[derive(Clone, Debug, PartialEq)]
 pub struct Generator {
     pub ast: Node,
+    pub assetid: usize,
     pub conditions: Vec<String>,
 }
 
 impl Generator {
-    pub fn new(ast: Node) -> Generator {
+    pub fn new(ast: Node, assetid: usize) -> Generator {
         Generator {
             ast,
+            assetid,
             conditions: vec![],
         }
     }
@@ -33,15 +35,23 @@ impl Generator {
                 for attr in token.attributes.unwrap() {
                     if let Kind::Attribute(name, value) = attr.kind {
                         let prop = self.wried_prop(name);
-                        let expression = self.parse_expression(value);
+                        let mut expr = self.parse_expression(&value);
 
                         match prop.as_str() {
-                            "wx:key" => code = format!("{} {}=\"{}\"", code, "key", expression),
+                            "wx:key" => code = format!("{} {}=\"{}\"", code, "key", expr),
                             "wx:if" | "wx:elseif" | "wx:else" => {
-                                directs.push_back((prop, expression));
+                                directs.push_back((prop, expr));
                             }
-                            "wx:for" => directs.push_front((prop, expression)),
-                            _ => code = format!("{} {}=\"{}\"", code, prop, expression),
+                            "wx:for" => directs.push_front((prop, expr)),
+                            _ => {
+                                if prop.starts_with("on") {
+                                    //event
+                                    expr = self.parse_event(&value);
+                                    code = format!("{} {}={{{}}}", code, prop, expr)
+                                } else {
+                                    code = format!("{} {}=\"{}\"", code, prop, expr)
+                                }
+                            }
                         }
                     }
                 }
@@ -61,14 +71,22 @@ impl Generator {
                 for attr in token.attributes.unwrap() {
                     if let Kind::Attribute(name, value) = attr.kind {
                         let prop = self.wried_prop(name);
-                        let expression = self.parse_expression(value);
+                        let mut expr = self.parse_expression(&value);
                         match prop.as_str() {
-                            "wx:key" => code = format!("{} {}=\"{}\"", code, "key", expression),
+                            "wx:key" => code = format!("{} {}=\"{}\"", code, "key", expr),
                             "wx:if" | "wx:elseif" | "wx:else" => {
-                                directs.push_back((prop, expression));
+                                directs.push_back((prop, expr));
                             }
-                            "wx:for" => directs.push_front((prop, expression)),
-                            _ => code = format!("{} {}=\"{}\"", code, prop, expression),
+                            "wx:for" => directs.push_front((prop, expr)),
+                            _ => {
+                                if prop.starts_with("on") {
+                                    //event
+                                    expr = self.parse_event(&value);
+                                    code = format!("{} {}={}", code, prop, expr)
+                                } else {
+                                    code = format!("{} {}=\"{}\"", code, prop, expr)
+                                }
+                            }
                         }
                     }
                 }
@@ -159,12 +177,17 @@ impl Generator {
         for s in arr {
             out = format!("{}{}", out, self.first_upper(s.to_string()));
         }
-        out
+        format!("{}{}", "comp.", out)
     }
 
-    fn parse_expression(&mut self, e: String) -> String {
+    fn parse_expression(&mut self, e: &String) -> String {
         // todo expression parser
         return e.replace("{{", "").replace("}}", "");
+    }
+
+    fn parse_event(&mut self, e: &String) -> String {
+        // todo expression parser
+        return format!("$event(\'{}\',\'{}\')", e, self.assetid);
     }
 
     fn parse_expression_text(&mut self, e: String) -> String {
@@ -172,7 +195,8 @@ impl Generator {
         let mut out = "".to_string();
         let mut once = true;
         let text = e.replace("{{", "{").replace("}}", "}").replace("\n", "");
-        for s in text.chars() { // remove repeat \s
+        for s in text.chars() {
+            // remove repeat \s
             if s == ' ' {
                 if once == true {
                     once = false;

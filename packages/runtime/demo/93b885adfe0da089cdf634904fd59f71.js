@@ -1,4 +1,4 @@
-// demo/app.js
+// ../demo/app.js
 Page.id = "0";
 App({
   onLaunch: () => {

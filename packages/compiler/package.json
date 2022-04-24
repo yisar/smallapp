@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "wean -e ./demo/app.json -o ./dist/",
     "build": "wean build -e ./demo/app.json -o ./dist/ -m",
-    "debug": "node --inspect ./core/cli.js -e ./demo/app.json -o ../runtime/demo/"
+    "debug": "node --inspect ./core/cli.js -e ../demo/app.json -o ../runtime/demo/"
   },
   "repository": {
     "type": "git",

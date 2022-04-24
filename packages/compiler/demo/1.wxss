@@ -1,5 +1,0 @@
-@import "./2.wxss";
-
-.a{
-    color:#fff
-}

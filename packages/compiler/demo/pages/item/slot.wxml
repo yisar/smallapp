@@ -1,3 +1,0 @@
-<view slot="aaa">    
-<icon type="{{iitem.completed?'success':'circle'}}" bind:tap="clickIco" data-id="{{iitem.id}}"></icon>
-</view>

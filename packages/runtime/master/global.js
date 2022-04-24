@@ -3,7 +3,7 @@ import comp from './components/index'
 import { Page } from './page'
 import { getApp } from './app.js'
 import { Component } from './component.js'
-import { $handleEvent, $for } from './helper.js'
+import { $event, $for } from './helper.js'
 import {wx} from './wxapi'
 
 const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
@@ -15,7 +15,7 @@ export const global = {
     Component,
     fre,
     comp,
-    $handleEvent,
+    $event,
     $for,
     setStates: {},
     wx,

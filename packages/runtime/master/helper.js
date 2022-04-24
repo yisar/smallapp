@@ -1,7 +1,7 @@
 import { getInsById } from "./app";
 
 
-export function $handleEvent(name, id, custom) {
+export function $event(name, id, custom) {
     const ins = getInsById(id)
     const method = ins[name] || (ins.methods || {})[name] || function () { }
     ins.eventMap[custom] = name

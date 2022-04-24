@@ -14,7 +14,7 @@ fn main() {
   let res = parser.parse_all();
   match res {
     Ok(ast) => {
-      let mut gen = generator::Generator::new(ast);
+      let mut gen = generator::Generator::new(ast, 0);
       let code = gen.generate_fre();
       println!("{:#?}", code)
     }

@@ -1,17 +1,17 @@
 const { titleCase } = require('./util')
 
 module.exports = async function packWxml(asset) {
-  const walk = async (child) => {
-    for (const dep of child.childAssets.values()) {
-      wiredBlock(dep.blocks, asset)
-      if (dep.childAssets.size) {
-        await walk(dep)
-      }
-    }
-  }
-  asset.out = ''
-  wiredBlock(asset.blocks, asset)
-  walk(asset)
+  // const walk = async (child) => {
+  //   for (const dep of child.childAssets.values()) {
+      // wiredBlock(dep.blocks, asset)
+  //     if (dep.childAssets.size) {
+  //       await walk(dep)
+  //     }
+  //   }
+  // }
+  asset.out = asset.code
+  // wiredBlock(asset.blocks, asset)
+  // walk(asset)
   const code =
     asset.parent.type === 'page'
       ? `export default (props) => {
