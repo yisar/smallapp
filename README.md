@@ -1,7 +1,3 @@
 # fre-miniapp
 
-fre miniapp monorepo 
-
-### run
-
-本仓库是使用 pnpm 构建的 monorepo，是一套
+基于 fre 的小程序引擎，没什么好说的了，先开源吧，之后搞点别的
