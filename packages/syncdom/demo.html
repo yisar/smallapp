@@ -11,7 +11,7 @@
     import connect from './wv.js'
 
     if ('serviceWorker' in navigator) {
-      new Worker('worker.js', { type: 'module' })
+      new Worker('demo.js', { type: 'module' })
       navigator.serviceWorker.register('/sw.js')
     }
 
