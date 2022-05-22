@@ -1,0 +1,12 @@
+{
+  "name": "syncdom",
+  "version": "1.0.0",
+  "description": "同步 dom 操作实现思路",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+
+<head> </head>
+
+<body>
+  <pre id="log"></pre>
+  <script type="module">
+
+    import connect from './wv.js'
+
+    if ('serviceWorker' in navigator) {
+      new Worker('ww.js', { type: 'module' })
+      navigator.serviceWorker.register('/sw.js')
+    }
+
+    connect(navigator.serviceWorker)
+
+  </script>
+</body>
+
+</html>
