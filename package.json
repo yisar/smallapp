@@ -24,7 +24,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "pnpm run debug --filter @fre-miniapp/compiler",
     "start": "npm run build && npm run debug",
-    "build": "pnpm run build --filter @fre-miniapp/runtime"
+    "build": "pnpm run build --filter @fre-miniapp/runtime",
+    "build:wxml":"cd ./packages/wxml && wasm-pack build --target nodejs "
   },
   "repository": {
     "type": "git",

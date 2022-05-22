@@ -8,8 +8,14 @@
 
 window11（window10 需要手动女装 webview2）
 
-2. 直接跑
+2. 先 build
 
 ```shell
-yarn debug
+yarn build
+yarn build:wxml
+```
+3. 跑
+
+```shell
+yarn start
 ```
