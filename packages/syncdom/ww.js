@@ -185,7 +185,13 @@ const makeProp = function (id, path) {
   return new Proxy(fn, propHandler)
 }
 
-const postMessage = (data) => self.postMessage(data)
+const postMessage = (data) => {
+  // 发同步请求给 sw
+  let request = new XMLHttpRequest()
+  request.open('POST','/fre',false)
+  request.send(JSON.stringify(data))
+  return request.responseText
+}
 
 self.addEventListener('message', (e) => {
   if (e.data === 'start') {
