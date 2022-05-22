@@ -11,11 +11,12 @@
     import connect from './wv.js'
 
     if ('serviceWorker' in navigator) {
-      new Worker('demo.js', { type: 'module' })
       navigator.serviceWorker.register('/sw.js')
     }
 
     connect(navigator.serviceWorker)
+
+    new Worker('demo.js', { type: 'module' })
 
   </script>
 </body>
