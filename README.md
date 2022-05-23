@@ -4,7 +4,7 @@
 
 ### Run
 
-1. 需要以下环境
+1. 环境
 
 window11（window10 需要手动女装 webview2）
 
@@ -19,3 +19,6 @@ yarn build:wxml
 ```shell
 yarn start
 ```
+4. 预览
+
+![image](https://user-images.githubusercontent.com/12951461/169762097-f1724907-6353-4b64-81f0-f0f39d9283f9.png)
