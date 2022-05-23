@@ -8,8 +8,8 @@ extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn generate(str: String, assetid: usize) -> String {
-    let mut parser = parser::Parser::new(str);
+pub fn generate(str: &str, assetid: usize) -> String {
+    let mut parser = parser::Parser::new(str.replace("\n", "").replace("\r", ""));
     let res = parser.parse_all();
     match res {
         Ok(ast) => {
@@ -22,9 +22,9 @@ pub fn generate(str: String, assetid: usize) -> String {
 }
 
 #[wasm_bindgen]
-pub fn compile(path: &str, assetid: usize) -> String {
-    let mut file = std::fs::File::open(path).unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-    return generate(contents, assetid);
+pub fn compile(input: &str, assetid: usize) -> String {
+    // let mut file = std::fs::File::open("D:\\miniapp\\fre-miniapp\\packages\\demo\\pages\\index\\index.wxml").unwrap();
+    // let mut contents = String::new();
+    // file.read_to_string(&mut contents).unwrap();
+    return generate(input, assetid);
 }

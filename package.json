@@ -1,7 +1,7 @@
 {
-  "name": "nfes-next",
+  "name": "fre-miniapp",
   "version": "1.0.0",
-  "description": "实验性 no bundle all streams",
+  "description": "fre miniapp",
   "main": "index.js",
   "devDependencies": {
     "chokidar": "^3.5.1",
@@ -26,10 +26,6 @@
     "start": "npm run build && npm run debug",
     "build": "pnpm run build --filter @fre-miniapp/runtime",
     "build:wxml":"cd ./packages/wxml && wasm-pack build --target nodejs "
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@git.dev.sh.ctripcorp.com:changhaozhao/nfes-next"
   },
   "keywords": [],
   "author": "",
