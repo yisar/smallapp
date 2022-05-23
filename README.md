@@ -14,7 +14,7 @@ window11（window10 需要手动女装 webview2）
 yarn build
 yarn build:wxml
 ```
-3. 跑
+3. run
 
 ```shell
 yarn start
