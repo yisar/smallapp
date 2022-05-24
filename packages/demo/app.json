@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/logs/logs"
   ],
   "tabBar": {
     "custom": true,
@@ -9,8 +10,14 @@
     "backgroundColor": "#000000",
     "list": [
       {
-        "pagePath": "page/component/index",
+        "pagePath": "pages/index/index",
         "text": "组件",
+        "iconPath": "./public/0.png",
+        "selectedIconPath": "./public/1.png"
+      },
+      {
+        "pagePath": "pages/logs/logs",
+        "text": "组件2",
         "iconPath": "./public/0.png",
         "selectedIconPath": "./public/1.png"
       }
