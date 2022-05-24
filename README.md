@@ -6,7 +6,7 @@
 
 1. 环境
 
-window11（window10 需要手动女装 webview2）
+window11（window10 需要手动女装 [webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section)）
 
 2. 先 build
 
