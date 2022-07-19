@@ -1,6 +1,6 @@
-# @fre-miniapp/runtime
+# @fre-miniapp/compiler
 
-> fre 小程序基础包
+> fre 小程序编译器
 
 ### 启动
 
