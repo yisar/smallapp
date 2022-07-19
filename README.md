@@ -1,6 +1,6 @@
 # fre-miniapp
 
-基于 fre 的小程序引擎，将微信小程序迅速打包为 flutter app
+基于 fre 的小程序引擎，将微信小程序迅速打包，运行在你的app容器中
 
 ### Run
 
