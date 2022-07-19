@@ -6,7 +6,7 @@
 
 1. 环境
 
-1.window11（window10 需要手动女装 [webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section)）
+1.window11（window10 需要手动安装 [webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section)）
 
 2.需要设置好rust环境然后安装wasm-pack - yarn build:wxml 需要使用wasm-pack
 
