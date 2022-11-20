@@ -1,4 +1,4 @@
-const app = getApp();
+const app = getApp()
 
 Page({
   data: {
@@ -12,22 +12,20 @@ Page({
     ],
   },
   radioChange(e) {
-    console.log("radio发生change事件，携带value值为：", e.detail.value);
+    console.log("radio发生change事件，携带value值为：", e.detail.value)
   },
   showPicker(e) {
     wx.showPicker({
       title: "嘿嘿嘿",
       change: (index) => {
-        console.log(index);
+        console.log(index)
       },
       success: (index) => {
-        console.log(index);
+        console.log(index)
       },
-    });
+    })
   },
-  bindViewTap() {
-    wx.switchTab({
-      url: "../logs/logs",
-    });
-  },
-});
+  showToast(e) {
+    wx.showToast({ title: '啦啦啦' })
+  }
+})

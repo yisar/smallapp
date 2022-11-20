@@ -1,5 +1,4 @@
 <view>
-  <button type="primary" bind:tap="showPicker">Time picker</button>
-  <button type="primary" bind:tap="showToast">Date picker</button>
-  <button type="primary" bind:tap="bindViewTap">To Logs</button>
+  <button type="primary" bind:tap="showPicker">Picker</button>
+  <button type="primary" bind:tap="showToast">Toast</button>
 </view>

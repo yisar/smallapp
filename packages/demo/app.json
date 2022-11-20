@@ -12,14 +12,14 @@
       {
         "pagePath": "pages/index/index",
         "text": "组件",
-        "iconPath": "./public/0.png",
-        "selectedIconPath": "./public/1.png"
+        "iconPath": "./public/home.svg",
+        "selectedIconPath": "./public/home.svg"
       },
       {
         "pagePath": "pages/logs/logs",
         "text": "组件2",
-        "iconPath": "./public/0.png",
-        "selectedIconPath": "./public/1.png"
+        "iconPath": "./public/index.svg",
+        "selectedIconPath": "./public/index.svg"
       }
     ]
   },

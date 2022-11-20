@@ -25,6 +25,9 @@ Page({
         console.log(index);
       }
     });
+  },
+  showToast(e) {
+    wx.showToast({ title: "\u5566\u5566\u5566" });
   }
 });
 

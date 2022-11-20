@@ -23,15 +23,16 @@ module.exports = __toCommonJS(stdin_exports);
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
   useEffect(() => {
-    setStates[2] = setState;
+    setStates[3] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Button, {
-      type: "primary",
-      onclick: $event("showPicker", "2")
-    }, "Time picker"), /* @__PURE__ */ fre.h(comp.Button, {
-      type: "primary",
-      onclick: $event("showToast", "2")
-    }, "Toast")));
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
+      class: "container log-list"
+    }, /* @__PURE__ */ fre.h(fre.Fragment, null, logs.map((item) => /* @__PURE__ */ fre.h(comp.Block, {
+      key: "timeStamp",
+      "wx:for-item": "log"
+    }, /* @__PURE__ */ fre.h(comp.Text, {
+      class: "log-item"
+    }, index + 1, ". ", log.date))))));
   }
 };
