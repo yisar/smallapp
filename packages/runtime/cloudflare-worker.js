@@ -14,8 +14,8 @@ async function handler(req) {
     })
 
 
-    if (file.name) {
-        const str = await Deno.readFile(` ./packages/runtime/dist/${file.name}`);
+    if (file && file.name) {
+        const str = await Deno.readFile(`./packages/runtime/dist/${file.name}`);
         return new Response(str, {
             headers: {
                 "content-type": "text/plain",
