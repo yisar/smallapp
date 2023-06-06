@@ -951,8 +951,15 @@ function Checkbox(props) {
 }
 var checkbox_default = Checkbox;
 
+// master/components/image.js
+function Image(props) {
+  return /* @__PURE__ */ h2("img", {
+    ...props
+  });
+}
+
 // master/components/index.js
-var comp = { Button, Text, View, Switch, Icon: icon_default, Input, Block, Label: label_default, Radio: radio_default, RadioGroup: radio_group_default, Checkbox: checkbox_default, CheckboxGroup: checkbox_group_default };
+var comp = { Button, Text, View, Switch, Icon: icon_default, Input, Block, Label: label_default, Radio: radio_default, RadioGroup: radio_group_default, Checkbox: checkbox_default, CheckboxGroup: checkbox_group_default, Image };
 var components_default = comp;
 
 // master/component.js

@@ -26,13 +26,15 @@ var stdin_default = (props) => {
     setStates[2] = setState;
   }, []);
   with (state) {
-    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Button, {
-      type: `primary`,
-      onClick: $handleEvent("showPicker", "2", "bind:tap")
-    }, "Time picker"), /* @__PURE__ */ fre.h(comp.Button, {
-      type: `primary`,
-      onClick: $handleEvent("showToast", "2", "bind:tap")
-    }, "Date picker")));
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Image, {
+      src: `https://cdn-us.imgs.moe/2023/06/06/647f223643647.jpeg`
+    }), /* @__PURE__ */ fre.h(comp.Button, {
+      type: `primary`
+    }, "\u661F\u94C1\u5C0F\u52A9\u624B"), /* @__PURE__ */ fre.h(comp.Text, {
+      class: `info`
+    }, "\u8FD9\u662F\u4E00\u4E2A\u5C0F\u7A0B\u5E8F\u793A\u4F8B"), /* @__PURE__ */ fre.h(comp.Text, {
+      class: `b`
+    }, "Made with \u{1F494} & Fre miniapp")));
   }
 };
 comp.UseItem = (props) => {
@@ -63,11 +65,11 @@ comp.UseItem = (props) => {
 comp.ChildChild = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[16] = setState;
+    setStates[14] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
-      onClick: $handleEvent("emmm", "16", "bindtap")
+      onClick: $handleEvent("emmm", "14", "bindtap")
     }, "pages/kid/index.wxml"));
   }
 };

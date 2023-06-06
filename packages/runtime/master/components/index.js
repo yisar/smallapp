@@ -10,7 +10,8 @@ import RadioGroup from "./radio-group"
 import Radio from "./radio"
 import Checkbox from "./checkbox"
 import CheckboxGroup from "./checkbox-group"
+import Image from "./image"
 
-const comp = { Button, Text, View, Switch, Icon, Input, Block, Label, Radio, RadioGroup, Checkbox, CheckboxGroup }
+const comp = { Button, Text, View, Switch, Icon, Input, Block, Label, Radio, RadioGroup, Checkbox, CheckboxGroup, Image }
 
 export default comp
