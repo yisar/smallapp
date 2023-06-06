@@ -25,10 +25,13 @@ export function init(location) {
     const page = getCurrentPage()
 
     const c = ref.modules['demo' + scripts[1]].default
-    let link = document.createElement('link')
-    link.setAttribute('href', '/' + 'demo' + styles[0])
-    link.setAttribute('rel', 'stylesheet')
-    document.head.appendChild(link)
+    let style = document.createElement('style')
+
+    const str = native.readFileSync('/' + 'demo' + styles[0])
+
+    style.innerHTML = str
+
+    document.head.appendChild(style)
 
     render(h(c, { data: page.data }), document.body)
 }
