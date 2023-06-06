@@ -1,7 +1,7 @@
 export function execScript(path, ref) {
     const { modules, native, fre, comp, getApp, Page, Component, App, $handleEvent, setStates, $for, wx } = ref
     const str = native.readFileSync(path)
-    console.log(str, relative(path))
+    console.log(str)
     const fn = new Function('module', 'require', 'fre', 'comp', 'getApp', 'Page', 'Component', 'App', '$handleEvent', '$for', 'setStates', 'wx', str)
 
     const relative = function (parent) {
