@@ -196,6 +196,7 @@ function workerdom({ worker }) {
     }
   }
   worker.onmessage = ({ data }) => {
+    console.log(data)
     if (data.type === "MutationRecord") {
       for (let i = 0; i < data.mutations.length; i++) {
         queueMutation(data.mutations[i]);

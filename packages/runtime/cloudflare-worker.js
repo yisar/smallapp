@@ -5,12 +5,20 @@ async function handler(req) {
 
     if (pathname === '/default.css') {
         const str = await Deno.readFile(`./packages/runtime/default.css`);
-        return new Response(str);
+        return new Response(str, {
+            headers: {
+                "content-type": "text/css",
+            }
+        });
     }
 
     if (pathname === '/') {
         const str = await Deno.readFile(`./packages/runtime/index.html`);
-        return new Response(str);
+        return new Response(str, {
+            headers: {
+                "content-type": "text/html",
+            }
+        });
     }
 
 
@@ -32,7 +40,11 @@ async function handler(req) {
 
     if (file && file.name) {
         const str = await Deno.readFile(`./packages/runtime/dist/${file.name}`);
-        return new Response(str);
+        return new Response(str, {
+            headers: {
+                "content-type": "application/javascript",
+            }
+        });
     }
 
     const file2 = entries2.find(i => {
@@ -41,7 +53,11 @@ async function handler(req) {
 
     if (file2 && file2.name) {
         const str = await Deno.readFile(`./packages/runtime/demo/${file2.name}`);
-        return new Response(str);
+        return new Response(str, {
+            headers: {
+                "content-type": file.name.includes('json') ? 'application/json' : "application/javascript"
+            }
+        });
     }
 
     return new Response('404', {
