@@ -34,6 +34,10 @@ export function execScript(path, ref) {
     var module = {
         exports: {}
     };
-    fn.call(module.exports, module, relative(path), fre, comp, getApp, Page, Component, App, $handleEvent, $for, setStates, wx);
+    try {
+        fn.call(module.exports, module, relative(path), fre, comp, getApp, Page, Component, App, $handleEvent, $for, setStates, wx);
+    } catch (e) {
+        console.log(e)
+    }
     modules[path] = module.exports
 }

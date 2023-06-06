@@ -10,7 +10,6 @@ export function init(location) {
 
     const manifest = ref.native.readFileSync('demo/manifest.json')
     const pages = JSON.parse(manifest).pages
-    console.log(path, pages)
     if (path === '/') {
         p = pages[0]
     } else {

@@ -294,7 +294,6 @@ function handleWxEvent(data) {
 function execScript(path, ref) {
   const { modules, native, fre: fre2, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
   const str = native.readFileSync(path);
-  console.log(str);
   const fn = new Function("module", "require", "fre", "comp", "getApp", "Page", "Component", "App", "$handleEvent", "$for", "setStates", "wx", str);
   const relative = function(parent) {
     const resolve = function(path2) {
@@ -1086,8 +1085,7 @@ function init(location) {
   execScript("demo" + scripts[1], global2);
   execScript("demo" + scripts[0], global2);
   const page = getCurrentPage();
-  const c = global2.modules["demo" + scripts[1]];
-  console.log(global2.modules[["demo" + scripts[0]]])
+  const c = global2.modules["demo" + scripts[1]].default;
   let link = document.createElement("link");
   link.setAttribute("href", "/demo" + styles[0]);
   link.setAttribute("rel", "stylesheet");
