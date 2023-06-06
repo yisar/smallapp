@@ -294,6 +294,7 @@ function handleWxEvent(data) {
 function execScript(path, ref) {
   const { modules, native, fre: fre2, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
   const str = native.readFileSync(path);
+  console.log(str, relative(path));
   const fn = new Function("module", "require", "fre", "comp", "getApp", "Page", "Component", "App", "$handleEvent", "$for", "setStates", "wx", str);
   const relative = function(parent) {
     const resolve = function(path2) {
@@ -323,6 +324,7 @@ function execScript(path, ref) {
   };
   fn.exports = {};
   fn.call(fn.exports, fn, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
+  console.log(fn);
   modules[path] = fn.exports;
 }
 
@@ -1088,7 +1090,7 @@ function init(location) {
   link.setAttribute("href", "/demo" + styles[0]);
   link.setAttribute("rel", "stylesheet");
   document.body.appendChild(link);
-  render(h2('div', {},'hello world'), document.body);
+  render(h2(c, { data: page.data }), document.body);
 }
 
 // master/index.js
