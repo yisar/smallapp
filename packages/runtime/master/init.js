@@ -31,7 +31,7 @@ export function init(location) {
 
     style.innerHTML = str
 
-    document.body.appendChild(style)
-
     render(h(c, { data: page.data }), document.body)
+
+    document.body.appendChild(style)
 }
