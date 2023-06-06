@@ -1085,12 +1085,10 @@ function init(location) {
     p = pages.find((i) => i.path === path);
   }
   const { scripts, styles } = p;
-  setTimeout(() => {
-    let link = document.createElement("link");
-    link.setAttribute("href", "/demo" + styles[0]);
-    link.setAttribute("rel", "stylesheet");
-    document.body.appendChild(link);
-  }, 1e3);
+  let link = document.createElement("link");
+  link.setAttribute("href", "/demo" + styles[0]);
+  link.setAttribute("rel", "stylesheet");
+  document.body.appendChild(link);
   execScript("demo" + scripts[1], global2);
   execScript("demo" + scripts[0], global2);
   const page = getCurrentPage();
