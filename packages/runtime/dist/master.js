@@ -187,10 +187,10 @@ function workerdom() {
       this.callback = callback;
       this._records = [];
     }
-    observe(target, options2) {
+    observe(target, options) {
       this.disconnect();
       this._target = target;
-      this._options = options2 || {};
+      this._options = options || {};
       observers.push(this);
     }
     disconnect() {
@@ -253,20 +253,20 @@ var setImmediate = resolved ? (f) => {
 var callbacks = {};
 var index = 0;
 var wx = {
-  navigateTo(options2) {
-    sendMessage("navigateTo", options2);
+  navigateTo(options) {
+    sendMessage("navigateTo", options);
   },
-  showToast(options2) {
-    sendMessage("showToast", options2);
+  showToast(options) {
+    sendMessage("showToast", options);
   },
-  showPicker(options2) {
-    sendMessage("showPicker", options2);
+  showPicker(options) {
+    sendMessage("showPicker", options);
   }
 };
-function serOptions(options2) {
+function serOptions(options) {
   let out = {};
-  for (const key in options2) {
-    let val = options2[key];
+  for (const key in options) {
+    let val = options[key];
     if (typeof val === "function") {
       out[key] = index;
       callbacks[index++] = val;
@@ -276,11 +276,11 @@ function serOptions(options2) {
   }
   return out;
 }
-function sendMessage(name, options2) {
+function sendMessage(name, options) {
   const args = {
     type: "wxapi",
     name,
-    options: serOptions(options2)
+    options: serOptions(options)
   };
   send(args);
 }
@@ -451,7 +451,7 @@ var schedule = (callback) => {
 };
 var task = (pending) => {
   const cb = () => transitions.splice(0, 1).forEach((c) => c());
-  if (!pending && typeof Promise !== "undefined") {
+  if (!pending && typeof queueMicrotask !== "undefined") {
     return () => queueMicrotask(cb);
   }
   if (typeof MessageChannel !== "undefined") {
@@ -476,34 +476,36 @@ var flush = () => {
     }
     job = peek(queue);
   }
-  job && startTransition(flush);
+  job && (translate = task(shouldYield())) && startTransition(flush);
 };
 var shouldYield = () => {
-  const pending = getTime() >= deadline;
-  translate = task(pending);
-  return pending;
+  return getTime() >= deadline;
 };
 var getTime = () => performance.now();
 var peek = (queue2) => queue2[0];
 var commit = (fiber) => {
-  let e = fiber.e;
-  fiber.e = null;
-  do {
-    insert(e);
-  } while (e = e.e);
-};
-var insert = (fiber) => {
-  if (fiber.lane === 8) {
-    remove(fiber);
+  if (!fiber) {
     return;
   }
-  if (fiber.lane & 2) {
-    updateElement(fiber.node, fiber.oldProps || {}, fiber.props);
+  const { op, before, elm } = fiber.action || {};
+  if (op & 4 || op & 64) {
+    if (fiber.isComp && fiber.child) {
+      fiber.child.action.op |= fiber.action.op;
+    } else {
+      fiber.parentNode.insertBefore(elm.node, before === null || before === void 0 ? void 0 : before.node);
+    }
   }
-  if (fiber.lane & 4) {
-    fiber.parentNode.insertBefore(fiber.node, fiber.after);
+  if (op & 2) {
+    if (fiber.isComp && fiber.child) {
+      fiber.child.action.op |= fiber.action.op;
+    } else {
+      updateElement(fiber.node, fiber.old.props || {}, fiber.props);
+    }
   }
   refer(fiber.ref, fiber.node);
+  fiber.action = null;
+  commit(fiber.child);
+  commit(fiber.sibling);
 };
 var refer = (ref, dom) => {
   if (ref)
@@ -515,268 +517,189 @@ var kidsRefer = (kids) => {
     refer(kid.ref, null);
   });
 };
-var remove = (d) => {
-  if (d.isComp) {
-    d.hooks && d.hooks.list.forEach((e) => e[2] && e[2]());
-    d.kids.forEach(remove);
+var removeElement = (fiber) => {
+  if (fiber.isComp) {
+    fiber.hooks && fiber.hooks.list.forEach((e) => e[2] && e[2]());
+    fiber.kids.forEach(removeElement);
   } else {
-    kidsRefer(d.kids);
-    d.parentNode.removeChild(d.node);
-    refer(d.ref, null);
+    fiber.parentNode.removeChild(fiber.node);
+    kidsRefer(fiber.kids);
+    refer(fiber.ref, null);
   }
 };
-var currentFiber;
-var finish = null;
-var effect = null;
-var options = {};
-var render = (vnode, node, config) => {
-  const rootFiber = {
+var currentFiber = null;
+var rootFiber = null;
+var render = (vnode, node) => {
+  rootFiber = {
     node,
     props: { children: vnode }
   };
-  if (config) {
-    options = config;
-  }
   update(rootFiber);
 };
 var update = (fiber) => {
-  if (fiber && !(fiber.lane & 32)) {
-    fiber.lane = 2 | 32;
-    schedule(() => {
-      effect = fiber;
-      return reconcile(fiber);
-    });
+  if (!fiber.dirty) {
+    fiber.dirty = true;
+    schedule(() => reconcile(fiber));
   }
 };
-var reconcile = (WIP) => {
-  while (WIP && !shouldYield())
-    WIP = capture(WIP);
-  if (WIP)
-    return reconcile.bind(null, WIP);
-  if (finish) {
-    commit(finish);
-    finish = null;
-    options.done && options.done();
+var reconcile = (fiber) => {
+  while (fiber && !shouldYield())
+    fiber = capture(fiber);
+  if (fiber)
+    return reconcile.bind(null, fiber);
+  return null;
+};
+var memo$1 = (fiber) => {
+  var _a;
+  if (fiber.type.memo && ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.props)) {
+    let scu = fiber.type.shouldUpdate || shouldUpdate;
+    if (!scu(fiber.props, fiber.old.props)) {
+      return getSibling(fiber);
+    }
   }
   return null;
 };
-var capture = (WIP) => {
-  WIP.isComp = isFn(WIP.type);
-  WIP.isComp ? updateHook(WIP) : updateHost(WIP);
-  if (WIP.child)
-    return WIP.child;
-  while (WIP) {
-    bubble(WIP);
-    if (!finish && WIP.lane & 32) {
-      finish = WIP;
-      WIP.lane &= ~32;
+var capture = (fiber) => {
+  fiber.isComp = isFn(fiber.type);
+  if (fiber.isComp) {
+    const memoFiber = memo$1(fiber);
+    if (memoFiber) {
+      return memoFiber;
+    }
+    updateHook(fiber);
+  } else {
+    updateHost(fiber);
+  }
+  if (fiber.child)
+    return fiber.child;
+  const sibling = getSibling(fiber);
+  return sibling;
+};
+var getSibling = (fiber) => {
+  while (fiber) {
+    bubble(fiber);
+    if (fiber.dirty) {
+      fiber.dirty = false;
+      commit(fiber);
       return null;
     }
-    if (WIP.sibling)
-      return WIP.sibling;
-    WIP = WIP.parent;
+    if (fiber.sibling)
+      return fiber.sibling;
+    fiber = fiber.parent;
   }
+  return null;
 };
-var bubble = (WIP) => {
-  if (WIP.isComp) {
-    if (WIP.hooks) {
-      side(WIP.hooks.layout);
-      schedule(() => side(WIP.hooks.effect));
+var bubble = (fiber) => {
+  if (fiber.isComp) {
+    if (fiber.hooks) {
+      side(fiber.hooks.layout);
+      schedule(() => side(fiber.hooks.effect));
     }
-  } else {
-    effect.e = WIP;
-    effect = WIP;
   }
 };
-var updateHook = (WIP) => {
+var shouldUpdate = (a, b) => {
+  for (let i in a)
+    if (!(i in b))
+      return true;
+  for (let i in b)
+    if (a[i] !== b[i])
+      return true;
+};
+var updateHook = (fiber) => {
   resetCursor();
-  currentFiber = WIP;
-  let children = WIP.type(WIP.props);
-  diffKids(WIP, simpleVnode(children));
+  currentFiber = fiber;
+  let children = fiber.type(fiber.props);
+  reconcileChidren(fiber, simpleVnode(children));
 };
-var updateHost = (WIP) => {
-  WIP.parentNode = getParentNode(WIP) || {};
-  if (!WIP.node) {
-    if (WIP.type === "svg")
-      WIP.lane |= 16;
-    WIP.node = createElement(WIP);
+var updateHost = (fiber) => {
+  fiber.parentNode = getParentNode(fiber) || {};
+  if (!fiber.node) {
+    if (fiber.type === "svg")
+      fiber.lane |= 16;
+    fiber.node = createElement(fiber);
   }
-  WIP.childNodes = Array.from(WIP.node.childNodes || []);
-  diffKids(WIP, WIP.props.children);
+  reconcileChidren(fiber, fiber.props.children);
 };
 var simpleVnode = (type) => isStr(type) ? createText(type) : type;
-var getParentNode = (WIP) => {
-  while (WIP = WIP.parent) {
-    if (!WIP.isComp)
-      return WIP.node;
+var getParentNode = (fiber) => {
+  while (fiber = fiber.parent) {
+    if (!fiber.isComp)
+      return fiber.node;
   }
 };
-var diffKids = (WIP, children) => {
-  let aCh = WIP.kids || [], bCh = WIP.kids = arrayfy(children), aHead = 0, bHead = 0, aTail = aCh.length - 1, bTail = bCh.length - 1;
-  while (aHead <= aTail && bHead <= bTail) {
-    if (!same(aCh[aHead], bCh[bHead]))
-      break;
-    clone(aCh[aHead++], bCh[bHead++], 2);
-  }
-  while (aHead <= aTail && bHead <= bTail) {
-    if (!same(aCh[aTail], bCh[bTail]))
-      break;
-    clone(aCh[aTail--], bCh[bTail--], 2);
-  }
-  const { diff, keymap } = lcs(bCh, aCh, bHead, bTail, aHead, aTail);
-  let len = diff.length;
-  for (let i = 0, aIndex = aHead, bIndex = bHead, mIndex; i < len; i++) {
-    const op = diff[i];
-    if (op === 2) {
-      if (!same(aCh[aIndex], bCh[bIndex])) {
-        bCh[bIndex].lane = 4;
-        aCh[aIndex].lane = 8;
-        effect.e = aCh[aIndex];
-        effect = aCh[aIndex];
-      } else {
-        clone(aCh[aIndex], bCh[bIndex], 2);
-      }
-      aIndex++;
-      bIndex++;
-    } else if (op === 4) {
-      let c = bCh[bIndex];
-      mIndex = c.key != null ? keymap[c.key] : null;
-      if (mIndex != null) {
-        clone(aCh[mIndex], c, 4);
-        c.after = WIP.childNodes[aIndex];
-        aCh[mIndex] = void 0;
-      } else {
-        c.after = WIP.childNodes ? WIP.childNodes[aIndex] : null;
-        c.lane = 4;
-      }
-      bIndex++;
-    } else if (op === 8) {
-      aIndex++;
-    }
-  }
-  for (let i = 0, aIndex = aHead; i < len; i++) {
-    let op = diff[i];
-    if (op === 2) {
-      aIndex++;
-    } else if (op === 8) {
-      let c = aCh[aIndex];
-      if (c !== void 0) {
-        c.lane = 8;
-        effect.e = c;
-        effect = c;
-      }
-      aIndex++;
-    }
-  }
-  for (let i = 0, prev = null, len2 = bCh.length; i < len2; i++) {
+var reconcileChidren = (fiber, children) => {
+  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy(children);
+  const actions = diff(aCh, bCh);
+  for (let i = 0, prev = null, len = bCh.length; i < len; i++) {
     const child = bCh[i];
-    if (WIP.lane & 16) {
+    child.action = actions[i];
+    if (fiber.lane & 16) {
       child.lane |= 16;
     }
-    child.parent = WIP;
+    child.parent = fiber;
     if (i > 0) {
       prev.sibling = child;
     } else {
-      WIP.child = child;
+      fiber.child = child;
     }
     prev = child;
   }
 };
-function clone(a, b, lane) {
+function clone(a, b) {
   b.hooks = a.hooks;
   b.ref = a.ref;
   b.node = a.node;
-  b.oldProps = a.props;
-  b.lane = lane;
   b.kids = a.kids;
+  b.old = a;
 }
-var same = (a, b) => {
-  return a && b && a.key === b.key && a.type === b.type;
-};
 var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var side = (effects) => {
   effects.forEach((e) => e[2] && e[2]());
   effects.forEach((e) => e[2] = e[0]());
   effects.length = 0;
 };
-function lcs(bArr, aArr, bHead = 0, bTail = bArr.length - 1, aHead = 0, aTail = aArr.length - 1) {
-  let keymap = {}, unkeyed = [], idxUnkeyed = 0, ch, item, k, idxInOld, key;
-  let newLen = bArr.length;
-  let oldLen = aArr.length;
-  let minLen = Math.min(newLen, oldLen);
-  let tresh = Array(minLen + 1);
-  tresh[0] = -1;
-  for (var i = 1; i < tresh.length; i++) {
-    tresh[i] = aTail + 1;
+var diff = function(a, b) {
+  var actions = [], aIdx = {}, bIdx = {}, key = (v) => v.key + v.type, i, j;
+  for (i = 0; i < a.length; i++) {
+    aIdx[key(a[i])] = i;
   }
-  let link = Array(minLen);
-  for (i = aHead; i <= aTail; i++) {
-    item = aArr[i];
-    key = item.key;
-    if (key != null) {
-      keymap[key] = i;
+  for (i = 0; i < b.length; i++) {
+    bIdx[key(b[i])] = i;
+  }
+  for (i = j = 0; i !== a.length || j !== b.length; ) {
+    var aElm = a[i], bElm = b[j];
+    if (aElm === null) {
+      i++;
+    } else if (b.length <= j) {
+      removeElement(a[i]);
+      i++;
+    } else if (a.length <= i) {
+      actions.push({ op: 4, elm: bElm, before: a[i] });
+      j++;
+    } else if (key(aElm) === key(bElm)) {
+      clone(aElm, bElm);
+      actions.push({ op: 2 });
+      i++;
+      j++;
     } else {
-      unkeyed.push(i);
-    }
-  }
-  for (i = bHead; i <= bTail; i++) {
-    ch = bArr[i];
-    idxInOld = ch.key == null ? unkeyed[idxUnkeyed++] : keymap[ch.key];
-    if (idxInOld != null) {
-      k = bs(tresh, idxInOld);
-      if (k >= 0) {
-        tresh[k] = idxInOld;
-        link[k] = { newi: i, oldi: idxInOld, prev: link[k - 1] };
+      var curElmInNew = bIdx[key(aElm)];
+      var wantedElmInOld = aIdx[key(bElm)];
+      if (curElmInNew === void 0) {
+        removeElement(a[i]);
+        i++;
+      } else if (wantedElmInOld === void 0) {
+        actions.push({ op: 4, elm: bElm, before: a[i] });
+        j++;
+      } else {
+        clone(a[wantedElmInOld], bElm);
+        actions.push({ op: 64, elm: a[wantedElmInOld], before: a[i] });
+        a[wantedElmInOld] = null;
+        j++;
       }
     }
   }
-  k = tresh.length - 1;
-  while (tresh[k] > aTail)
-    k--;
-  let ptr = link[k];
-  let diff = Array(oldLen + newLen - k);
-  let curNewi = bTail, curOldi = aTail;
-  let d = diff.length - 1;
-  while (ptr) {
-    const { newi, oldi } = ptr;
-    while (curNewi > newi) {
-      diff[d--] = 4;
-      curNewi--;
-    }
-    while (curOldi > oldi) {
-      diff[d--] = 8;
-      curOldi--;
-    }
-    diff[d--] = 2;
-    curNewi--;
-    curOldi--;
-    ptr = ptr.prev;
-  }
-  while (curNewi >= bHead) {
-    diff[d--] = 4;
-    curNewi--;
-  }
-  while (curOldi >= aHead) {
-    diff[d--] = 8;
-    curOldi--;
-  }
-  return {
-    diff,
-    keymap
-  };
-}
-function bs(ktr, j) {
-  let lo = 1;
-  let hi = ktr.length - 1;
-  while (lo <= hi) {
-    let mid = lo + hi >>> 1;
-    if (j < ktr[mid])
-      hi = mid - 1;
-    else
-      lo = mid + 1;
-  }
-  return lo;
-}
+  return actions;
+};
 var getCurrentFiber = () => currentFiber || null;
 var isFn = (x) => typeof x === "function";
 var isStr = (s) => typeof s === "number" || typeof s === "string";
