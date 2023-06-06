@@ -1104,7 +1104,7 @@ var global2 = {
   native: {
     readFileSync(path) {
       var request = new XMLHttpRequest();
-      request.open("GET", "http://localhost:5000/" + path, false);
+      request.open("GET", "/" + path, false);
       request.send(null);
       if (request.status === 200) {
         return request.responseText;
@@ -1162,7 +1162,7 @@ function init(location) {
   const page = getCurrentPage();
   const c = global2.modules["demo" + scripts[1]].default;
   let link = document.createElement("link");
-  link.setAttribute("href", "http://localhost:5000/demo" + styles[0]);
+  link.setAttribute("href", "/demo" + styles[0]);
   link.setAttribute("rel", "stylesheet");
   document.body.appendChild(link);
   render(h2(c, { data: page.data }), document.body);

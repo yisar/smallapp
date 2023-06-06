@@ -27,7 +27,7 @@ export function init(location) {
 
     const c = ref.modules['demo' + scripts[1]].default
     let link = document.createElement('link')
-    link.setAttribute('href', 'http://localhost:5000/' + 'demo' + styles[0])
+    link.setAttribute('href', '/' + 'demo' + styles[0])
     link.setAttribute('rel', 'stylesheet')
     document.body.appendChild(link)
 

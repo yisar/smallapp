@@ -27,7 +27,7 @@ async function handler(req) {
     }
 
     const file = entries.find(i => {
-        return i.name === pathname.slice(1)
+        return i.name === pathname.slice(5)
     })
 
 
@@ -38,7 +38,7 @@ async function handler(req) {
     }
 
     const file2 = entries.find(i => {
-        return i.name === pathname.slice(1)
+        return i.name === pathname.slice(5)
     })
 
     if (file2 && file2.name) {

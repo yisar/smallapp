@@ -22,7 +22,7 @@ export const global = {
     native: {
         readFileSync(path) {
             var request = new XMLHttpRequest();
-            request.open('GET', 'http://localhost:5000/' + path, false);
+            request.open('GET', '/' + path, false);
             request.send(null);
             if (request.status === 200) {
                 return request.responseText

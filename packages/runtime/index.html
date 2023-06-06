@@ -6,14 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://miniapp.deno.dev/default.css">
+    <link rel="stylesheet" href="/default.css">
 
 </head>
 
 <body>
-    <script src="https://miniapp.deno.dev/slave.js"></script>
+    <script src="/slave.js"></script>
     <script>
-        const worker = new Worker('https://miniapp.deno.dev/master.js')
+        const worker = new Worker('/master.js')
         workerdom({ worker })
     </script>
     <script>
