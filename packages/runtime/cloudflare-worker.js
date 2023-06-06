@@ -14,12 +14,11 @@ async function handler(req) {
     })
 
 
-    if (file) {
-        const FILE_URL = new URL(`./packages/runtime/dist/${file.name}`, import.meta.url).href;
-        const resp = await fetch(FILE_URL);
-        return new Response(resp.body, {
+    if (file.name) {
+        const str = await Deno.readFile(` ./packages/runtime/dist/${file.name}`);
+        return new Response(str, {
             headers: {
-                "content-type": "text/html",
+                "content-type": "text/plain",
             },
         });
     } else {
