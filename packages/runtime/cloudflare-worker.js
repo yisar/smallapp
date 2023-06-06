@@ -8,7 +8,7 @@ async function handler(req) {
         return new Response(str);
     }
 
-    if (pathname === '/index.html') {
+    if (pathname === '/') {
         const str = await Deno.readFile(`./packages/runtime/index.html`);
         return new Response(str);
     }
