@@ -38,7 +38,7 @@ var stdin_default = (props) => {
 comp.UseItem = (props) => {
   const [state, setState] = fre.useState({});
   useEffect(() => {
-    setStates[7] = setState;
+    setStates[10] = setState;
   }, []);
   with ({ ...props, ...state }) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
@@ -47,16 +47,16 @@ comp.UseItem = (props) => {
       slot: `aaa`
     }, /* @__PURE__ */ fre.h(comp.Icon, {
       type: `${iitem.completed ? "success" : "circle"}`,
-      onClick: $handleEvent("clickIco", "7", "bind:tap"),
+      onClick: $handleEvent("clickIco", "10", "bind:tap"),
       "data-id": `${iitem.id}`
     })), /* @__PURE__ */ fre.h(comp.Input, {
       class: `aaa ${iitem.completed ? "completed" : ""}`,
-      onKeyDown: $handleEvent("edittodo", "7", "bindconfirm"),
+      onKeyDown: $handleEvent("edittodo", "10", "bindconfirm"),
       "data-id": `${iitem.id}`,
       value: `${iitem.name}`
     }), /* @__PURE__ */ fre.h(comp.Icon, {
       type: `clear`,
-      onClick: $handleEvent("clear", "7", "bind:tap")
+      onClick: $handleEvent("clear", "10", "bind:tap")
     })));
   }
 };

@@ -1,7 +1,7 @@
 import { execScript } from './exec-script.js'
 import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
-import { render, h } from './fre-esm'
+import { render, h, useEffect } from './fre-esm'
 
 export function init(location) {
     let path = location.pathname
@@ -25,13 +25,15 @@ export function init(location) {
     const page = getCurrentPage()
 
     const c = ref.modules['demo' + scripts[1]].default
-    let style = document.createElement('style')
 
-    const str = ref.native.readFileSync('./' + 'demo' + styles[0])
 
-    style.innerHTML = str
-
-    render(h(c, { data: page.data }), document.body)
-
-    document.body.appendChild(style)
+    render(h(() => {
+        useEffect(() => {
+            let link = document.createElement('link')
+            link.setAttribute('href', '/' + 'demo' + styles[0])
+            link.setAttribute('rel', 'stylesheet')
+            document.body.appendChild(link)
+        }, [])
+        return h(c, { data: page.data })
+    }), document.body)
 }

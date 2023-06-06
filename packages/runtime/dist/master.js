@@ -1089,11 +1089,15 @@ function init(location) {
   execScript("demo" + scripts[0], global2);
   const page = getCurrentPage();
   const c = global2.modules["demo" + scripts[1]].default;
-  let style = document.createElement("style");
-  const str = global2.native.readFileSync("./demo" + styles[0]);
-  style.innerHTML = str;
-  render(h2(c, { data: page.data }), document.body);
-  document.body.appendChild(style);
+  render(h2(() => {
+    useEffect(() => {
+      let link = document.createElement("link");
+      link.setAttribute("href", "/demo" + styles[0]);
+      link.setAttribute("rel", "stylesheet");
+      document.body.appendChild(link);
+    }, []);
+    return h2(c, { data: page.data });
+  }), document.body);
 }
 
 // master/index.js
