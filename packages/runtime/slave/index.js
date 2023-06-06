@@ -241,18 +241,9 @@ function workerdom({ worker }) {
                 queueMutation(data.mutations[i]);
             }
         } else if (data.type === 'wxapi') {
-            if (typeof window.chrome.webview !== 'undefined') {
-                window.chrome.webview.postMessage(data)
-            }
+            
         }
     };
-
-    if (typeof window.chrome.webview !== 'undefined') { // 接受来自 webview 的消息
-        window.chrome.webview.addEventListener('message', function (id) {
-            worker.postMessage({ type: 'wxcallback', id })
-
-        })
-    }
 
 
     worker.postMessage({
