@@ -1,35 +1,18 @@
-// ../demo/utils/util.js
+// demo/pages/child/index.js
 Page.id = "3";
-var formatTime = (date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  const second = date.getSeconds();
-  return [year, month, day].map(formatNumber).join("/") + " " + [hour, minute, second].map(formatNumber).join(":");
-};
-var formatNumber = (n) => {
-  const s = n.toString();
-  return s[1] ? s : "0" + s;
-};
-
-// ../demo/pages/logs/logs.js
-Page.id = "3";
-var app = getApp();
 Page({
   data: {
-    logs: []
+    items: [
+      { name: "USA", value: "\u7F8E\u56FD" },
+      { name: "CHN", value: "\u4E2D\u56FD", checked: "true" },
+      { name: "BRA", value: "\u5DF4\u897F" },
+      { name: "JPN", value: "\u65E5\u672C" },
+      { name: "ENG", value: "\u82F1\u56FD" },
+      { name: "TUR", value: "\u6CD5\u56FD" }
+    ]
   },
-  onLoad() {
-    this.setData({
-      logs: (wx.getStorageSync("logs") || []).map((log) => {
-        return {
-          date: formatTime(new Date(log)),
-          timeStamp: log
-        };
-      })
-    });
+  radioChange(e) {
+    console.log("radio\u53D1\u751Fchange\u4E8B\u4EF6\uFF0C\u643A\u5E26value\u503C\u4E3A\uFF1A", e.detail.value);
   }
 });
 

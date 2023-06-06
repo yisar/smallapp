@@ -27,11 +27,47 @@ var stdin_default = (props) => {
   }, []);
   with (state) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Button, {
-      type: "primary",
-      onclick: $event("showPicker", "2")
+      type: `primary`,
+      onClick: $handleEvent("showPicker", "2", "bind:tap")
     }, "Time picker"), /* @__PURE__ */ fre.h(comp.Button, {
-      type: "primary",
-      onclick: $event("showToast", "2")
-    }, "Toast")));
+      type: `primary`,
+      onClick: $handleEvent("showToast", "2", "bind:tap")
+    }, "Date picker")));
+  }
+};
+comp.UseItem = (props) => {
+  const [state, setState] = fre.useState({});
+  useEffect(() => {
+    setStates[10] = setState;
+  }, []);
+  with ({ ...props, ...state }) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, {
+      class: `list-items`
+    }, /* @__PURE__ */ fre.h(comp.View, {
+      slot: `aaa`
+    }, /* @__PURE__ */ fre.h(comp.Icon, {
+      type: `${iitem.completed ? "success" : "circle"}`,
+      onClick: $handleEvent("clickIco", "10", "bind:tap"),
+      "data-id": `${iitem.id}`
+    })), /* @__PURE__ */ fre.h(comp.Input, {
+      class: `aaa ${iitem.completed ? "completed" : ""}`,
+      onKeyDown: $handleEvent("edittodo", "10", "bindconfirm"),
+      "data-id": `${iitem.id}`,
+      value: `${iitem.name}`
+    }), /* @__PURE__ */ fre.h(comp.Icon, {
+      type: `clear`,
+      onClick: $handleEvent("clear", "10", "bind:tap")
+    })));
+  }
+};
+comp.ChildChild = (props) => {
+  const [state, setState] = fre.useState({});
+  useEffect(() => {
+    setStates[16] = setState;
+  }, []);
+  with ({ ...props, ...state }) {
+    return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.Text, {
+      onClick: $handleEvent("emmm", "16", "bindtap")
+    }, "pages/kid/index.wxml"));
   }
 };

@@ -1,3 +1,14 @@
+.b{
+    color: aliceblue;
+}
+/* {"path":"./2.wxss","ext":".wxss"} */
+
+.a{
+    color:#fff
+}
+/* {"path":"../../1.wxss","ext":".wxss"} */
+/* {"path":"../../2.wxss","ext":".wxss"} */
+
 .container {
   text-align: center;
   padding: 0.4rem;
@@ -72,4 +83,22 @@ button{
   font-size: 30px;
   display: block;
   margin-top: 30px;
+}.list-items {
+  display: flex;
+  padding: 0 0.3rem;
+  justify-content: space-around;
+  align-items: center;
+  height: 1rem;
+  font-size: 0.4rem;
+  border-bottom: 1px solid #e6e6e6;
 }
+.selectAll {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #d9d9d9;
+}
+/* pages/kid/index.wxss */
