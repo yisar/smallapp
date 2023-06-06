@@ -11,9 +11,9 @@
 </head>
 
 <body>
-    <script src="/slave.js"></script>
+    <script src="/dist/slave.js"></script>
     <script>
-        const worker = new Worker('/master.js')
+        const worker = new Worker('/dist/master.js')
         workerdom({ worker })
     </script>
     <script>
