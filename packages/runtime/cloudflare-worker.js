@@ -1,9 +1,20 @@
-import { createServer } from "node:http";
-import process from "node:process";
+import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 
-const server = createServer((req, res) => {
-    const message = `Hello from <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>p</mi><mi>r</mi><mi>o</mi><mi>c</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi mathvariant="normal">.</mi><mi>e</mi><mi>n</mi><mi>v</mi><mi mathvariant="normal">.</mi><mi>D</mi><mi>E</mi><mi>N</mi><msub><mi>O</mi><mi>R</mi></msub><mi>E</mi><mi>G</mi><mi>I</mi><mi>O</mi><mi>N</mi></mrow><mi>a</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">{process.env.DENO_REGION} at </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="mord mathnormal">rocess</span><span class="mord">.</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord">.</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal" style="margin-right:0.10903em;">EN</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.00773em;">R</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal">EG</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.10903em;">ON</span></span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span></span></span></span>{new Date()}`;
-    res.end(message);
-});
+async function handler(req) {
+    const { pathname } = new URL(req.url)
 
-server.listen(8080);
+    
+    const entries = [];
+    for await (const entry of Deno.readDir(`./dist`)) {
+        entries.push(entry);
+    }
+
+    // Return JSON.
+    return new Response(JSON.stringify(entries, null, 2), {
+        headers: {
+            "content-type": "application/json",
+        },
+    });
+}
+
+serve(handler);
