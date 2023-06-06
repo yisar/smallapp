@@ -12,17 +12,6 @@ async function handler(req) {
         });
     }
 
-    if (pathname === '/') {
-        const str = await Deno.readFile(`./packages/runtime/index.html`);
-        return new Response(str, {
-            headers: {
-                "content-type": "text/html",
-            }
-        });
-    }
-
-
-
     const entries = [];
     for await (const entry of Deno.readDir(`./packages/runtime/dist`)) {
         entries.push(entry);
@@ -56,11 +45,12 @@ async function handler(req) {
         });
     }
 
-    return new Response('404', {
+    const str = await Deno.readFile(`./packages/runtime/index.html`);
+    return new Response(str, {
         headers: {
             "content-type": "text/html",
-        },
-    })
+        }
+    });
 
 }
 
