@@ -7,7 +7,7 @@ module.exports = function serve(options) {
   const app = express()
     .use(express.static('../runtime'))
     .use(redirect)
-    .get("/",(req,res)=>{
+    .get("/hello",(req,res)=>{
       res.end('hello world')
     })
     .get("*", (req, res) => {
