@@ -34,9 +34,7 @@ async function handler(req) {
         entries2.push(entry);
     }
 
-    const file = entries.find(i => {
-        return pathname.includes(i.name)
-    })
+    const file = entries.find(i => pathname.slice(6) === i.name)
 
     if (file && file.name) {
         const str = await Deno.readFile(`./packages/runtime/dist/${file.name}`);
@@ -47,9 +45,7 @@ async function handler(req) {
         });
     }
 
-    const file2 = entries2.find(i => {
-        return pathname.includes(i.name)
-    })
+    const file2 = entries2.find(i => pathname.slice(6) === i.name)
 
     if (file2 && file2.name) {
         const str = await Deno.readFile(`./packages/runtime/demo/${file2.name}`);

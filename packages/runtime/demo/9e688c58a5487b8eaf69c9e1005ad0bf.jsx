@@ -20,7 +20,6 @@ __export(stdin_exports, {
   default: () => stdin_default
 });
 module.exports = __toCommonJS(stdin_exports);
-console.log(444)
 var stdin_default = (props) => {
   const [state, setState] = fre.useState(props.data);
   useEffect(() => {
