@@ -40,7 +40,7 @@ async function handler(req) {
     })
 
     if (file2 && file2.name) {
-        const str = await Deno.readFile(`./packages/runtime/demo/${file.name}`);
+        const str = await Deno.readFile(`./packages/runtime/demo/${file2.name}`);
         return new Response(str);
     }
 
