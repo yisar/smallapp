@@ -55,7 +55,7 @@ async function handler(req) {
         const str = await Deno.readFile(`./packages/runtime/demo/${file2.name}`);
         return new Response(str, {
             headers: {
-                "content-type": file.name.includes('json') ? 'application/json' : "application/javascript"
+                "content-type": file2.name.includes('json') ? 'application/json' : "application/javascript"
             }
         });
     }
