@@ -9,7 +9,10 @@ async function handler(req) {
         entries.push(entry);
     }
 
-    const file = entries.find(i => i.name === pathname.slice(1)).name
+    const file = entries.find(i => {
+        console.log(i.name,pathname.slice(1))
+        return i.name === pathname.slice(1)
+    })
     console.log(file)
 
     const FILE_URL = new URL(`./packages/runtime/dist/${file}`, import.meta.url).href;
