@@ -324,7 +324,11 @@ function execScript(path, ref) {
   var module = {
     exports: {}
   };
-  fn.call(module.exports, module, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
+  try {
+    fn.call(module.exports, module, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
+  } catch (e) {
+    console.log(e);
+  }
   modules[path] = module.exports;
 }
 
@@ -1075,7 +1079,6 @@ function init(location) {
   let p = "";
   const manifest = global2.native.readFileSync("demo/manifest.json");
   const pages = JSON.parse(manifest).pages;
-  console.log(path, pages);
   if (path === "/") {
     p = pages[0];
   } else {
