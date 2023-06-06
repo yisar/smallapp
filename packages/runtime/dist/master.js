@@ -1084,7 +1084,7 @@ function init(location) {
   execScript("demo" + scripts[0], global2);
   const page = getCurrentPage();
   const c = global2.modules["demo" + scripts[1]].default;
-  console.log(c,page.data)
+  console.log(global2.modules)
   let link = document.createElement("link");
   link.setAttribute("href", "/demo" + styles[0]);
   link.setAttribute("rel", "stylesheet");
