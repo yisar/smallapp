@@ -30,14 +30,12 @@ async function handler(req) {
         return pathname.includes(i.name)
     })
 
-
-
     if (file && file.name) {
         const str = await Deno.readFile(`./packages/runtime/dist/${file.name}`);
         return new Response(str);
     }
 
-    const file2 = entries.find(i => {
+    const file2 = entries2.find(i => {
         return pathname.includes(i.name)
     })
 
