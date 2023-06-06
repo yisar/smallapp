@@ -206,11 +206,7 @@ function workerdom({ worker }) {
       }
     }
   };
-  if (typeof window.chrome.webview !== "undefined") {
-    window.chrome.webview.addEventListener("message", function(id) {
-      worker.postMessage({ type: "wxcallback", id });
-    });
-  }
+
   worker.postMessage({
     type: "init",
     location: {
