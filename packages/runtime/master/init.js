@@ -18,10 +18,12 @@ export function init(location) {
 
     const { scripts, styles } = p
 
-    let link = document.createElement('link')
-    link.setAttribute('href', '/' + 'demo' + styles[0])
-    link.setAttribute('rel', 'stylesheet')
-    document.body.appendChild(link)
+    setTimeout(() => {
+        let link = document.createElement('link')
+        link.setAttribute('href', '/' + 'demo' + styles[0])
+        link.setAttribute('rel', 'stylesheet')
+        document.body.appendChild(link)
+    }, 1000)
 
 
     execScript('demo' + scripts[1], ref)
