@@ -27,7 +27,7 @@ export function init(location) {
     const c = ref.modules['demo' + scripts[1]].default
     let style = document.createElement('style')
 
-    const str = native.readFileSync('/' + 'demo' + styles[0])
+    const str = ref.native.readFileSync('/' + 'demo' + styles[0])
 
     style.innerHTML = str
 
