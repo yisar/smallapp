@@ -1090,7 +1090,7 @@ function init(location) {
   const page = getCurrentPage();
   const c = global2.modules["demo" + scripts[1]].default;
   let style = document.createElement("style");
-  const str = global2.native.readFileSync("/demo" + styles[0]);
+  const str = global2.native.readFileSync("./demo" + styles[0]);
   style.innerHTML = str;
   document.head.appendChild(style);
   render(h2(c, { data: page.data }), document.body);
