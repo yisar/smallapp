@@ -322,10 +322,11 @@ function execScript(path, ref) {
       return require2(path2.join("/"));
     };
   };
-  fn.exports = {};
-  fn.call(fn.exports, fn, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
-  console.log(fn);
-  modules[path] = fn.exports;
+  var module = {
+    exports: {}
+  };
+  fn.call(module.exports, module, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
+  modules[path] = module.exports;
 }
 
 // master/app.js
