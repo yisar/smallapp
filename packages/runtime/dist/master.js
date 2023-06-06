@@ -1092,7 +1092,7 @@ function init(location) {
   let style = document.createElement("style");
   const str = global2.native.readFileSync("./demo" + styles[0]);
   style.innerHTML = str;
-  document.head.appendChild(style);
+  document.body.appendChild(style);
   render(h2(c, { data: page.data }), document.body);
 }
 
