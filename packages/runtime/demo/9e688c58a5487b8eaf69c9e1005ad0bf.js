@@ -296,7 +296,7 @@ Component({
 
 
 // demo/pages/kid/index.js
-Component.id = "16";
+Component.id = "14";
 Component.pid = "7";
 Component.tag = "child-child";
 Component({

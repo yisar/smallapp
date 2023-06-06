@@ -8,6 +8,12 @@ async function handler(req) {
         return new Response(str);
     }
 
+    if (pathname === '/index.html') {
+        const str = await Deno.readFile(`./packages/runtime/index.html`);
+        return new Response(str);
+    }
+
+
 
     const entries = [];
     for await (const entry of Deno.readDir(`./packages/runtime/dist`)) {
