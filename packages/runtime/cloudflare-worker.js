@@ -5,7 +5,7 @@ async function handler(req) {
 
     
     const entries = [];
-    for await (const entry of Deno.readDir(`./dist`)) {
+    for await (const entry of Deno.readDir(`./packages/runtime/dist`)) {
         entries.push(entry);
     }
 
