@@ -10,22 +10,25 @@ async function handler(req) {
     }
 
     const file = entries.find(i => {
-        console.log(i.name,pathname.slice(1))
         return i.name === pathname.slice(1)
     })
-    console.log(file)
-
-    const FILE_URL = new URL(`./packages/runtime/dist/${file}`, import.meta.url).href;
-
-    const resp = await fetch(FILE_URL);
 
 
-    // Return JSON.
-    return new Response(resp.body, {
-        headers: {
-            "content-type": "text/html",
-        },
-    });
+    if (file) {
+        const FILE_URL = new URL(`./packages/runtime/dist/${file.name}`, import.meta.url).href;
+        const resp = await fetch(FILE_URL);
+        return new Response(resp.body, {
+            headers: {
+                "content-type": "text/html",
+            },
+        });
+    } else {
+        return new Response('404', {
+            headers: {
+                "content-type": "text/html",
+            },
+        })
+    }
 }
 
 serve(handler);
