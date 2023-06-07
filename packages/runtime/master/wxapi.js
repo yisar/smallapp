@@ -9,8 +9,17 @@ export const wx = {
     showToast(options) {
         sendMessage('showToast', options)
     },
-    showPicker(options){
+    showPicker(options) {
         sendMessage('showPicker', options)
+    },
+    request(url, data) {
+        if (typeof fetch !== 'undefined') {
+            return new Promise(resolve => {
+                fetch(url, data).then(res => res.json()).then(data => {
+                    resolve(data)
+                })
+            })
+        }
     }
 }
 

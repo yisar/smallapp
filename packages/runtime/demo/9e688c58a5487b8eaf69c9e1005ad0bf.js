@@ -13,7 +13,8 @@ b();
 var app = getApp();
 Page({
   data: {
-    url: ""
+    url: "",
+    gacha_type: 1
   },
   changeUrl(e) {
     this.setData({
@@ -23,7 +24,11 @@ Page({
   radioChange(e) {
   },
   analyse() {
-    console.log(this.data);
+    const search = new URL(this.data.url).search;
+    const api = "https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog" + search + `&gacha_type=${this.data.gacha_type}&size=20`;
+    wx.request(api).then((data) => {
+      console.log(data);
+    });
   },
   showPicker(e) {
     wx.showPicker({
@@ -40,7 +45,7 @@ Page({
 
 
 // demo/pages/item/index.js
-Component.id = "7";
+Component.id = "10";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -72,7 +77,7 @@ Component({
 
 // demo/pages/kid/index.js
 Component.id = "14";
-Component.pid = "7";
+Component.pid = "10";
 Component.tag = "child-child";
 Component({
   properties: {},

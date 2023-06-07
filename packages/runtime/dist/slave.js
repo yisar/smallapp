@@ -201,12 +201,8 @@ function workerdom({ worker }) {
         queueMutation(data.mutations[i]);
       }
     } else if (data.type === "wxapi") {
-      if (typeof window.chrome.webview !== "undefined") {
-        window.chrome.webview.postMessage(data);
-      }
     }
   };
-
   worker.postMessage({
     type: "init",
     location: {
