@@ -119,8 +119,9 @@ Page({
   },
   toast() {
     wx.showToast({
-      title: 'qq群975551446', success() {
-        console.log(123)
+      title: 'qq群975551446',
+      success: () => {
+        console.log('success')
       }
     })
   }

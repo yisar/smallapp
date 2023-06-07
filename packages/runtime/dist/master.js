@@ -276,9 +276,12 @@ function serOptions(options) {
   let out = {};
   for (const key in options) {
     let val = options[key];
+    console.log(val);
     if (typeof val === "function") {
-      out[key] = index;
-      callbacks[index++] = val;
+      let id = "." + index;
+      out[key] = id;
+      callbacks[id] = val;
+      index++;
     } else {
       out[key] = val;
     }
@@ -291,7 +294,6 @@ function sendMessage(name, options) {
     name,
     options: serOptions(options)
   };
-  console.log(args);
   send(args);
 }
 function handleWxEvent(data) {
