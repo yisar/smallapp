@@ -4,19 +4,21 @@ import { serve } from "https://deno.land/std@0.140.0/http/server.ts";
 async function handleXingtie(req) {
     const { search } = new URL(req.url)
 
-    const api = 'https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog' + search + `&gacha_type=${this.data.gacha_type}&size=20`
+    const api = 'https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog' + search
 
-    const data = fetch(api, {
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-    }).then(res => res.json())
-
-    return new Response(data, {
+    const data = await fetch(api, {
         headers: {
             "Host": "api-takumi.mihoyo.com",
-            "User- Agent":
+            "User-Agent":
                 "Mozilla/ 5.0(Windows NT 10.0; Win64; x64) AppleWebKit / 537.36(KHTML, like Gecko) Chrome / 114.0.0.0 Safari / 537.36"
+        }
+
+    }).then(res => res.json())
+
+
+    return new Response(JSON.stringify(data), {
+        headers: {
+            "Content-Type": "application/json"
         }
     });
 }
