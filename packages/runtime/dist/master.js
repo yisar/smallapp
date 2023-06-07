@@ -1189,7 +1189,7 @@ addEventListener("message", ({ data }) => {
       handleEvent(data.event);
       break;
     case "wxcallback":
-      handleWxEvent(data.payload);
+      handleWxEvent(JSON.parse(data.payload));
       break;
   }
 });
