@@ -1,6 +1,5 @@
 import { a } from './a.js'
 import d from './a.js'
-import { wx } from '../../../../runtime/master/wxapi.js'
 
 function b() {
   a()

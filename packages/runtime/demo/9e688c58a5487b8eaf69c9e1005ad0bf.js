@@ -4,53 +4,6 @@ function a() {
   console.log(123);
 }
 
-// ../runtime/master/wxapi.js
-Page.id = "2";
-var callbacks = {};
-var index = 0;
-var wx = {
-  navigateTo(options) {
-    sendMessage("navigateTo", options);
-  },
-  showToast(options) {
-    sendMessage("showToast", options);
-  },
-  showPicker(options) {
-    sendMessage("showPicker", options);
-  },
-  request(url, data) {
-    if (typeof fetch !== "undefined") {
-      return new Promise((resolve) => {
-        fetch(url, data).then((res) => res.json()).then((data2) => {
-          resolve(data2);
-        });
-      });
-    }
-  }
-};
-function serOptions(options) {
-  let out = {};
-  for (const key in options) {
-    let val = options[key];
-    if (typeof val === "function") {
-      out[key] = index;
-      callbacks[index++] = val;
-    } else {
-      out[key] = val;
-    }
-  }
-  return out;
-}
-function sendMessage(name, options) {
-  const args = {
-    type: "wxapi",
-    name,
-    options: serOptions(options)
-  };
-  console.log(args);
-  send(args);
-}
-
 // demo/pages/index/index.js
 Page.id = "2";
 function b() {
@@ -156,8 +109,8 @@ Page({
   toast() {
     wx.showToast({
       title: "qq\u7FA4975551446",
-      success() {
-        console.log(123);
+      success: () => {
+        console.log("success");
       }
     });
   }
@@ -165,7 +118,7 @@ Page({
 
 
 // demo/pages/item/index.js
-Component.id = "10";
+Component.id = "7";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -197,7 +150,7 @@ Component({
 
 // demo/pages/kid/index.js
 Component.id = "14";
-Component.pid = "10";
+Component.pid = "7";
 Component.tag = "child-child";
 Component({
   properties: {},

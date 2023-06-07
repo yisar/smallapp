@@ -276,7 +276,6 @@ function serOptions(options) {
   let out = {};
   for (const key in options) {
     let val = options[key];
-    console.log(val);
     if (typeof val === "function") {
       let id = "." + index;
       out[key] = id;
