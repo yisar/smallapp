@@ -1143,7 +1143,6 @@ function handleEvent(event) {
   if (target) {
     event.target = target;
     event.bubbles = true;
-    console.log(event, target);
     target.dispatchEvent && target.dispatchEvent(event);
   }
 }
