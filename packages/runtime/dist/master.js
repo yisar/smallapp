@@ -291,7 +291,6 @@ function sendMessage(name, options) {
     name,
     options: serOptions(options)
   };
-  console.log(args);
   send(args);
 }
 function handleWxEvent(data) {
