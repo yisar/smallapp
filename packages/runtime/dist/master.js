@@ -295,7 +295,7 @@ function sendMessage(name, options) {
 }
 function handleWxEvent(data) {
   let callback = callbacks[data.id];
-  console.log(data.id,callbacks)
+  console.log(JSON.stringify(data),callbacks)
   callback(data.res);
   callbacks[data.id] = void 0;
 }
