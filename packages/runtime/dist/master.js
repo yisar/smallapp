@@ -291,11 +291,11 @@ function sendMessage(name, options) {
     name,
     options: serOptions(options)
   };
+  console.log(args);
   send(args);
 }
 function handleWxEvent(data) {
   let callback = callbacks[data.id];
-  console.log(JSON.stringify(data),callbacks)
   callback(data.res);
   callbacks[data.id] = void 0;
 }
@@ -1188,7 +1188,7 @@ addEventListener("message", ({ data }) => {
       handleEvent(data.event);
       break;
     case "wxcallback":
-      handleWxEvent(data);
+      handleWxEvent(data.payload);
       break;
   }
 });

@@ -216,7 +216,6 @@ function workerdom({ worker: worker2 }) {
   });
 }
 window["javascriptChannel"] = function(json) {
-  console.log(JSON.stringify(json))
-  worker.postMessage({ type: "wxcallback", data: json });
+  worker.postMessage({ type: "wxcallback", payload: json });
 };
 workerdom.umd = true;

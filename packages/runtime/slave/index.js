@@ -258,8 +258,8 @@ function workerdom({ worker }) {
     });
 };
 
-window['javascrptChannel'] = function (json) { // native 调用 webview，只有这一处
-    worker.postMessage({ type: 'wxcallback', data: JSON.parse(json) })
+window['javascriptChannel'] = function (json) { // native 调用 webview，只有这一处
+    worker.postMessage({ type: 'wxcallback', payload: json })
 }
 
 workerdom.umd = true
