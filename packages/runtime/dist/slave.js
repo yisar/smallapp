@@ -4,7 +4,7 @@ var EVENT_OPTS = {
   capture: true,
   passive: true
 };
-function workerdom({ worker }) {
+function workerdom({ worker: worker2 }) {
   const NODES = /* @__PURE__ */ new Map();
   function getNode(node) {
     if (!node)
@@ -54,7 +54,7 @@ function workerdom({ worker }) {
         event[i] = v;
       }
     }
-    worker.postMessage({
+    worker2.postMessage({
       type: "event",
       event
     });
@@ -66,7 +66,7 @@ function workerdom({ worker }) {
         let delta = Math.sqrt(Math.pow(t.pageX - touch.pageX, 2) + Math.pow(t.pageY - touch.pageY, 2));
         if (delta < 10) {
           event.type = "click";
-          worker.postMessage({ type: "event", event });
+          worker2.postMessage({ type: "event", event });
         }
       }
     }
@@ -195,15 +195,18 @@ function workerdom({ worker }) {
       doProcessMutationQueue();
     }
   }
-  worker.onmessage = ({ data }) => {
+  worker2.onmessage = ({ data }) => {
     if (data.type === "MutationRecord") {
       for (let i = 0; i < data.mutations.length; i++) {
         queueMutation(data.mutations[i]);
       }
     } else if (data.type === "wxapi") {
+      if (typeof window["nativeChannel"] !== "undefined") {
+        window["nativeChannel"].postMessage(JSON.stringify(data));
+      }
     }
   };
-  worker.postMessage({
+  worker2.postMessage({
     type: "init",
     location: {
       pathname: location.pathname,
@@ -212,4 +215,7 @@ function workerdom({ worker }) {
     }
   });
 }
+window["javascrptChannel"] = function(json) {
+  worker.postMessage({ type: "wxcallback", data: JSON.parse(json) });
+};
 workerdom.umd = true;

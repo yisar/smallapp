@@ -43,6 +43,7 @@ function sendMessage(name, options) {
         name: name,
         options: serOptions(options)
     }
+    console.log(args)
     send(args)
 }
 

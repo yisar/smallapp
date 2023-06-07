@@ -18,5 +18,5 @@
         </view>
     </view>
     <view class="title">{{title}}</view>
-    <text class="b">Made with 💔 & Fre miniapp</text>
+    <text class="b" bindtap="toast">Made with 💔 & Fre miniapp</text>
 </view>

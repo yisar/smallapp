@@ -47,7 +47,8 @@ var stdin_default = (props) => {
     }, item[1]), ")"))), /* @__PURE__ */ fre.h(comp.View, {
       class: `title`
     }, title), /* @__PURE__ */ fre.h(comp.Text, {
-      class: `b`
+      class: `b`,
+      onClick: $handleEvent("toast", "2", "bindtap")
     }, "Made with \u{1F494} & Fre miniapp")));
   }
 };

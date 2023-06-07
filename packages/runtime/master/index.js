@@ -33,7 +33,7 @@ function handleEvent(event) {
     if (target) {
         event.target = target;
         event.bubbles = true;
-        target.dispatchEvent(event);
+        target.dispatchEvent && target.dispatchEvent(event);
     }
 }
 

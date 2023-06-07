@@ -4,6 +4,53 @@ function a() {
   console.log(123);
 }
 
+// ../runtime/master/wxapi.js
+Page.id = "2";
+var callbacks = {};
+var index = 0;
+var wx = {
+  navigateTo(options) {
+    sendMessage("navigateTo", options);
+  },
+  showToast(options) {
+    sendMessage("showToast", options);
+  },
+  showPicker(options) {
+    sendMessage("showPicker", options);
+  },
+  request(url, data) {
+    if (typeof fetch !== "undefined") {
+      return new Promise((resolve) => {
+        fetch(url, data).then((res) => res.json()).then((data2) => {
+          resolve(data2);
+        });
+      });
+    }
+  }
+};
+function serOptions(options) {
+  let out = {};
+  for (const key in options) {
+    let val = options[key];
+    if (typeof val === "function") {
+      out[key] = index;
+      callbacks[index++] = val;
+    } else {
+      out[key] = val;
+    }
+  }
+  return out;
+}
+function sendMessage(name, options) {
+  const args = {
+    type: "wxapi",
+    name,
+    options: serOptions(options)
+  };
+  console.log(args);
+  send(args);
+}
+
 // demo/pages/index/index.js
 Page.id = "2";
 function b() {
@@ -106,14 +153,11 @@ Page({
       title
     });
   },
-  showPicker(e) {
-    wx.showPicker({
-      title: "\u563F\u563F\u563F",
-      change: (index) => {
-        console.log(index);
-      },
-      success: (index) => {
-        console.log(index);
+  toast() {
+    wx.showToast({
+      title: "qq\u7FA4975551446",
+      success() {
+        console.log(123);
       }
     });
   }

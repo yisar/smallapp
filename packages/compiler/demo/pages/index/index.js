@@ -1,5 +1,6 @@
 import { a } from './a.js'
 import d from './a.js'
+import { wx } from '../../../../runtime/master/wxapi.js'
 
 function b() {
   a()
@@ -88,11 +89,8 @@ Page({
   },
 
   medal() {
-
     const nums = this.data.five.map(i => i[1])
-
     const realNums = nums.slice(1)
-
     const average = realNums.reduce((a, b) => a + b) / realNums.length;
 
     let title = ''
@@ -119,17 +117,11 @@ Page({
     })
 
   },
-  showPicker(e) {
-
-    wx.showPicker({
-      title: "嘿嘿嘿",
-      change: (index) => {
-        console.log(index)
-      },
-      success: (index) => {
-        console.log(index)
+  toast() {
+    wx.showToast({
+      title: 'qq群975551446', success() {
+        console.log(123)
       }
     })
-
   }
 })
