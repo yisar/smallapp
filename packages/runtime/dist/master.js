@@ -295,8 +295,8 @@ function sendMessage(name, options) {
   send(args);
 }
 function handleWxEvent(data) {
-  console.log(JSON.stringify(data))
-  let callback = callbacks[data.id];
+  
+  let callback = callbacks[0];
   callback(data.res);
   callbacks[data.id] = void 0;
 }
@@ -1189,7 +1189,7 @@ addEventListener("message", ({ data }) => {
       handleEvent(data.event);
       break;
     case "wxcallback":
-      handleWxEvent(JSON.parse(data.payload));
+      handleWxEvent(data.payload);
       break;
   }
 });
