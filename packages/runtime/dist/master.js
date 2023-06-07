@@ -295,7 +295,7 @@ function sendMessage(name, options) {
     name,
     options: ser
   };
-  console.log(ser);
+  console.log(JSON.stringify(ser));
   send(args);
 }
 function handleWxEvent(data) {
