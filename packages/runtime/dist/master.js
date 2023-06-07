@@ -298,6 +298,8 @@ function sendMessage(name, options) {
   send(args);
 }
 function handleWxEvent(data) {
+  console.log(data.id)
+  console.log(JSON.stringify(callbacks))
   let callback = callbacks[data.id];
   callback(data.res);
   callbacks[data.id] = void 0;
