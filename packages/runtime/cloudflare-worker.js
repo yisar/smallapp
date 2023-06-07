@@ -34,7 +34,7 @@ async function handler(req) {
     }
 
     if (pathname.includes('xingtie_chouka')) {
-        return handleXingtie()
+        return handleXingtie(req)
     }
 
     const entries = [];

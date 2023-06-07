@@ -25,7 +25,7 @@ Page({
   },
   analyse() {
     const search = new URL(this.data.url).search;
-    const api = "https://api-takumi.mihoyo.com/common/gacha_record/api/getGachaLog" + search + `&gacha_type=${this.data.gacha_type}&size=20`;
+    const api = "https://miniapp.deno.dev/xingtie_chouka" + search + `&gacha_type=${this.data.gacha_type}&size=20`;
     wx.request(api).then((data) => {
       console.log(data);
     });
@@ -45,7 +45,7 @@ Page({
 
 
 // demo/pages/item/index.js
-Component.id = "10";
+Component.id = "7";
 Component.pid = "2";
 Component.tag = "use-item";
 var app = getApp();
@@ -77,7 +77,7 @@ Component({
 
 // demo/pages/kid/index.js
 Component.id = "14";
-Component.pid = "10";
+Component.pid = "7";
 Component.tag = "child-child";
 Component({
   properties: {},
