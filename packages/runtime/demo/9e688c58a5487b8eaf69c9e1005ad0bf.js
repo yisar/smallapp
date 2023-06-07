@@ -14,7 +14,9 @@ var app = getApp();
 Page({
   data: {
     url: "",
-    gacha_type: 1
+    gacha_type: 1,
+    count: 0,
+    five: []
   },
   changeUrl(e) {
     this.setData({
@@ -25,9 +27,22 @@ Page({
   },
   analyse() {
     const search = new URL(this.data.url).search;
-    const api = "https://miniapp.deno.dev/xingtie_chouka" + search + `&gacha_type=${this.data.gacha_type}&size=20`;
-    wx.request(api).then((data) => {
-      console.log(data);
+    const api = "https://miniapp.deno.dev/xingtie_chouka" + search + `&gacha_type=${this.data.gacha_type}&size=20&page=${this.data.page}`;
+    wx.request(api).then((res) => {
+      for (const v in res.data.list) {
+        if (v.rank_type === 5) {
+          this.setData({
+            five: this.five.concat([v, this.data.count])
+          });
+        } else {
+          this.setData({
+            count: this.data.count + 1
+          });
+        }
+      }
+      this.setData({
+        page: this.data.page + 1
+      });
     });
   },
   showPicker(e) {
