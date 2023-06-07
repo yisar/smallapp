@@ -241,7 +241,9 @@ function workerdom({ worker }) {
                 queueMutation(data.mutations[i]);
             }
         } else if (data.type === 'wxapi') {
-            
+            if (typeof window['nativeChannel'] !== 'undefined') {
+                window['nativeChannel'].postMessage(JSON.stringify(data));
+            }
         }
     };
 
@@ -255,5 +257,9 @@ function workerdom({ worker }) {
         }
     });
 };
+
+window['javascrptChannel'] = function (json) { // native 调用 webview，只有这一处
+    worker.postMessage({ type: 'wxcallback', data: JSON.parse(json) })
+}
 
 workerdom.umd = true
