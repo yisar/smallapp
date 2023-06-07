@@ -277,7 +277,7 @@ function serOptions(options) {
   for (const key in options) {
     let val = options[key];
     if (typeof val === "function") {
-      out[key] = index;
+      out[key] = '.'+index;
       callbacks[index++] = val;
     } else {
       out[key] = val;
@@ -296,7 +296,7 @@ function sendMessage(name, options) {
 }
 function handleWxEvent(data) {
   
-  let callback = callbacks[0];
+  let callback = callbacks['.0'];
   callback(data.res);
   callbacks[data.id] = void 0;
 }
