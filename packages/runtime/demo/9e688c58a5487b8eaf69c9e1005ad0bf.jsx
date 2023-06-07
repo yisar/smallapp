@@ -28,9 +28,15 @@ var stdin_default = (props) => {
   with (state) {
     return /* @__PURE__ */ fre.h(fre.Fragment, null, /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Image, {
       src: `https://cdn-us.imgs.moe/2023/06/06/647f223643647.jpeg`
+    }), /* @__PURE__ */ fre.h(comp.Input, {
+      type: `text`,
+      placeholder: `\u8BF7\u8F93\u5165\u62BD\u5361\u5206\u6790URL`,
+      onInput: $handleEvent("changeUrl", "2", "bindinput"),
+      class: `input`
     }), /* @__PURE__ */ fre.h(comp.Button, {
-      type: `primary`
-    }, "\u661F\u94C1\u5C0F\u52A9\u624B"), /* @__PURE__ */ fre.h(comp.Text, {
+      type: `primary`,
+      onClick: $handleEvent("analyse", "2", "bindtap")
+    }, "\u5F00\u59CB\u5206\u6790"), /* @__PURE__ */ fre.h(comp.Text, {
       class: `info`
     }, "\u8FD9\u662F\u4E00\u4E2A\u5C0F\u7A0B\u5E8F\u793A\u4F8B"), /* @__PURE__ */ fre.h(comp.Text, {
       class: `b`

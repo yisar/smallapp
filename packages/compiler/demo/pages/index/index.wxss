@@ -14,15 +14,24 @@ image {
   border: 4px solid var(--primary-border-color);
 }
 
-text{
+text {
   display: block;
 }
 
-.b{
+.input {
+  background: #eee;
+  padding: 10px!important;
+  display: block;
+  border-radius: 5px!important;
+  width: 90%;
+  margin: 10px auto;
+}
+
+.b {
   color: #bbb;
   margin: 10px;
 }
 
-.info{
+.info {
   margin-top: 20px;
 }

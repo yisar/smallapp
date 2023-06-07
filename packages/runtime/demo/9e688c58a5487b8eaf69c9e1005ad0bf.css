@@ -18,13 +18,22 @@ span {
   display: block;
 }
 
-.b{
+.input {
+  background: #eee;
+  padding: 10px!important;
+  display: block;
+  border-radius: 5px!important;
+  width: 90%;
+  margin: 10px auto;
+}
+
+.b {
   color: #bbb;
   margin: 10px;
 }
 
-.info{
-  margin-top: 10px;
+.info {
+  margin-top: 20px;
 }.list-items {
   display: flex;
   padding: 0 0.3rem;

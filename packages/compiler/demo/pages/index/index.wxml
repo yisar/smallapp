@@ -1,6 +1,7 @@
 <view>
     <image src="https://cdn-us.imgs.moe/2023/06/06/647f223643647.jpeg" />
-    <button type="primary">星铁小助手</button>
+    <input type="text" placeholder="请输入抽卡分析URL" bindinput="changeUrl" class="input"/>
+    <button type="primary" bindtap="analyse">开始分析</button>
     <text class="info">这是一个小程序示例</text>
     <text class="b">Made with 💔 & Fre miniapp</text>
 </view>
