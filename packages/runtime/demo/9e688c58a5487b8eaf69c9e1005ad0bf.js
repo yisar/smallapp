@@ -14,9 +14,16 @@ var app = getApp();
 Page({
   data: {
     url: "",
-    gacha_type: 1,
+    type: 0,
     count: 0,
-    five: []
+    page: 1,
+    end_id: 0,
+    five: [],
+    map: {
+      0: "\u9650\u5B9A\u5361\u6C60",
+      1: "\u5E38\u9A7B\u5361\u6C60",
+      2: "\u65B0\u624B\u5361\u6C60"
+    }
   },
   changeUrl(e) {
     this.setData({
@@ -27,12 +34,19 @@ Page({
   },
   analyse() {
     const search = new URL(this.data.url).search;
-    const api = "https://miniapp.deno.dev/xingtie_chouka" + search + `&gacha_type=${this.data.gacha_type}&size=20&page=${this.data.page}`;
+    let type = this.data.type;
+    console.log(type);
+    if (type === 0) {
+      type = 11;
+    }
+    const api = "https://miniapp.deno.dev/xingtie_chouka" + search + `&gacha_type=${type}&size=20&page=${this.data.page}&end_id=${this.data.end_id}`;
     wx.request(api).then((res) => {
-      for (const v in res.data.list) {
-        if (v.rank_type === 5) {
+      const list = res.data.list;
+      for (const v of list) {
+        if (v.rank_type === "5") {
           this.setData({
-            five: this.five.concat([v, this.data.count])
+            five: this.data.five.concat([[v, this.data.count]]),
+            count: 0
           });
         } else {
           this.setData({
@@ -40,9 +54,18 @@ Page({
           });
         }
       }
-      this.setData({
-        page: this.data.page + 1
-      });
+      if (list.length < 5) {
+        if (this.data.type >= 2) {
+          console.log("\u5206\u6790\u7ED3\u675F");
+        } else {
+        }
+      } else {
+        this.setData({
+          page: this.data.page + 1,
+          end_id: list[list.length - 1].id
+        });
+        this.analyse();
+      }
     });
   },
   showPicker(e) {

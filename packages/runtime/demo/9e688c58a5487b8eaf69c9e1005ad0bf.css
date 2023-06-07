@@ -14,15 +14,16 @@ img {
   border: 4px solid var(--primary-border-color);
 }
 
-span {
+/* text {
   display: block;
-}
+} */
+
 
 .input {
   background: #eee;
-  padding: 10px!important;
+  padding: 10px !important;
   display: block;
-  border-radius: 5px!important;
+  border-radius: 5px !important;
   width: 90%;
   margin: 10px auto;
 }
@@ -34,6 +35,17 @@ span {
 
 .info {
   margin-top: 20px;
+  display: block;
+}
+
+.rank {
+  padding: 10px;
+  color: orange;
+
+}
+
+.rank .r {
+  padding: 2px;
 }.list-items {
   display: flex;
   padding: 0 0.3rem;

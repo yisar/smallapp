@@ -38,7 +38,13 @@ var stdin_default = (props) => {
       onClick: $handleEvent("analyse", "2", "bindtap")
     }, "\u5F00\u59CB\u5206\u6790"), /* @__PURE__ */ fre.h(comp.Text, {
       class: `info`
-    }, "\u8FD9\u662F\u4E00\u4E2A\u5C0F\u7A0B\u5E8F\u793A\u4F8B"), /* @__PURE__ */ fre.h(comp.Text, {
+    }, /* @__PURE__ */ fre.h(comp.Text, null, "\u6B63\u5728\u5206\u6790"), /* @__PURE__ */ fre.h(comp.Text, null, map[type]), /* @__PURE__ */ fre.h(comp.Text, null, "\u7B2C"), page, /* @__PURE__ */ fre.h(comp.Text, null, "\u9875")), /* @__PURE__ */ fre.h(comp.View, {
+      class: `rank`
+    }, $for(five, (item) => /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Text, {
+      class: `r`
+    }, item[0].name), "(", /* @__PURE__ */ fre.h(comp.Text, {
+      class: `r`
+    }, item[1]), ")"))), /* @__PURE__ */ fre.h(comp.Text, {
       class: `b`
     }, "Made with \u{1F494} & Fre miniapp")));
   }
