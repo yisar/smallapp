@@ -40,12 +40,18 @@ img {
 
 .rank {
   padding: 10px;
-  color: orange;
+  color: royalblue;
 
 }
 
 .rank .r {
   padding: 2px;
+}
+
+.title {
+  font-size: 50px;
+  color: orange;
+  font-weight: bold;
 }.list-items {
   display: flex;
   padding: 0 0.3rem;

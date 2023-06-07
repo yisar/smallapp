@@ -42,9 +42,11 @@ var stdin_default = (props) => {
       class: `rank`
     }, $for(five, (item) => /* @__PURE__ */ fre.h(comp.View, null, /* @__PURE__ */ fre.h(comp.Text, {
       class: `r`
-    }, item[0].name), "(", /* @__PURE__ */ fre.h(comp.Text, {
+    }, item[0]), "(", /* @__PURE__ */ fre.h(comp.Text, {
       class: `r`
-    }, item[1]), ")"))), /* @__PURE__ */ fre.h(comp.Text, {
+    }, item[1]), ")"))), /* @__PURE__ */ fre.h(comp.View, {
+      class: `title`
+    }, title), /* @__PURE__ */ fre.h(comp.Text, {
       class: `b`
     }, "Made with \u{1F494} & Fre miniapp")));
   }
