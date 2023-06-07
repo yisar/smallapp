@@ -41,11 +41,13 @@ function serOptions(options) {
 }
 
 function sendMessage(name, options) {
+    const ser = serOptions(options)
     const args = {
         type: 'wxapi',
         name: name,
-        options: serOptions(options)
+        options: ser
     }
+    console.log(ser)
     send(args)
 }
 

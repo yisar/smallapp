@@ -289,11 +289,13 @@ function serOptions(options) {
   return out;
 }
 function sendMessage(name, options) {
+  const ser = serOptions(options);
   const args = {
     type: "wxapi",
     name,
-    options: serOptions(options)
+    options: ser
   };
+  console.log(ser);
   send(args);
 }
 function handleWxEvent(data) {
