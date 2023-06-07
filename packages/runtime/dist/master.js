@@ -294,10 +294,10 @@ function sendMessage(name, options) {
     name,
     options: ser
   };
-  console.log(ser);
   send(args);
 }
 function handleWxEvent(data) {
+  console.log(data.id);
   let callback = callbacks[data.id];
   callback(data.res);
   callbacks[data.id] = void 0;
