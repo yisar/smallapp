@@ -31,9 +31,11 @@ Page({
 })
 ```
 
-### Demo Video
+### Demos
 
 [https://v.douyin.com/Ug9bwvq/](https://v.douyin.com/Ug9bwvq/)
+
+![demo image](https://cdn-us.imgs.moe/2023/06/08/64815bf234e71.jpg)
 
 ### Principle
 
