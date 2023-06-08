@@ -6,6 +6,12 @@ As of now, there are over 7 million miniapps in China, Chinese people do not lik
 
 Musk envied `WeChat` and he really wanted this miniapp architecture, so I opened it up.
 
+### Docs
+
+smallapp follows WeChat's miniapp standard, you should refer to WeChat's documentation.
+
+[WeChat miniapp docs](https://developers.weixin.qq.com/miniprogram/en/dev/framework/)
+
 ### Syntax
 
 ```html
