@@ -1,25 +1,60 @@
-# fre-miniapp
+# smallapp
 
-基于 fre 的小程序引擎，将微信小程序迅速打包，运行在你的app容器中
+`smallapp` is a [Chinese miniapp architecture](https://www.w3.org/TR/mini-app-white-paper) implementation.
 
-### Run
+As of now, there are over 7 million miniapps in China, Chinese people do not like to use browsers or search engines.
 
-1. 环境
+Musk envied `WeChat` and he really wanted this miniapp architecture, so I opened it up.
 
-1.window11（window10 需要手动安装 [webview2](https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/#download-section)）
+### Syntax
 
-2.需要设置好rust环境然后安装wasm-pack - yarn build:wxml 需要使用wasm-pack
-
-3. 先 build
-```shell
-yarn build
-yarn build:wxml
+```html
+<view>
+    <text>{{count}}</text>
+    <button bindtap="add">+</button>
+</view>
 ```
-4. run
+```js
+Page({
+    data: {
+        count: 0
+    },
+    add: () {
+        this.setData({
+            count: this.data.count + 1
+        })
 
-```shell
-yarn start
+        wx.showToast({ 
+            title: 'count is added!' 
+        })
+    }
+})
 ```
-5. 预览
 
-![image](https://user-images.githubusercontent.com/12951461/169762097-f1724907-6353-4b64-81f0-f0f39d9283f9.png)
+### Demo Video
+
+![suo](https://www.douyin.com/user/MS4wLjABAAAAAUM_j1ax3rc8ANyKLH6JsHYeTqHy8q-crAISyfWmNA0d4Mv_Gl7EHH2Evwzq0k3n?modal_id=7241974043560135968)
+
+### Principle
+
+1. compiler
+
+```
+smallapp build -e app.json -o /dist
+```
+
+This step will package the miniapp project into js files, which is double threaded. The jsx file is used for rendering threads, and the js file is used for logical threads.
+
+2. worker
+
+The logical thread is responsible for running JavaScript logic, and you need to find a JavaScript runtime, such as worker.
+
+- Web worker
+- Cloudflare worker
+- quickjs/v8/hermes
+
+As long as it has the standard API and communication mechanism of the worker, it can serve as the logical layer of the miniapp.
+
+3. Native container
+
+Miniapps runs on a super app, such as Wechat/Alipay/Baidu and its API is provided by the native container.
