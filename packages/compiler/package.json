@@ -1,14 +1,14 @@
 {
-  "name": "smallapp",
-  "version": "0.0.1",
+  "name": "ultra-app",
+  "version": "0.0.2",
   "description": "",
   "main": "index.js",
   "bin": {
-    "miniapp": "bin/index.js"
+    "ultra": "bin/index.js"
   },
   "scripts": {
-    "dev": "smallapp -e ./demo/app.json -o ./dist/",
-    "build": "smallapp build -e ./demo/app.json -o ./dist/ -m",
+    "dev": "ultra -e ./demo/app.json -o ./dist/",
+    "build": "ultra build -e ./demo/app.json -o ./dist/ -m",
     "debug": "node --inspect ./core/cli.js -e ./demo/app.json -o ../runtime/demo/"
   },
   "repository": {
