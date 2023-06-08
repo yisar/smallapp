@@ -33,7 +33,7 @@ Page({
 
 ### Demo Video
 
-![suo](https://www.douyin.com/user/MS4wLjABAAAAAUM_j1ax3rc8ANyKLH6JsHYeTqHy8q-crAISyfWmNA0d4Mv_Gl7EHH2Evwzq0k3n?modal_id=7241974043560135968)
+[https://v.douyin.com/Ug9bwvq/](https://v.douyin.com/Ug9bwvq/)
 
 ### Principle
 
