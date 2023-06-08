@@ -35,7 +35,7 @@ Page({
 
 [https://v.douyin.com/Ug9bwvq/](https://v.douyin.com/Ug9bwvq/)
 
-<img src="https://cdn-us.imgs.moe/2023/06/08/64815bf234e71.jpg" width="100px"></img>
+<img src="https://cdn-us.imgs.moe/2023/06/08/64815bf234e71.jpg" width="250px"></img>
 
 ### Principle
 
