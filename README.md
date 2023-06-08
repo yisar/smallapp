@@ -1,3 +1,5 @@
+![](https://cdn-us.imgs.moe/2023/06/08/6481702430f68.png)
+
 # smallapp
 
 `smallapp` is a [Chinese miniapp architecture](https://www.w3.org/TR/mini-app-white-paper) implementation.
