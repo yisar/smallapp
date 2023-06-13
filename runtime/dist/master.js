@@ -1097,7 +1097,7 @@ var _Page = class {
 function init(location) {
   let path = location.pathname;
   let p = "";
-  const manifest = global2.native.readFileSync("demo/manifest.json");
+  const manifest = global2.native.readFileSync("manifest.json");
   const pages = JSON.parse(manifest).pages;
   if (path === "/") {
     p = pages[0];
