@@ -769,9 +769,23 @@ function Text(props) {
 }
 
 // master/components/view.js
+function computedStype(str) {
+  let out = {};
+  let arr = str.split(";");
+  arr.forEach((s) => {
+    const [name, value] = s.split(":");
+    out[name] = value;
+  });
+  return out;
+}
 function View(props) {
+  if (props.style) {
+    var style = computedStype(props.style);
+    delete props.style;
+  }
   return /* @__PURE__ */ h2("div", {
-    ...props
+    ...props,
+    style
   });
 }
 
