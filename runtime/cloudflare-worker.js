@@ -62,7 +62,7 @@ async function handler(req) {
         });
     }
 
-    const file2 = entries2.find(i => pathname.slice(6) === i.name)
+    const file2 = entries2.find(i => pathname.slice(6) === i.name || pathname.slice(1) === i.name)
 
     if (file2 && file2.name) {
         const str = await Deno.readFile(`./runtime/demo/${file2.name}`);
