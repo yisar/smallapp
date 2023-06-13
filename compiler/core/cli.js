@@ -4,7 +4,6 @@ const build = require("./bundle")
 const pack = require("./package")
 const serve = require("./serve")
 const argv = require("./commander")
-const ora = require('ora')
 // const { spawn, execFile, execFileSync } = require("child_process")
 const BUILD_TYPE = {
   BUILD: 'build'
@@ -40,12 +39,12 @@ async function run(argv) {
 
 async function start(options) {
   options.old && options.old.close()
-  const spinner = ora('start compiling').start()
+  console.log('start compiling...')
   const start = Date.now()
   const adt = await build(options.e, options)
   await pack(adt, options)
   const end = Date.now()
-  spinner.succeed(`compile total time ${end - start}ms`)
+  console.log(`compile total time ${end - start}ms`)
   serve()
   // execFile(Path.join(__dirname, '../../container/fre_miniapp.exe'))
 }

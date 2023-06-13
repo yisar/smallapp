@@ -1,8 +1,12 @@
 {
-  "name": "fre-miniapp",
-  "version": "0.0.1",
-  "description": "fre miniapp",
+  "name": "smallapp",
+  "version": "0.0.3",
+  "description": "",
   "main": "index.js",
+  "bin": {
+    "smallapp": "./compiler/bin/index.js",
+    "sm": "./compiler/bin/index.js"
+  },
   "devDependencies": {
     "chokidar": "^3.5.1",
     "commander": "^7.1.0",
