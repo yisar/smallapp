@@ -1113,7 +1113,16 @@ function init(location) {
   execScript("." + scripts[0], global2);
   const page = getCurrentPage();
   const c = global2.modules["." + scripts[1]].default;
-  render(h2(c, { data: page.data }), document.body);
+  const wrapComp = () => {
+    useEffect(() => {
+      page.onLoad && page.onLoad();
+      return () => {
+        page.unLoad && page.unLoad();
+      };
+    }, []);
+    return h2(c, { data: page.data });
+  };
+  render(h2(wrapComp, {}), document.body);
 }
 
 // master/index.js

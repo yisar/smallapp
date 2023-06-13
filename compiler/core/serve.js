@@ -7,8 +7,6 @@ module.exports = function serve(options) {
   const basetdir = path.join(__dirname, '../../runtime/dist')
   const distdir = path.join(options.i, options.o)
 
-  console.log(basetdir)
-
   const app = express()
     .use(express.static(basetdir))
     .use(express.static(distdir))

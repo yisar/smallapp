@@ -24,6 +24,9 @@ Page({
     },
     title: ""
   },
+  onload(){
+    console.log('onLoad')
+  },
   changeUrl(e) {
     this.setData({
       url: e.detail.value

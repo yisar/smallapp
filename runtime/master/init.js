@@ -1,7 +1,7 @@
 import { execScript } from './exec-script.js'
 import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
-import { render, h } from './fre-esm'
+import { render, h, useEffect } from './fre-esm'
 
 export function init(location) {
     let path = location.pathname
@@ -22,13 +22,24 @@ export function init(location) {
     link.setAttribute("href", "." + styles[0]);
     link.setAttribute("rel", "stylesheet");
     document.body.appendChild(link);
-    execScript('.'+scripts[1], ref);
-    execScript('.'+scripts[0], ref);
+    execScript('.' + scripts[1], ref);
+    execScript('.' + scripts[0], ref);
 
     const page = getCurrentPage()
 
-    const c = ref.modules['.'+scripts[1]].default
+    const c = ref.modules['.' + scripts[1]].default
+
+    const wrapComp = () => {
+        useEffect(() => {
+            page.onLoad && page.onLoad()
+            return () => {
+                page.unLoad && page.unLoad()
+            }
+        }, [])
+
+        return h(c, { data: page.data })
+    }
 
 
-    render(h(c, { data: page.data }), document.body)
+    render(h(wrapComp, {}), document.body)
 }
