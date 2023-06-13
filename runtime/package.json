@@ -1,0 +1,25 @@
+{
+  "name": "@fre-miniapp/runtime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "serve ./",
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yisar/fre-worker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yisar/fre-worker/issues"
+  },
+  "homepage": "https://github.com/yisar/fre-worker#readme",
+  "dependencies": {
+    "rollup": "^2.67.2"
+  }
+}

@@ -1,0 +1,56 @@
+view {
+  text-align: center;
+}
+
+button {
+  margin: 15px auto;
+}
+
+image {
+  height: 100px;
+  width: 100px;
+  border-radius: 100px;
+  margin: 15px;
+  border: 4px solid var(--primary-border-color);
+}
+
+/* text {
+  display: block;
+} */
+
+
+.input {
+  background: #eee;
+  padding: 10px !important;
+  display: block;
+  border-radius: 5px !important;
+  width: 90%;
+  margin: 10px auto;
+}
+
+.b {
+  color: #bbb;
+  margin: 10px;
+}
+
+.info {
+  margin-top: 20px;
+  display: block;
+}
+
+.rank {
+  padding: 10px;
+  color: royalblue;
+
+}
+
+.rank .r {
+  padding: 2px;
+}
+
+.title {
+  font-size: 50px;
+  color: orange;
+  font-weight: bold;
+  margin: 30px;
+}

@@ -1,0 +1,22 @@
+<view>
+    <image src="https://cdn-us.imgs.moe/2023/06/06/647f223643647.jpeg" />
+    <input type="text" placeholder="请输入抽卡分析URL" bindinput="changeUrl" class="input" />
+    <button type="primary" bindtap="analyse">开始分析</button>
+    <text class="info">
+        <text>正在分析</text>
+        <text>{{map[type]}}</text>
+        <text>第</text>
+        {{page}}
+        <text>页</text>
+    </text>
+    <view class="rank">
+        <view wx:for="{{five}}">
+            <text class="r">{{item[0]}}</text>
+            (
+            <text class="r">{{item[1]}}</text>
+            )
+        </view>
+    </view>
+    <view class="title">{{title}}</view>
+    <text class="b" bindtap="toast">Made with 💔 & Fre miniapp</text>
+</view>
