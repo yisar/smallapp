@@ -19,7 +19,7 @@ export function init(location) {
     const { scripts, styles } = p
 
     let link = document.createElement('link')
-    link.setAttribute("href", "./" + styles[0]);
+    link.setAttribute("href", "." + styles[0]);
     link.setAttribute("rel", "stylesheet");
     document.body.appendChild(link);
     execScript('.'+scripts[1], ref);
