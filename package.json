@@ -8,17 +8,11 @@
     "sm": "./compiler/bin/index.js"
   },
   "devDependencies": {
-    "chokidar": "^3.5.1",
     "commander": "^7.1.0",
     "cross-fetch": "^3.0.6",
-    "ejs": "^3.1.6",
-    "esbuild": "^0.14.17",
-    "express": "^4.17.3",
-    "md5": "^2.3.0",
     "nanoid": "^3.1.21",
     "nodemon": "^2.0.6",
     "pnpm": "^6.32.9",
-    "postcss": "^8.2.2",
     "postcss-selector-parser": "^6.0.4",
     "prettier": "^2.2.1",
     "serve": "^13.0.2"
