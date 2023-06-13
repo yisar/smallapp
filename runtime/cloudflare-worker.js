@@ -28,7 +28,7 @@ async function handler(req) {
     const { pathname } = new URL(req.url)
 
     if (pathname === '/default.css') {
-        const str = await Deno.readFile(`./packages/runtime/default.css`);
+        const str = await Deno.readFile(`./runtime/default.css`);
         return new Response(str, {
             headers: {
                 "content-type": "text/css",
@@ -41,20 +41,20 @@ async function handler(req) {
     }
 
     const entries = [];
-    for await (const entry of Deno.readDir(`./packages/runtime/dist`)) {
+    for await (const entry of Deno.readDir(`./runtime/dist`)) {
         entries.push(entry);
     }
 
     const entries2 = []
 
-    for await (const entry of Deno.readDir(`./packages/runtime/demo`)) {
+    for await (const entry of Deno.readDir(`./runtime/demo`)) {
         entries2.push(entry);
     }
 
     const file = entries.find(i => pathname.slice(6) === i.name)
 
     if (file && file.name) {
-        const str = await Deno.readFile(`./packages/runtime/dist/${file.name}`);
+        const str = await Deno.readFile(`./runtime/dist/${file.name}`);
         return new Response(str, {
             headers: {
                 "content-type": "application/javascript",
@@ -65,7 +65,7 @@ async function handler(req) {
     const file2 = entries2.find(i => pathname.slice(6) === i.name)
 
     if (file2 && file2.name) {
-        const str = await Deno.readFile(`./packages/runtime/demo/${file2.name}`);
+        const str = await Deno.readFile(`./runtime/demo/${file2.name}`);
         return new Response(str, {
             headers: {
                 "content-type": file2.name.includes('json') ? 'application/json' : file2.name.includes('css') ? "text/css" : "application/javascript"
@@ -73,7 +73,7 @@ async function handler(req) {
         });
     }
 
-    const str = await Deno.readFile(`./packages/runtime/index.html`);
+    const str = await Deno.readFile(`./runtime/index.html`);
     return new Response(str, {
         headers: {
             "content-type": "text/html",
