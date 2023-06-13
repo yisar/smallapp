@@ -45,7 +45,7 @@ async function start(options) {
   await pack(adt, options)
   const end = Date.now()
   console.log(`compile total time ${end - start}ms`)
-  serve()
+  serve(options)
   // execFile(Path.join(__dirname, '../../container/fre_miniapp.exe'))
 }
 

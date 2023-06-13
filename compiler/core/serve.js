@@ -4,9 +4,14 @@ const express = require('express')
 const { PORT = 5000 } = process.env
 
 module.exports = function serve(options) {
+  const basetdir = path.join(__dirname, '../../runtime/dist')
+  const distdir = path.join(options.i, options.o)
+
+  console.log(basetdir)
+
   const app = express()
-    .use(express.static('../runtime/demo'))
-    .use(express.static('../runtime/dist'))
+    .use(express.static(basetdir))
+    .use(express.static(distdir))
     .get('/', (req, res) => {
       const html = `
       <!DOCTYPE html>
@@ -35,8 +40,7 @@ module.exports = function serve(options) {
       res.end('hello world')
     })
     .get("*", (req, res) => {
-      
-      res.end(404)
+      res.end('404')
     })
     .listen(PORT, (err) => {
       if (err) throw err
