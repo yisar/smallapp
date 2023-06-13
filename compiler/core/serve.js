@@ -35,8 +35,8 @@ module.exports = function serve(options) {
       res.end('hello world')
     })
     .get("*", (req, res) => {
-      const html = fs.readFileSync(path.join(__dirname, '../../runtime/index.html')).toString()
-      res.end(html)
+      
+      res.end(404)
     })
     .listen(PORT, (err) => {
       if (err) throw err
