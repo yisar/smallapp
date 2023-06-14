@@ -73,7 +73,25 @@ async function handler(req) {
         });
     }
 
-    const str = await Deno.readFile(`./runtime/index.html`);
+    const str = `<!DOCTYPE html>
+    <html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fre miniapp</title>
+        <link rel="stylesheet" href="https://miniapp.deno.dev/default.css">
+    </head>
+    <body>
+        <script src="/slave.js"></script>
+        <script>
+            const worker = new Worker('/master.js')
+            workerdom({ worker })
+        </script>
+    </body>
+    
+    </html>`;
     return new Response(str, {
         headers: {
             "content-type": "text/html",
