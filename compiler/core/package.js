@@ -113,6 +113,7 @@ async function generateEntry(asset, options) {
     origin: asset.ast,
     pages,
   }
-  let out = JSON.stringify(json)
-  await promises.writeFile(Path.join(Path.resolve(options.o), 'manifest.json'), out)
+  const out = JSON.stringify(json)
+  const code = `window.manifest = ${out}`
+  await promises.writeFile(Path.join(Path.resolve(options.o), 'app.js'), code)
 }

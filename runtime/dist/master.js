@@ -756,16 +756,12 @@ var isArr = Array.isArray;
 
 // master/components/button.js
 function Button(props) {
-  return /* @__PURE__ */ h2("button", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("button", { ...props });
 }
 
 // master/components/text.js
 function Text(props) {
-  return /* @__PURE__ */ h2("span", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("span", { ...props });
 }
 
 // master/components/view.js
@@ -783,10 +779,7 @@ function View(props) {
     var style = computedStype(props.style);
     delete props.style;
   }
-  return /* @__PURE__ */ h2("div", {
-    ...props,
-    style
-  });
+  return /* @__PURE__ */ h2("div", { ...props, style });
 }
 
 // master/components/switch.js
@@ -796,44 +789,44 @@ function Switch(props) {
     setChecked(e.detail.checked);
     props.onChange && props.onChange({ detail: { value: e.detail.checked } });
   };
-  return /* @__PURE__ */ h2("input", {
-    ...props,
-    type: "checkbox",
-    tag: "switch",
-    onInput: onChange,
-    checked
-  });
+  return /* @__PURE__ */ h2("input", { ...props, type: "checkbox", tag: "switch", onInput: onChange, checked });
 }
 
 // master/components/icon.js
 function Icon(props) {
   const { size = 24, color = "var(--primary-color)", type, ...rest } = props;
-  return /* @__PURE__ */ h2("i", {
-    ...rest,
-    type,
-    style: {
-      color: props.color,
-      height: props.size + "px",
-      width: props.size + "px"
+  return /* @__PURE__ */ h2(
+    "i",
+    {
+      ...rest,
+      type,
+      style: {
+        color: props.color,
+        height: props.size + "px",
+        width: props.size + "px"
+      }
     }
-  });
+  );
 }
 var icon_default = Icon;
 
 // master/components/input.js
 function Input(props) {
-  return /* @__PURE__ */ h2("input", {
-    style: {
-      border: " 0px",
-      padding: " 5px",
-      "box-sizing": " border-box",
-      outline: " none",
-      "border-radius": "2px",
-      ...props.style
-    },
-    type: "text",
-    ...props
-  });
+  return /* @__PURE__ */ h2(
+    "input",
+    {
+      style: {
+        border: " 0px",
+        padding: " 5px",
+        "box-sizing": " border-box",
+        outline: " none",
+        "border-radius": "2px",
+        ...props.style
+      },
+      type: "text",
+      ...props
+    }
+  );
 }
 
 // master/components/block.js
@@ -844,9 +837,7 @@ function Block(props) {
 // master/components/label.js
 function Label(props) {
   const { children, ...rest } = props;
-  return /* @__PURE__ */ h2("label", {
-    ...rest
-  }, children);
+  return /* @__PURE__ */ h2("label", { ...rest }, children);
 }
 var label_default = Label;
 
@@ -889,9 +880,7 @@ var useContext = (context, selector) => {
 var RadioContext = createContext();
 function RadioGroup(props) {
   const { onChange } = props;
-  return /* @__PURE__ */ h2(RadioContext.Provider, {
-    value: onChange
-  }, /* @__PURE__ */ h2("div", null, props.children));
+  return /* @__PURE__ */ h2(RadioContext.Provider, { value: onChange }, /* @__PURE__ */ h2("div", null, props.children));
 }
 var radio_group_default = RadioGroup;
 
@@ -919,14 +908,17 @@ function Radio(props) {
   if (props.checked === "undefined") {
     props.checked = false;
   }
-  return /* @__PURE__ */ h2("input", {
-    id,
-    type: "radio",
-    checked: props.checked,
-    onClick,
-    onChange,
-    style: { color, ...style }
-  });
+  return /* @__PURE__ */ h2(
+    "input",
+    {
+      id,
+      type: "radio",
+      checked: props.checked,
+      onClick,
+      onChange,
+      style: { color, ...style }
+    }
+  );
 }
 var radio_default = Radio;
 
@@ -934,9 +926,7 @@ var radio_default = Radio;
 var CheckboxContext = createContext();
 function CheckboxGroup(props) {
   const { onChange } = props;
-  return /* @__PURE__ */ h2(CheckboxContext.Provider, {
-    value: { change: onChange, value: [] }
-  }, /* @__PURE__ */ h2("div", null, props.children));
+  return /* @__PURE__ */ h2(CheckboxContext.Provider, { value: { change: onChange, value: [] } }, /* @__PURE__ */ h2("div", null, props.children));
 }
 var checkbox_group_default = CheckboxGroup;
 
@@ -966,23 +956,24 @@ function Checkbox(props) {
       });
     }
   };
-  return /* @__PURE__ */ h("input", {
-    id,
-    type: "checkbox",
-    tag: "checkbox",
-    style: { color, ...style },
-    checked,
-    onClick: props.onClick,
-    onChange
-  });
+  return /* @__PURE__ */ h(
+    "input",
+    {
+      id,
+      type: "checkbox",
+      tag: "checkbox",
+      style: { color, ...style },
+      checked,
+      onClick: props.onClick,
+      onChange
+    }
+  );
 }
 var checkbox_default = Checkbox;
 
 // master/components/image.js
 function Image(props) {
-  return /* @__PURE__ */ h2("img", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("img", { ...props });
 }
 
 // master/components/index.js
@@ -1108,11 +1099,10 @@ var _Page = class {
 };
 
 // master/init.js
-function init(location) {
-  let path = location.pathname;
+function init(manifest) {
+  let path = "/";
   let p = "";
-  const manifest = global2.native.readFileSync("manifest.json");
-  const pages = JSON.parse(manifest).pages;
+  const pages = manifest.pages;
   if (path === "/") {
     p = pages[0];
   } else {
@@ -1206,9 +1196,12 @@ new MutationObserver((mutations) => {
   send({ type: "MutationRecord", mutations });
 }).observe(document2, { subtree: true });
 addEventListener("message", ({ data }) => {
+  if (typeof data === "string") {
+    data = JSON.parse(data);
+  }
   switch (data.type) {
     case "init":
-      init(data.location);
+      init(data.manifest);
       break;
     case "event":
       handleEvent(data.event);

@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-function workerdom({ worker }) {
+function workerdomView({ worker }) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -247,19 +247,15 @@ function workerdom({ worker }) {
         }
     };
 
-
-    worker.postMessage({
+    console.log()
+    worker.postMessage(JSON.stringify({
         type: 'init',
-        location: {
-            pathname: location.pathname,
-            href: location.href,
-            search: location.search
-        }
-    });
+        manifest: window.manifest
+    }))
 };
 
 window['javascriptChannel'] = function (json) { // native 调用 webview，只有这一处
     worker.postMessage({ type: 'wxcallback', payload: json })
 }
 
-workerdom.umd = true
+workerdomView.umd = true

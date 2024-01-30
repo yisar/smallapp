@@ -6,27 +6,26 @@ const { PORT = 5000 } = process.env
 module.exports = function serve(options) {
   const basetdir = path.join(__dirname, '../../runtime/dist')
   const distdir = path.join(options.i, options.o)
-
+  const defaultCss = fs.readFileSync(path.join(__dirname, 'css', 'default.css'), 'utf-8')
   const app = express()
     .use(express.static(basetdir))
     .use(express.static(distdir))
     .get('/', (req, res) => {
-      const html = `
-      <!DOCTYPE html>
+      const html = `<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fre miniapp</title>
-    <link rel="stylesheet" href="https://miniapp.deno.dev/default.css">
+    <style>${defaultCss}</style>
 </head>
 <body>
-    <script src="/slave.js"></script>
+    <script src="app.js"></script>
+    <script src="slave.js"></script>
     <script>
         const worker = new Worker('/master.js')
-        workerdom({ worker })
+        workerdomView({ worker })
     </script>
 </body>
 
@@ -42,7 +41,7 @@ module.exports = function serve(options) {
     })
     .listen(PORT, (err) => {
       if (err) throw err
-      console.log(`serve on localhost:${PORT}`)
+      console.log(`serve on http://localhost:${PORT}`)
     })
   return app.server
 }

@@ -76,9 +76,12 @@ function sanitize(obj) {
 
 
 addEventListener('message', ({ data }) => {
+    if (typeof data === 'string') {
+        data = JSON.parse(data)
+    }
     switch (data.type) {
         case 'init':
-            init(data.location)
+            init(data.manifest)
             break;
         case 'event':
             handleEvent(data.event);

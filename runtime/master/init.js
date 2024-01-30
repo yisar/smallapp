@@ -3,13 +3,10 @@ import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
 import { render, h, useEffect } from './fre-esm'
 
-export function init(location) {
-    let path = location.pathname
-
+export function init(manifest) {
+    let path = '/'
     let p = ''
-
-    const manifest = ref.native.readFileSync('manifest.json')
-    const pages = JSON.parse(manifest).pages
+    const pages = manifest.pages
     if (path === '/') {
         p = pages[0]
     } else {

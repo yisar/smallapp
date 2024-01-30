@@ -4,7 +4,7 @@ var EVENT_OPTS = {
   capture: true,
   passive: true
 };
-function workerdom({ worker: worker2 }) {
+function workerdomView({ worker: worker2 }) {
   const NODES = /* @__PURE__ */ new Map();
   function getNode(node) {
     if (!node)
@@ -206,16 +206,13 @@ function workerdom({ worker: worker2 }) {
       }
     }
   };
-  worker2.postMessage({
+  console.log();
+  worker2.postMessage(JSON.stringify({
     type: "init",
-    location: {
-      pathname: location.pathname,
-      href: location.href,
-      search: location.search
-    }
-  });
+    manifest: window.manifest
+  }));
 }
 window["javascriptChannel"] = function(json) {
   worker.postMessage({ type: "wxcallback", payload: json });
 };
-workerdom.umd = true;
+workerdomView.umd = true;
