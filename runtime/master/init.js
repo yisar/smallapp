@@ -14,17 +14,16 @@ export function init(manifest) {
     }
 
     const { scripts, styles } = p
-
     let link = document.createElement('link')
     link.setAttribute("href", "." + styles[0]);
     link.setAttribute("rel", "stylesheet");
     document.body.appendChild(link);
-    execScript('.' + scripts[1], ref);
-    execScript('.' + scripts[0], ref);
+    execScript(scripts[1], ref);
+    execScript(scripts[0], ref);
 
     const page = getCurrentPage()
 
-    const c = ref.modules['.' + scripts[1]].default
+    const c = ref.modules[scripts[1]].default
 
     const wrapComp = () => {
         useEffect(() => {
@@ -38,5 +37,5 @@ export function init(manifest) {
     }
 
 
-    render(h(wrapComp, {}), document.body)
+    render(h(wrapComp, {}), globalThis.document1.body)
 }

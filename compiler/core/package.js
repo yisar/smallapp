@@ -2,6 +2,7 @@ const { promises } = require('fs')
 const ejs = require('ejs')
 const Path = require('path')
 const esbuild = require('esbuild')
+const { getIndexHtmlCode } = require('./packagers/util')
 
 const manifest = []
 
@@ -116,4 +117,5 @@ async function generateEntry(asset, options) {
   const out = JSON.stringify(json)
   const code = `window.manifest = ${out}`
   await promises.writeFile(Path.join(Path.resolve(options.o), 'app.js'), code)
+  await promises.writeFile(Path.join(Path.resolve(options.o), 'index.html'), await getIndexHtmlCode())
 }

@@ -306,7 +306,7 @@ function handleWxEvent(data) {
 // master/exec-script.js
 function execScript(path, ref) {
   const { modules, native, fre: fre2, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
-  const str = native.readFileSync(path);
+  const str = path;
   const fn = new Function("module", "require", "fre", "comp", "getApp", "Page", "Component", "App", "$handleEvent", "$for", "setStates", "wx", str);
   const relative = function(parent) {
     const resolve = function(path2) {
@@ -396,7 +396,8 @@ var updateElement = (dom, aProps, bProps) => {
   });
 };
 var createElement = (fiber) => {
-  const dom = fiber.type === "#text" ? document.createTextNode("") : fiber.lane & 16 ? document.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document.createElement(fiber.type);
+  let document3 = globalThis.document1;
+  const dom = fiber.type === "#text" ? document3.createTextNode("") : fiber.lane & 16 ? document3.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document3.createElement(fiber.type);
   updateElement(dom, {}, fiber.props);
   return dom;
 };
@@ -642,8 +643,9 @@ var updateHost = (fiber) => {
 var simpleVnode = (type) => isStr(type) ? createText(type) : type;
 var getParentNode = (fiber) => {
   while (fiber = fiber.parent) {
-    if (!fiber.isComp)
+    if (!fiber.isComp) {
       return fiber.node;
+    }
   }
 };
 var reconcileChidren = (fiber, children) => {
@@ -1113,10 +1115,10 @@ function init(manifest) {
   link.setAttribute("href", "." + styles[0]);
   link.setAttribute("rel", "stylesheet");
   document.body.appendChild(link);
-  execScript("." + scripts[1], global2);
-  execScript("." + scripts[0], global2);
+  execScript(scripts[1], global2);
+  execScript(scripts[0], global2);
   const page = getCurrentPage();
-  const c = global2.modules["." + scripts[1]].default;
+  const c = global2.modules[scripts[1]].default;
   const wrapComp = () => {
     useEffect(() => {
       page.onLoad && page.onLoad();
@@ -1126,14 +1128,27 @@ function init(manifest) {
     }, []);
     return h2(c, { data: page.data });
   };
-  render(h2(wrapComp, {}), document.body);
+  render(h2(wrapComp, {}), globalThis.document1.body);
 }
 
 // master/index.js
+try {
+  console.log(window);
+} catch (error) {
+  window = { isAndroid: false };
+}
+var window;
 self.send = function send2(message) {
-  postMessage(JSON.parse(JSON.stringify(message)));
+  try {
+    if (window.isAndroid) {
+      AndroidJSViewBridge.postMessage(JSON.stringify(message));
+    }
+  } catch (error) {
+    postMessage(JSON.stringify(message));
+  }
 };
 var document2 = self.document = workerdom();
+globalThis.document1 = document2;
 for (let i in document2.defaultView)
   if (document2.defaultView.hasOwnProperty(i)) {
     self[i] = document2.defaultView[i];
@@ -1194,14 +1209,14 @@ new MutationObserver((mutations) => {
     }
   }
   send({ type: "MutationRecord", mutations });
-}).observe(document2, { subtree: true });
-addEventListener("message", ({ data }) => {
+}).observe(document2, { subtree: true, childList: true });
+function _message(data) {
   if (typeof data === "string") {
     data = JSON.parse(data);
   }
   switch (data.type) {
     case "init":
-      init(data.manifest);
+      init(data.manifest ? data.manifest : window.manifest);
       break;
     case "event":
       handleEvent(data.event);
@@ -1210,4 +1225,15 @@ addEventListener("message", ({ data }) => {
       handleWxEvent(data.payload);
       break;
   }
-});
+}
+try {
+  if (window.isAndroid) {
+    AndroidJSViewBridge.onmessage = function(data) {
+      _message(data);
+    };
+  }
+} catch (error) {
+  addEventListener("message", ({ data }) => {
+    _message(data);
+  });
+}

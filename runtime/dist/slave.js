@@ -54,10 +54,10 @@ function workerdomView({ worker: worker2 }) {
         event[i] = v;
       }
     }
-    worker2.postMessage({
+    worker2.postMessage(JSON.stringify({
       type: "event",
       event
-    });
+    }));
     if (e.type === "touchstart") {
       touch = getTouch(e);
     } else if (e.type === "touchend" && touch) {
@@ -66,7 +66,7 @@ function workerdomView({ worker: worker2 }) {
         let delta = Math.sqrt(Math.pow(t.pageX - touch.pageX, 2) + Math.pow(t.pageY - touch.pageY, 2));
         if (delta < 10) {
           event.type = "click";
-          worker2.postMessage({ type: "event", event });
+          worker2.postMessage(JSON.stringify({ type: "event", event }));
         }
       }
     }
@@ -195,7 +195,13 @@ function workerdomView({ worker: worker2 }) {
       doProcessMutationQueue();
     }
   }
-  worker2.onmessage = ({ data }) => {
+  worker2.onmessage = (res) => {
+    let data = "";
+    if (typeof res === "string") {
+      data = JSON.parse(res);
+    } else {
+      data = JSON.parse(res.data);
+    }
     if (data.type === "MutationRecord") {
       for (let i = 0; i < data.mutations.length; i++) {
         queueMutation(data.mutations[i]);
@@ -206,13 +212,18 @@ function workerdomView({ worker: worker2 }) {
       }
     }
   };
-  console.log();
-  worker2.postMessage(JSON.stringify({
-    type: "init",
-    manifest: window.manifest
-  }));
+  if (window.isAndroid) {
+    worker2.postMessage(JSON.stringify({
+      type: "init"
+    }));
+  } else {
+    worker2.postMessage(JSON.stringify({
+      type: "init",
+      manifest: window.manifest
+    }));
+  }
 }
 window["javascriptChannel"] = function(json) {
-  worker.postMessage({ type: "wxcallback", payload: json });
+  worker.postMessage(JSON.stringify({ type: "wxcallback", payload: json }));
 };
 workerdomView.umd = true;
