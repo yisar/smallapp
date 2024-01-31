@@ -15,8 +15,7 @@ module.exports = async function packBerial(asset, options) {
   } catch (e) {
     console.log(e)
   }
-
-  asset.output.jsx = String(code.replace(/while/g,'with'))
+  asset.output.jsx = code
 
   const path = asset.path.replace(edir, '').replace(/\\/g, '/').replace('.json', '')
 
@@ -26,7 +25,7 @@ module.exports = async function packBerial(asset, options) {
   manifest.push({
     id: asset.id,
     info: asset.ast,
-    scripts: [hash + '.js', hash + '.jsx'],
+    scripts: [asset.output.js, asset.output.jsx],
     styles: [hash + '.css'],
     path: `${basename + path}`,
   })

@@ -3,13 +3,10 @@ import { getCurrentPage } from './page.js'
 import { global as ref } from './global'
 import { render, h, useEffect } from './fre-esm'
 
-export function init(location) {
-    let path = location.pathname
-
+export function init(manifest) {
+    let path = '/'
     let p = ''
-
-    const manifest = ref.native.readFileSync('manifest.json')
-    const pages = JSON.parse(manifest).pages
+    const pages = manifest.pages
     if (path === '/') {
         p = pages[0]
     } else {
@@ -17,17 +14,16 @@ export function init(location) {
     }
 
     const { scripts, styles } = p
-
     let link = document.createElement('link')
     link.setAttribute("href", "." + styles[0]);
     link.setAttribute("rel", "stylesheet");
     document.body.appendChild(link);
-    execScript('.' + scripts[1], ref);
-    execScript('.' + scripts[0], ref);
+    execScript(scripts[1], ref);
+    execScript(scripts[0], ref);
 
     const page = getCurrentPage()
 
-    const c = ref.modules['.' + scripts[1]].default
+    const c = ref.modules[scripts[1]].default
 
     const wrapComp = () => {
         useEffect(() => {
@@ -41,5 +37,5 @@ export function init(location) {
     }
 
 
-    render(h(wrapComp, {}), document.body)
+    render(h(wrapComp, {}), globalThis.document1.body)
 }

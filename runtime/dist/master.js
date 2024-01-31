@@ -306,7 +306,7 @@ function handleWxEvent(data) {
 // master/exec-script.js
 function execScript(path, ref) {
   const { modules, native, fre: fre2, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
-  const str = native.readFileSync(path);
+  const str = path;
   const fn = new Function("module", "require", "fre", "comp", "getApp", "Page", "Component", "App", "$handleEvent", "$for", "setStates", "wx", str);
   const relative = function(parent) {
     const resolve = function(path2) {
@@ -396,7 +396,8 @@ var updateElement = (dom, aProps, bProps) => {
   });
 };
 var createElement = (fiber) => {
-  const dom = fiber.type === "#text" ? document.createTextNode("") : fiber.lane & 16 ? document.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document.createElement(fiber.type);
+  let document3 = globalThis.document1;
+  const dom = fiber.type === "#text" ? document3.createTextNode("") : fiber.lane & 16 ? document3.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document3.createElement(fiber.type);
   updateElement(dom, {}, fiber.props);
   return dom;
 };
@@ -642,8 +643,9 @@ var updateHost = (fiber) => {
 var simpleVnode = (type) => isStr(type) ? createText(type) : type;
 var getParentNode = (fiber) => {
   while (fiber = fiber.parent) {
-    if (!fiber.isComp)
+    if (!fiber.isComp) {
       return fiber.node;
+    }
   }
 };
 var reconcileChidren = (fiber, children) => {
@@ -756,16 +758,12 @@ var isArr = Array.isArray;
 
 // master/components/button.js
 function Button(props) {
-  return /* @__PURE__ */ h2("button", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("button", { ...props });
 }
 
 // master/components/text.js
 function Text(props) {
-  return /* @__PURE__ */ h2("span", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("span", { ...props });
 }
 
 // master/components/view.js
@@ -783,10 +781,7 @@ function View(props) {
     var style = computedStype(props.style);
     delete props.style;
   }
-  return /* @__PURE__ */ h2("div", {
-    ...props,
-    style
-  });
+  return /* @__PURE__ */ h2("div", { ...props, style });
 }
 
 // master/components/switch.js
@@ -796,44 +791,44 @@ function Switch(props) {
     setChecked(e.detail.checked);
     props.onChange && props.onChange({ detail: { value: e.detail.checked } });
   };
-  return /* @__PURE__ */ h2("input", {
-    ...props,
-    type: "checkbox",
-    tag: "switch",
-    onInput: onChange,
-    checked
-  });
+  return /* @__PURE__ */ h2("input", { ...props, type: "checkbox", tag: "switch", onInput: onChange, checked });
 }
 
 // master/components/icon.js
 function Icon(props) {
   const { size = 24, color = "var(--primary-color)", type, ...rest } = props;
-  return /* @__PURE__ */ h2("i", {
-    ...rest,
-    type,
-    style: {
-      color: props.color,
-      height: props.size + "px",
-      width: props.size + "px"
+  return /* @__PURE__ */ h2(
+    "i",
+    {
+      ...rest,
+      type,
+      style: {
+        color: props.color,
+        height: props.size + "px",
+        width: props.size + "px"
+      }
     }
-  });
+  );
 }
 var icon_default = Icon;
 
 // master/components/input.js
 function Input(props) {
-  return /* @__PURE__ */ h2("input", {
-    style: {
-      border: " 0px",
-      padding: " 5px",
-      "box-sizing": " border-box",
-      outline: " none",
-      "border-radius": "2px",
-      ...props.style
-    },
-    type: "text",
-    ...props
-  });
+  return /* @__PURE__ */ h2(
+    "input",
+    {
+      style: {
+        border: " 0px",
+        padding: " 5px",
+        "box-sizing": " border-box",
+        outline: " none",
+        "border-radius": "2px",
+        ...props.style
+      },
+      type: "text",
+      ...props
+    }
+  );
 }
 
 // master/components/block.js
@@ -844,9 +839,7 @@ function Block(props) {
 // master/components/label.js
 function Label(props) {
   const { children, ...rest } = props;
-  return /* @__PURE__ */ h2("label", {
-    ...rest
-  }, children);
+  return /* @__PURE__ */ h2("label", { ...rest }, children);
 }
 var label_default = Label;
 
@@ -889,9 +882,7 @@ var useContext = (context, selector) => {
 var RadioContext = createContext();
 function RadioGroup(props) {
   const { onChange } = props;
-  return /* @__PURE__ */ h2(RadioContext.Provider, {
-    value: onChange
-  }, /* @__PURE__ */ h2("div", null, props.children));
+  return /* @__PURE__ */ h2(RadioContext.Provider, { value: onChange }, /* @__PURE__ */ h2("div", null, props.children));
 }
 var radio_group_default = RadioGroup;
 
@@ -919,14 +910,17 @@ function Radio(props) {
   if (props.checked === "undefined") {
     props.checked = false;
   }
-  return /* @__PURE__ */ h2("input", {
-    id,
-    type: "radio",
-    checked: props.checked,
-    onClick,
-    onChange,
-    style: { color, ...style }
-  });
+  return /* @__PURE__ */ h2(
+    "input",
+    {
+      id,
+      type: "radio",
+      checked: props.checked,
+      onClick,
+      onChange,
+      style: { color, ...style }
+    }
+  );
 }
 var radio_default = Radio;
 
@@ -934,9 +928,7 @@ var radio_default = Radio;
 var CheckboxContext = createContext();
 function CheckboxGroup(props) {
   const { onChange } = props;
-  return /* @__PURE__ */ h2(CheckboxContext.Provider, {
-    value: { change: onChange, value: [] }
-  }, /* @__PURE__ */ h2("div", null, props.children));
+  return /* @__PURE__ */ h2(CheckboxContext.Provider, { value: { change: onChange, value: [] } }, /* @__PURE__ */ h2("div", null, props.children));
 }
 var checkbox_group_default = CheckboxGroup;
 
@@ -966,23 +958,24 @@ function Checkbox(props) {
       });
     }
   };
-  return /* @__PURE__ */ h("input", {
-    id,
-    type: "checkbox",
-    tag: "checkbox",
-    style: { color, ...style },
-    checked,
-    onClick: props.onClick,
-    onChange
-  });
+  return /* @__PURE__ */ h(
+    "input",
+    {
+      id,
+      type: "checkbox",
+      tag: "checkbox",
+      style: { color, ...style },
+      checked,
+      onClick: props.onClick,
+      onChange
+    }
+  );
 }
 var checkbox_default = Checkbox;
 
 // master/components/image.js
 function Image(props) {
-  return /* @__PURE__ */ h2("img", {
-    ...props
-  });
+  return /* @__PURE__ */ h2("img", { ...props });
 }
 
 // master/components/index.js
@@ -1108,11 +1101,10 @@ var _Page = class {
 };
 
 // master/init.js
-function init(location) {
-  let path = location.pathname;
+function init(manifest) {
+  let path = "/";
   let p = "";
-  const manifest = global2.native.readFileSync("manifest.json");
-  const pages = JSON.parse(manifest).pages;
+  const pages = manifest.pages;
   if (path === "/") {
     p = pages[0];
   } else {
@@ -1123,10 +1115,10 @@ function init(location) {
   link.setAttribute("href", "." + styles[0]);
   link.setAttribute("rel", "stylesheet");
   document.body.appendChild(link);
-  execScript("." + scripts[1], global2);
-  execScript("." + scripts[0], global2);
+  execScript(scripts[1], global2);
+  execScript(scripts[0], global2);
   const page = getCurrentPage();
-  const c = global2.modules["." + scripts[1]].default;
+  const c = global2.modules[scripts[1]].default;
   const wrapComp = () => {
     useEffect(() => {
       page.onLoad && page.onLoad();
@@ -1136,14 +1128,27 @@ function init(location) {
     }, []);
     return h2(c, { data: page.data });
   };
-  render(h2(wrapComp, {}), document.body);
+  render(h2(wrapComp, {}), globalThis.document1.body);
 }
 
 // master/index.js
+try {
+  console.log(window);
+} catch (error) {
+  window = { isAndroid: false };
+}
+var window;
 self.send = function send2(message) {
-  postMessage(JSON.parse(JSON.stringify(message)));
+  try {
+    if (window.isAndroid) {
+      AndroidJSViewBridge.postMessage(JSON.stringify(message));
+    }
+  } catch (error) {
+    postMessage(JSON.stringify(message));
+  }
 };
 var document2 = self.document = workerdom();
+globalThis.document1 = document2;
 for (let i in document2.defaultView)
   if (document2.defaultView.hasOwnProperty(i)) {
     self[i] = document2.defaultView[i];
@@ -1204,11 +1209,14 @@ new MutationObserver((mutations) => {
     }
   }
   send({ type: "MutationRecord", mutations });
-}).observe(document2, { subtree: true });
-addEventListener("message", ({ data }) => {
+}).observe(document2, { subtree: true, childList: true });
+function _message(data) {
+  if (typeof data === "string") {
+    data = JSON.parse(data);
+  }
   switch (data.type) {
     case "init":
-      init(data.location);
+      init(data.manifest ? data.manifest : window.manifest);
       break;
     case "event":
       handleEvent(data.event);
@@ -1217,4 +1225,15 @@ addEventListener("message", ({ data }) => {
       handleWxEvent(data.payload);
       break;
   }
-});
+}
+try {
+  if (window.isAndroid) {
+    AndroidJSViewBridge.onmessage = function(data) {
+      _message(data);
+    };
+  }
+} catch (error) {
+  addEventListener("message", ({ data }) => {
+    _message(data);
+  });
+}

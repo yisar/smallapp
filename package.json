@@ -8,6 +8,9 @@
     "sm": "./compiler/bin/index.js"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
+    "@babel/preset-env": "^7.23.9",
     "commander": "^7.1.0",
     "cross-fetch": "^3.0.6",
     "nanoid": "^3.1.21",
@@ -15,9 +18,12 @@
     "pnpm": "^6.32.9",
     "postcss-selector-parser": "^6.0.4",
     "prettier": "^2.2.1",
+    "rollup": "^4.9.6",
+    "rollup-plugin-babel": "^4.4.0",
     "serve": "^13.0.2"
   },
   "scripts": {
+    "watch": "bash debug.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "pnpm run debug --filter @fre-miniapp/compiler",
     "start": "npm run build && npm run debug",
@@ -28,6 +34,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chalk": "^5.2.0"
+    "chalk": "^5.2.0",
+    "chokidar": "^3.5.3",
+    "ejs": "^3.1.9",
+    "esbuild": "^0.20.0",
+    "express": "^4.18.2",
+    "md5": "^2.3.0",
+    "postcss": "^8.4.33"
   }
 }

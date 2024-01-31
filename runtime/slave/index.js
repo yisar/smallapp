@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-function workerdom({ worker }) {
+function workerdomView({ worker }) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -61,10 +61,10 @@ function workerdom({ worker }) {
                 event[i] = v;
             }
         }
-        worker.postMessage({
+        worker.postMessage(JSON.stringify({
             type: 'event',
             event
-        });
+        }));
 
         if (e.type === 'touchstart') {
             touch = getTouch(e);
@@ -75,7 +75,7 @@ function workerdom({ worker }) {
                 let delta = Math.sqrt(Math.pow(t.pageX - touch.pageX, 2) + Math.pow(t.pageY - touch.pageY, 2));
                 if (delta < 10) {
                     event.type = 'click';
-                    worker.postMessage({ type: 'event', event });
+                    worker.postMessage(JSON.stringify({ type: 'event', event }));
                 }
             }
         }
@@ -235,7 +235,14 @@ function workerdom({ worker }) {
     }
 
 
-    worker.onmessage = ({ data }) => {
+    worker.onmessage = (res) => {
+        let data = ''
+        if (typeof res === 'string') {
+            data = JSON.parse(res)
+        } else {
+            data = JSON.parse(res.data)
+        }
+        
         if (data.type === 'MutationRecord') {
             for (let i = 0; i < data.mutations.length; i++) {
                 queueMutation(data.mutations[i]);
@@ -246,20 +253,20 @@ function workerdom({ worker }) {
             }
         }
     };
-
-
-    worker.postMessage({
-        type: 'init',
-        location: {
-            pathname: location.pathname,
-            href: location.href,
-            search: location.search
-        }
-    });
+    if (window.isAndroid) {
+        worker.postMessage(JSON.stringify({
+            type: 'init'
+        }))
+    } else {
+        worker.postMessage(JSON.stringify({
+            type: 'init',
+            manifest: window.manifest
+        }))
+    }
 };
 
 window['javascriptChannel'] = function (json) { // native 调用 webview，只有这一处
-    worker.postMessage({ type: 'wxcallback', payload: json })
+    worker.postMessage(JSON.stringify({ type: 'wxcallback', payload: json }))
 }
 
-workerdom.umd = true
+workerdomView.umd = true

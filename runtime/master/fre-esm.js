@@ -33,6 +33,7 @@ const updateElement = (dom, aProps, bProps) => {
     });
 };
 const createElement = (fiber) => {
+    let document = globalThis.document1;
     const dom = fiber.type === '#text'
         ? document.createTextNode('')
         : fiber.lane & 16
@@ -328,10 +329,12 @@ const updateHost = (fiber) => {
     reconcileChidren(fiber, fiber.props.children);
 };
 const simpleVnode = (type) => isStr(type) ? createText(type) : type;
+
 const getParentNode = (fiber) => {
     while ((fiber = fiber.parent)) {
-        if (!fiber.isComp)
+        if (!fiber.isComp) {
             return fiber.node;
+        }
     }
 };
 const reconcileChidren = (fiber, children) => {
