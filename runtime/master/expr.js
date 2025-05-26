@@ -36,12 +36,12 @@ function copy(source) {
     return to
 }
 
-let obj = {
-    foo: {
-        bar: ['hi', { buz: { baz: 'hello' } }]
-    }
-}
+// let obj = {
+//     foo: {
+//         bar: ['hi', { buz: { baz: 'hello' } }]
+//     }
+// }
 
-let next = setter(obj, 'foo.bar[1].buz.baz', 'world')
-console.log(JSON.stringify(next))
-console.log(getter(next, 'foo.bar[1].buz.baz'))
+// let next = setter(obj, 'foo.bar[1].buz.baz', 'world')
+// console.log(JSON.stringify(next))
+// console.log(getter(next, 'foo.bar[1].buz.baz'))
