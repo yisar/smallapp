@@ -1,5 +1,5 @@
-function getter(obj, key, def, p, undef) {
-    key = key.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g,) || ['']
+export function getter(obj, key, def, p, undef) {
+    key = keyArr(key)
     for (p = 0; p < key.length; p++) {
         const k = key[p]
         obj = obj ? obj[isNaN(k + 0) ? k : k + 0] : undef
@@ -7,8 +7,12 @@ function getter(obj, key, def, p, undef) {
     return obj === undef ? def : obj
 }
 
-function setter(obj, keys, val) {
-    keys = keys.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g,) || ['']
+function keyArr(key) {
+    return key.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g,) || ['']
+}
+
+export function setter(obj, keys, val) {
+    keys = keyArr(keys)
     var i = 0, l = keys.length, t = obj, x, k
     while (i < l) {
         k = '' + keys[i++]
