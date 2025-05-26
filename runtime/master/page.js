@@ -1,5 +1,5 @@
 import { getApp } from './app'
-import { setter } from './expr'
+import { setter } from './safe-obj'
 import { global } from './global'
 
 let currentPage = null

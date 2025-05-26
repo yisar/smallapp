@@ -5,21 +5,21 @@ import { getApp } from './app.js'
 import { Component } from './component.js'
 import { $handleEvent, $for } from './helper.js'
 import { wx } from './wxapi'
-import { getter, setter } from './expr.js'
-
-const fre = { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState }
+import { expr } from './expr.js'
+import { getter, setter } from './safe-obj.js'
 
 export const global = {
     modules: {},
     Page,
     getApp,
     Component,
-    fre,
+    fre: { Fragment, h, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState },
     comp,
     $handleEvent,
     $for,
     setStates: {},
     wx,
+    expr,
     getter,
     setter,
     native: {

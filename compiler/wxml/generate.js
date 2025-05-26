@@ -173,7 +173,7 @@ function compileExpression(expression) {
   }
 
   if (dynamic) {
-    return `\$\{getter("${expr}")(state)\}`
+    return `\$\{expr("${expr}", state)\}`
   } else {
     return `"${expr}"`
   }
