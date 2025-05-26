@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const { getIndexHtmlCode } = require('./packagers/util') 
-const { PORT = 5000 } = process.env
+const { PORT = 1122 } = process.env
 
 module.exports = function serve(options) {
   const basetdir = path.join(__dirname, '../../runtime/dist')

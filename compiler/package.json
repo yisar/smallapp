@@ -8,9 +8,9 @@
     "sm": "bin/index.js"
   },
   "scripts": {
-    "dev": "smallapp -e ./demo/app.json -o ./dist/",
+    "dev": "smallapp -e ../demo/app.json -o ./dist/",
     "build": "node build.js",
-    "debug": "node --inspect ./core/cli.js -e ./demo/app.json -o ../runtime/demo/"
+    "debug": "node --inspect ./core/cli.js -e ../demo/app.json -o ../runtime/demo/"
   },
   "repository": {
     "type": "git",

@@ -55,16 +55,16 @@ function workerdom() {
     get textContent() {
       return this.data;
     }
-    set textContent(value) {
+    set textContent(value2) {
       let oldValue = this.data;
-      this.data = value;
+      this.data = value2;
       mutation(this, "characterData", { oldValue });
     }
     get nodeValue() {
       return this.data;
     }
-    set nodeValue(value) {
-      this.textContent = value;
+    set nodeValue(value2) {
+      this.textContent = value2;
     }
   }
   class Element extends Node {
@@ -87,20 +87,20 @@ function workerdom() {
         get: () => this.getAttribute("style")
       });
     }
-    setAttribute(key, value) {
-      this.setAttributeNS(null, key, value);
+    setAttribute(key2, value2) {
+      this.setAttributeNS(null, key2, value2);
     }
-    getAttribute(key) {
-      return this.getAttributeNS(null, key);
+    getAttribute(key2) {
+      return this.getAttributeNS(null, key2);
     }
-    removeAttribute(key) {
-      this.removeAttributeNS(null, key);
+    removeAttribute(key2) {
+      this.removeAttributeNS(null, key2);
     }
-    setAttributeNS(ns, name, value) {
+    setAttributeNS(ns, name, value2) {
       let attr = findWhere(this.attributes, createAttributeFilter(ns, name)), oldValue = attr && attr.value;
       if (!attr)
         this.attributes.push(attr = { ns, name });
-      attr.value = String(value);
+      attr.value = String(value2);
       mutation(this, "attributes", { attributeName: name, attributeNamespace: ns, oldValue });
     }
     getAttributeNS(ns, name) {
@@ -274,15 +274,15 @@ var wx = {
 };
 function serOptions(options) {
   let out = {};
-  for (const key in options) {
-    let val = options[key];
+  for (const key2 in options) {
+    let val = options[key2];
     if (typeof val === "function") {
       let id = "." + index;
-      out[key] = id;
+      out[key2] = id;
       callbacks[id] = val;
       index++;
     } else {
-      out[key] = val;
+      out[key2] = val;
     }
   }
   return out;
@@ -396,8 +396,7 @@ var updateElement = (dom, aProps, bProps) => {
   });
 };
 var createElement = (fiber) => {
-  let document3 = globalThis.document1;
-  const dom = fiber.type === "#text" ? document3.createTextNode("") : fiber.lane & 16 ? document3.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document3.createElement(fiber.type);
+  const dom = fiber.type === "#text" ? document.createTextNode("") : fiber.lane & 16 ? document.createElementNS("http://www.w3.org/2000/svg", fiber.type) : document.createElement(fiber.type);
   updateElement(dom, {}, fiber.props);
   return dom;
 };
@@ -409,14 +408,17 @@ var useState = (initState) => {
   return useReducer(null, initState);
 };
 var useReducer = (reducer, initState) => {
-  const [hook, current] = getHook(cursor++);
+  const [hook, current] = getSlot(cursor++);
   if (hook.length === 0) {
     hook[0] = initState;
-    hook[1] = (value) => {
-      hook[0] = reducer ? reducer(hook[0], value) : isFn(value) ? value(hook[0]) : value;
-      update(current);
-    };
   }
+  hook[1] = (value2) => {
+    let v = reducer ? reducer(hook[0], value2) : isFn(value2) ? value2(hook[0]) : value2;
+    if (hook[0] !== v) {
+      hook[0] = v;
+      update(current);
+    }
+  };
   return hook;
 };
 var useEffect = (cb, deps) => {
@@ -425,16 +427,16 @@ var useEffect = (cb, deps) => {
 var useLayout = (cb, deps) => {
   return effectImpl(cb, deps, "layout");
 };
-var effectImpl = (cb, deps, key) => {
-  const [hook, current] = getHook(cursor++);
+var effectImpl = (cb, deps, key2) => {
+  const [hook, current] = getSlot(cursor++);
   if (isChanged(hook[1], deps)) {
     hook[0] = cb;
     hook[1] = deps;
-    current.hooks[key].push(hook);
+    current.hooks[key2].push(hook);
   }
 };
 var useMemo = (cb, deps) => {
-  const hook = getHook(cursor++)[0];
+  const hook = getSlot(cursor++)[0];
   if (isChanged(hook[1], deps)) {
     hook[1] = deps;
     return hook[0] = cb();
@@ -447,7 +449,7 @@ var useCallback = (cb, deps) => {
 var useRef = (current) => {
   return useMemo(() => ({ current }), []);
 };
-var getHook = (cursor2) => {
+var getSlot = (cursor2) => {
   const current = getCurrentFiber();
   const hooks = current.hooks || (current.hooks = { list: [], effect: [], layout: [] });
   if (cursor2 >= hooks.list.length) {
@@ -507,25 +509,44 @@ var commit = (fiber) => {
   if (!fiber) {
     return;
   }
-  const { op, before, elm } = fiber.action || {};
+  const { op, ref, cur } = fiber.action || {};
+  const parent = fiber.parentNode;
+  const curnode = getChildNode(cur);
+  const refnode = getChildNode(ref);
   if (op & 4 || op & 64) {
-    if (fiber.isComp && fiber.child) {
-      fiber.child.action.op |= fiber.action.op;
-    } else {
-      fiber.parentNode.insertBefore(elm.node, before === null || before === void 0 ? void 0 : before.node);
-    }
+    parent.insertBefore(curnode, refnode);
+  }
+  if (op & 128) {
+    parent.replaceChild(curnode, refnode);
+    removeElement(ref, false);
   }
   if (op & 2) {
-    if (fiber.isComp && fiber.child) {
-      fiber.child.action.op |= fiber.action.op;
-    } else {
-      updateElement(fiber.node, fiber.old.props || {}, fiber.props);
-    }
+    const node = getChildNode(fiber);
+    updateElement(node, fiber.old.props || {}, fiber.props);
   }
   refer(fiber.ref, fiber.node);
   fiber.action = null;
-  commit(fiber.child);
-  commit(fiber.sibling);
+  commitSibling(fiber.child);
+  commitSibling(fiber.sibling);
+};
+function commitSibling(fiber) {
+  if (fiber === null || fiber === void 0 ? void 0 : fiber.memo) {
+    commitSibling(fiber.sibling);
+  } else {
+    commit(fiber);
+  }
+}
+var getChildNode = (fiber) => {
+  if (fiber == null)
+    return null;
+  if (fiber.isComp) {
+    while (fiber = fiber.child) {
+      if (!fiber.isComp)
+        return fiber.node;
+    }
+  } else {
+    return fiber.node;
+  }
 };
 var refer = (ref, dom) => {
   if (ref)
@@ -537,15 +558,18 @@ var kidsRefer = (kids) => {
     refer(kid.ref, null);
   });
 };
-var removeElement = (fiber) => {
+var removeElement = (fiber, flag = true) => {
   if (fiber.isComp) {
     fiber.hooks && fiber.hooks.list.forEach((e) => e[2] && e[2]());
-    fiber.kids.forEach(removeElement);
   } else {
-    fiber.parentNode.removeChild(fiber.node);
+    if (flag) {
+      fiber.parentNode.removeChild(fiber.node);
+      flag = false;
+    }
     kidsRefer(fiber.kids);
     refer(fiber.ref, null);
   }
+  fiber.kids.forEach((v) => removeElement(v, flag));
 };
 var currentFiber = null;
 var rootFiber = null;
@@ -569,22 +593,14 @@ var reconcile = (fiber) => {
     return reconcile.bind(null, fiber);
   return null;
 };
-var memo$1 = (fiber) => {
-  var _a;
-  if (fiber.type.memo && ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.props)) {
-    let scu = fiber.type.shouldUpdate || shouldUpdate;
-    if (!scu(fiber.props, fiber.old.props)) {
-      return getSibling(fiber);
-    }
-  }
-  return null;
-};
 var capture = (fiber) => {
   fiber.isComp = isFn(fiber.type);
   if (fiber.isComp) {
-    const memoFiber = memo$1(fiber);
-    if (memoFiber) {
-      return memoFiber;
+    if (isMemo(fiber)) {
+      fiber.memo = true;
+      return getSibling(fiber);
+    } else if (fiber.memo) {
+      fiber.memo = false;
     }
     updateHook(fiber);
   } else {
@@ -594,6 +610,16 @@ var capture = (fiber) => {
     return fiber.child;
   const sibling = getSibling(fiber);
   return sibling;
+};
+var isMemo = (fiber) => {
+  var _a, _b;
+  if (fiber.type.memo && fiber.type === ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.type) && ((_b = fiber.old) === null || _b === void 0 ? void 0 : _b.props)) {
+    let scu = fiber.type.shouldUpdate || shouldUpdate;
+    if (!scu(fiber.props, fiber.old.props)) {
+      return true;
+    }
+  }
+  return false;
 };
 var getSibling = (fiber) => {
   while (fiber) {
@@ -628,6 +654,7 @@ var shouldUpdate = (a, b) => {
 var updateHook = (fiber) => {
   resetCursor();
   currentFiber = fiber;
+  fiber.parentNode = getParentNode(fiber) || {};
   let children = fiber.type(fiber.props);
   reconcileChidren(fiber, simpleVnode(children));
 };
@@ -643,13 +670,12 @@ var updateHost = (fiber) => {
 var simpleVnode = (type) => isStr(type) ? createText(type) : type;
 var getParentNode = (fiber) => {
   while (fiber = fiber.parent) {
-    if (!fiber.isComp) {
+    if (!fiber.isComp)
       return fiber.node;
-    }
   }
 };
 var reconcileChidren = (fiber, children) => {
-  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy(children);
+  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy$1(children);
   const actions = diff(aCh, bCh);
   for (let i = 0, prev = null, len = bCh.length; i < len; i++) {
     const child = bCh[i];
@@ -673,51 +699,82 @@ function clone(a, b) {
   b.kids = a.kids;
   b.old = a;
 }
-var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
+var arrayfy$1 = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var side = (effects) => {
   effects.forEach((e) => e[2] && e[2]());
   effects.forEach((e) => e[2] = e[0]());
   effects.length = 0;
 };
-var diff = function(a, b) {
-  var actions = [], aIdx = {}, bIdx = {}, key = (v) => v.key + v.type, i, j;
-  for (i = 0; i < a.length; i++) {
-    aIdx[key(a[i])] = i;
-  }
-  for (i = 0; i < b.length; i++) {
-    bIdx[key(b[i])] = i;
-  }
-  for (i = j = 0; i !== a.length || j !== b.length; ) {
-    var aElm = a[i], bElm = b[j];
-    if (aElm === null) {
-      i++;
-    } else if (b.length <= j) {
-      removeElement(a[i]);
-      i++;
-    } else if (a.length <= i) {
-      actions.push({ op: 4, elm: bElm, before: a[i] });
-      j++;
-    } else if (key(aElm) === key(bElm)) {
-      clone(aElm, bElm);
-      actions.push({ op: 2 });
-      i++;
-      j++;
+var diff = (aCh, bCh) => {
+  let aHead = 0, bHead = 0, aTail = aCh.length - 1, bTail = bCh.length - 1, aMap = {}, bMap = {}, same = (a, b) => a.key != null && b.key != null && a.key === b.key, temp = [], actions = [];
+  while (aHead <= aTail && bHead <= bTail) {
+    if (!same(aCh[aTail], bCh[bTail]))
+      break;
+    if (aCh[aTail].type === bCh[bTail].type) {
+      clone(aCh[aTail], bCh[bTail]);
+      temp.push({ op: 2 });
     } else {
-      var curElmInNew = bIdx[key(aElm)];
-      var wantedElmInOld = aIdx[key(bElm)];
-      if (curElmInNew === void 0) {
-        removeElement(a[i]);
-        i++;
-      } else if (wantedElmInOld === void 0) {
-        actions.push({ op: 4, elm: bElm, before: a[i] });
-        j++;
+      actions.push({ op: 128, cur: bCh[bTail], ref: aCh[aTail] });
+    }
+    aTail--;
+    bTail--;
+  }
+  while (aHead <= aTail && bHead <= bTail) {
+    if (!same(aCh[aHead], bCh[bHead]))
+      break;
+    if (aCh[aHead].type === bCh[bHead].type) {
+      clone(aCh[aHead], bCh[bHead]);
+      actions.push({ op: 2 });
+    } else {
+      actions.push({ op: 128, cur: bCh[bHead], ref: aCh[aHead] });
+    }
+    aHead++;
+    bHead++;
+  }
+  for (let i = aHead; i <= aTail; i++) {
+    aMap[aCh[i].key] = i;
+  }
+  for (let i = bHead; i <= bTail; i++) {
+    bMap[bCh[i].key] = i;
+  }
+  while (aHead <= aTail || bHead <= bTail) {
+    var aElm = aCh[aHead], bElm = bCh[bHead];
+    if (aElm === null) {
+      aHead++;
+    } else if (bTail + 1 <= bHead) {
+      removeElement(aElm);
+      aHead++;
+    } else if (aTail + 1 <= aHead) {
+      actions.push({ op: 4, cur: bElm, ref: aElm });
+      bHead++;
+    } else if (aElm.key === bElm.key) {
+      if (aElm.type === bElm.type) {
+        clone(aElm, bElm);
+        actions.push({ op: 2 });
       } else {
-        clone(a[wantedElmInOld], bElm);
-        actions.push({ op: 64, elm: a[wantedElmInOld], before: a[i] });
-        a[wantedElmInOld] = null;
-        j++;
+        actions.push({ op: 128, cur: bElm, ref: aElm });
+      }
+      aHead++;
+      bHead++;
+    } else {
+      var foundB = bMap[aElm.key];
+      var foundA = aMap[bElm.key];
+      if (foundB == null) {
+        removeElement(aElm);
+        aHead++;
+      } else if (foundA == null) {
+        actions.push({ op: 4, cur: bElm, ref: aElm });
+        bHead++;
+      } else {
+        clone(aCh[foundA], bElm);
+        actions.push({ op: 64, cur: aCh[foundA], ref: aElm });
+        aCh[foundA] = null;
+        bHead++;
       }
     }
+  }
+  for (let i = temp.length - 1; i >= 0; i--) {
+    actions.push(temp[i]);
   }
   return actions;
 };
@@ -729,14 +786,15 @@ var h2 = (type, props, ...kids) => {
   kids = flat(arrayfy(props.children || kids));
   if (kids.length)
     props.children = kids.length === 1 ? kids[0] : kids;
-  const key = props.key || null;
+  const key2 = props.key || null;
   const ref = props.ref || null;
-  if (key)
+  if (key2)
     props.key = void 0;
   if (ref)
     props.ref = void 0;
-  return createVnode(type, props, key, ref);
+  return createVnode(type, props, key2, ref);
 };
+var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var some = (x) => x != null && x !== true && x !== false;
 var flat = (arr, target = []) => {
   arr.forEach((v) => {
@@ -744,10 +802,10 @@ var flat = (arr, target = []) => {
   });
   return target;
 };
-var createVnode = (type, props, key, ref) => ({
+var createVnode = (type, props, key2, ref) => ({
   type,
   props,
-  key,
+  key: key2,
   ref
 });
 var createText = (vnode) => ({ type: "#text", props: { nodeValue: vnode + "" } });
@@ -771,8 +829,8 @@ function computedStype(str) {
   let out = {};
   let arr = str.split(";");
   arr.forEach((s) => {
-    const [name, value] = s.split(":");
-    out[name] = value;
+    const [name, value2] = s.split(":");
+    out[name] = value2;
   });
   return out;
 }
@@ -848,10 +906,10 @@ var createContext = (defaultValue) => {
   const context = {
     value: defaultValue,
     subs: /* @__PURE__ */ new Set(),
-    Provider: ({ value, children = "" }) => {
+    Provider: ({ value: value2, children = "" }) => {
       useEffect(() => {
-        context.subs.forEach((fn) => fn(value));
-        context.value = value;
+        context.subs.forEach((fn) => fn(value2));
+        context.value = value2;
       });
       return children;
     }
@@ -889,7 +947,7 @@ var radio_group_default = RadioGroup;
 // master/components/radio.js
 function Radio(props) {
   const change = useContext(RadioContext);
-  let { color, id, style, value } = props;
+  let { color, id, style, value: value2 } = props;
   const onClick = (e) => {
     if (props.onClick) {
       props.onClick(e);
@@ -897,11 +955,11 @@ function Radio(props) {
   };
   const onChange = (e) => {
     e.stopPropagation && e.stopPropagation();
-    change && change({ detail: { value } });
+    change && change({ detail: { value: value2 } });
     if (props.onChange) {
       props.onChange({
         detail: {
-          value,
+          value: value2,
           checked: e.target.checked
         }
       });
@@ -936,12 +994,12 @@ var checkbox_group_default = CheckboxGroup;
 function Checkbox(props) {
   let { change, value: newValue } = useContext(CheckboxContext);
   const [checked, setChecked] = useState(props.checked);
-  let { color, id, style, value } = props;
+  let { color, id, style, value: value2 } = props;
   useEffect(() => {
-    if (checked && newValue.indexOf(value) === -1) {
-      newValue.push(value);
+    if (checked && newValue.indexOf(value2) === -1) {
+      newValue.push(value2);
     } else if (!checked) {
-      const index2 = newValue.indexOf(value);
+      const index2 = newValue.indexOf(value2);
       newValue.splice(index2, 1);
     }
     change && change({ detail: { value: newValue } });
@@ -952,7 +1010,7 @@ function Checkbox(props) {
     if (props.onChange) {
       props.onChange({
         detail: {
-          value,
+          value: value2,
           checked
         }
       });
@@ -1001,8 +1059,8 @@ var _Component = class {
     this.children = /* @__PURE__ */ new Map();
     this.parent = null;
     this.eventMap = {};
-    for (const key in option) {
-      this[key] = option[key];
+    for (const key2 in option) {
+      this[key2] = option[key2];
     }
   }
   setData(data) {
@@ -1035,14 +1093,81 @@ function $handleEvent(name, id, custom) {
     method.call(ins, e);
   };
 }
-var $for = (arr, fn, key) => {
+var $for = (arr, fn, key2) => {
   arr = arr || [];
   return arr.map((item, index2) => {
     const vdom = fn(item);
-    vdom.key = key || index2;
+    vdom.key = key2 || index2;
     return vdom;
   });
 };
+
+// master/expr.js
+var Cache = class {
+  constructor() {
+    this._maxSize = maxSize;
+    this.clear();
+  }
+  clear() {
+    this._size = 0;
+    this._values = /* @__PURE__ */ Object.create(null);
+  }
+  get() {
+    return this._values[key];
+  }
+  set() {
+    this._size >= this._maxSize && this.clear();
+    if (!(key in this._values))
+      this._size++;
+    return this._values[key] = value;
+  }
+};
+var SPLIT_REGEX = /[^.^\]^[]+|(?=\[\]|\.\.)/g;
+var CLEAN_QUOTES_REGEX = /^\s*(['"]?)(.*?)(\1)\s*$/;
+var MAX_CACHE_SIZE = 512;
+var pathCache = new Cache(MAX_CACHE_SIZE);
+var setCache = new Cache(MAX_CACHE_SIZE);
+var getCache = new Cache(MAX_CACHE_SIZE);
+var setter = function(path) {
+  var parts = normalizePath(path);
+  return setCache.get(path) || setCache.set(path, function setter2(obj, value2) {
+    var index2 = 0;
+    var len = parts.length;
+    var data = obj;
+    while (index2 < len - 1) {
+      var part = parts[index2];
+      if (part === "__proto__" || part === "constructor" || part === "prototype") {
+        return obj;
+      }
+      data = data[parts[index2++]];
+    }
+    data[parts[index2]] = value2;
+  });
+};
+var getter = function(path, safe) {
+  var parts = normalizePath(path);
+  return getCache.get(path) || getCache.set(path, function getter2(data) {
+    var index2 = 0, len = parts.length;
+    while (index2 < len) {
+      if (data != null || !safe)
+        data = data[parts[index2++]];
+      else
+        return;
+    }
+    return data;
+  });
+};
+function normalizePath(path) {
+  return pathCache.get(path) || pathCache.set(
+    path,
+    split(path).map(function(part) {
+      return part.replace(CLEAN_QUOTES_REGEX, "$2");
+    })
+  );
+}
+function split(path) {
+  return path.match(SPLIT_REGEX) || [""];
+}
 
 // master/global.js
 var fre = { Fragment, h: h2, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState };
@@ -1057,6 +1182,8 @@ var global2 = {
   $for,
   setStates: {},
   wx,
+  getter,
+  setter,
   native: {
     readFileSync(path) {
       var request = new XMLHttpRequest();
@@ -1067,6 +1194,7 @@ var global2 = {
       }
     },
     log(msg) {
+      console.log(msg);
     }
   }
 };
@@ -1089,8 +1217,8 @@ var _Page = class {
     this.children = /* @__PURE__ */ new Map();
     this.parent = null;
     this.eventMap = {};
-    for (const key in option) {
-      this[key] = option[key];
+    for (const key2 in option) {
+      this[key2] = option[key2];
     }
   }
   setData(data) {

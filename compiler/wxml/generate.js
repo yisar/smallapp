@@ -31,7 +31,7 @@ function generate(asset) {
 
 function generateNode(node, state, asset, nextNode) {
   if (typeof node === 'string') {
-    let compiled = compileExpression(node, 'text')
+    let compiled = compileExpression(node)
     return `${compiled}`
   } else if (node.name === 'template') {
     const { is, name } = node.attributes
@@ -82,7 +82,7 @@ let ifcode = ''
 function generateDirect(node, code, next) {
   for (let i = 0; i < node.directives.length; i++) {
     const [name, value] = node.directives[i]
-    const compiled = compileExpression(value, 'direct')
+    const compiled = compileExpression(value)
     if (code[0] === '{') {
       code = `<div>${code}</div>`
     }
@@ -151,7 +151,7 @@ function generateProps(node, state, asset) {
     } else if (node.name === 'import') {
       state.imports.push(value)
     } else {
-      let compiled = compileExpression(value, node.type)
+      let compiled = compileExpression(value)
       code += `${name}=${compiled || 'true'}`
     }
   }
@@ -165,29 +165,17 @@ function wriedName(key) {
     : 'on' + key[0].toUpperCase() + key.substr(1)
 }
 
-function compileExpression(expression, type) {
-  const tokens = expression.match(/(\S+)/gim) || []
-  if (!tokens || tokens.length === 0) return null
-  const exp = /(?<={{).*(?=}})/gm
-  switch (type) {
-    case 'direct':
-      return tokens.map(t => (exp.test(t) ? t.match(exp)[0] : t)).join(' ')
-    case 'text':
-      return tokens
-        .map(t => (exp.test(t) ? `{${t.match(exp)[0]}}` :t))
-        .join(' ')
-    case 'component':
-      return tokens
-        .map(t => (exp.test(t) ? `{${t.match(exp)[0]}}` : `"${t}"`))
-        .join(' ')
-    case 'node':
-      return (
-        '{`' + // 暂时修改
-        tokens
-          .map(t => (exp.test(t) ? '${' + t.match(exp)[0] + '}' : `${t}`))
-          .join(' ') +
-        '`}'
-      )
+function compileExpression(expression) {
+  var expr = expression, dynamic = false
+  if (expression.startsWith('{{')) {
+    dynamic = true
+    expr = expression.substring(2, expression.length - 2)
+  }
+
+  if (dynamic) {
+    return `\$\{getter("${expr}")(state)\}`
+  } else {
+    return `"${expr}"`
   }
 }
 

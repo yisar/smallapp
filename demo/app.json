@@ -1,7 +1,6 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/child/index"
+    "pages/index/index"
   ],
   "tabBar": {
     "custom": true,

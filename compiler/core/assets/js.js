@@ -1,7 +1,7 @@
 const Asset = require("./asset")
 const esbuild = require('esbuild')
 const componentTag = require('../plugins/esbuild-component-tag')
-const {getId} = require('../packagers/util')
+const { getId } = require('../packagers/util')
 
 module.exports = class JS extends Asset {
   constructor(path, type, name) {

@@ -25,9 +25,9 @@
   "scripts": {
     "watch": "bash debug.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "pnpm run debug --filter @fre-miniapp/compiler",
+    "debug": "cd compiler && pnpm run debug",
     "start": "npm run build && npm run debug",
-    "build": "pnpm run build --filter @fre-miniapp/runtime",
+    "build": "cd runtime && pnpm run build",
     "build:wxml": "cd ./packages/wxml && wasm-pack build --target nodejs "
   },
   "keywords": [],
