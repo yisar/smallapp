@@ -1,8 +1,8 @@
-export function getter(obj, key, def, p, undef) {
-    key = keyArr(key)
-    for (p = 0; p < key.length; p++) {
-        const k = key[p]
-        obj = obj ? obj[isNaN(k + 0) ? k : k + 0] : undef
+function getter(obj, keys, def, p, undef) {
+    keys = keyArr(keys)
+    for (p = 0; p < keys.length; p++) {
+        const k = keys[p]
+        obj = obj ? obj[isNaN(+k) ? k : +k] : undef
     }
     return obj === undef ? def : obj
 }
@@ -11,22 +11,37 @@ function keyArr(key) {
     return key.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g,) || ['']
 }
 
-export function setter(obj, keys, val) {
+function setter(source, keys, update) {
     keys = keyArr(keys)
-    var i = 0, l = keys.length, t = obj, x, k
-    while (i < l) {
-        k = '' + keys[i++]
-        if (k === '__proto__' || k === 'constructor' || k === 'prototype') break
-        t = t[k] = (i === l) ? val : (typeof (x = t[k]) === typeof (keys)) ? x : (keys[i] * 0 !== 0 || !!~('' + keys[i]).indexOf('.')) ? {} : []
+
+    let next = copy(source),
+        last = next,
+        i = 0,
+        l = keys.length
+
+    for (; i < l; i++) {
+        last = last[keys[i]] =
+            i === l - 1
+                ? update && !!update.call
+                    ? update(last[keys[i]])
+                    : update
+                : copy(last[keys[i]])
+    }
+    return next
+}
+
+function copy(source) {
+    let to = source && !!source.pop ? [] : {}
+    for (let i in source) to[i] = source[i]
+    return to
+}
+
+let obj = {
+    foo: {
+        bar: ['hi', { buz: { baz: 'hello' } }]
     }
 }
 
-// let obj = {
-//     foo: {
-//         bar: ['hi', { buz: { baz: 'hello' } }]
-//     }
-// }
-
-// setter(obj, 'foo.bar[1].buz.baz', 'world')
-// console.log(getter(obj, 'foo.bar[1].buz.baz'))
-// console.log(getBaz)
+let next = setter(obj, 'foo.bar[1].buz.baz', 'world')
+console.log(JSON.stringify(next))
+console.log(getter(next, 'foo.bar[1].buz.baz'))
