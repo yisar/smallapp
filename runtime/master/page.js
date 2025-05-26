@@ -1,4 +1,5 @@
 import { getApp } from './app'
+import { setter } from './expr'
 import { global } from './global'
 
 let currentPage = null
@@ -25,9 +26,12 @@ class _Page {
         }
     }
 
-    setData(data) {
+    setData(data, extra) {
         this.data = { ...this.data, ...data }
         const setState = global.setStates[this.id]
+        if (typeof data === 'string') {
+            setter(data)(this.data, extra)
+        }
         setState(this.data)
     }
 }

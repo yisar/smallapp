@@ -149,9 +149,9 @@ function shouldBeQuoted(part) {
 //     }
 // }
 
-// let getBaz = getter('foo.bar[1]["buz"].baz')
-// let setBaz = setter('foo.bar[1]["buz"].baz')
+// let a = getter('foo.bar[1]["buz"].baz')(obj)
+// let b = setter('foo.bar[1]["buz"].baz')(obj)
 
-// console.log(getBaz(obj)) // => 'found me!'
-// setBaz(obj, 'set me!')
+// console.log(a) // => 'found me!'
+// b(obj, 'set me!')
 // console.log(obj.foo.bar[1].buz.baz)
