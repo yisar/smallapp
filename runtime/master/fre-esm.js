@@ -2,8 +2,8 @@ const defaultObj = {};
 const jointIter = (aProps, bProps, callback) => {
     aProps = aProps || defaultObj;
     bProps = bProps || defaultObj;
-    Object.keys(aProps).forEach((k) => callback(k, aProps[k], bProps[k]));
-    Object.keys(bProps).forEach((k) => !aProps.hasOwnProperty(k) && callback(k, undefined, bProps[k]));
+    Object.keys(aProps).forEach(k => callback(k, aProps[k], bProps[k]));
+    Object.keys(bProps).forEach(k => !aProps.hasOwnProperty(k) && callback(k, undefined, bProps[k]));
 };
 const updateElement = (dom, aProps, bProps) => {
     jointIter(aProps, bProps, (name, a, b) => {
@@ -51,31 +51,28 @@ const useState = (initState) => {
     return useReducer(null, initState);
 };
 const useReducer = (reducer, initState) => {
-    const [hook, current] = getSlot(cursor++);
+    const [hook, current] = getHook(cursor++);
     if (hook.length === 0) {
         hook[0] = initState;
-    }
-    hook[1] = (value) => {
-        let v = reducer
-            ? reducer(hook[0], value)
-            : isFn(value)
-                ? value(hook[0])
-                : value;
-        if (hook[0] !== v) {
-            hook[0] = v;
+        hook[1] = (value) => {
+            hook[0] = reducer
+                ? reducer(hook[0], value)
+                : isFn(value)
+                    ? value(hook[0])
+                    : value;
             update(current);
-        }
-    };
+        };
+    }
     return hook;
 };
 const useEffect = (cb, deps) => {
-    return effectImpl(cb, deps, 'effect');
+    return effectImpl(cb, deps, "effect");
 };
 const useLayout = (cb, deps) => {
-    return effectImpl(cb, deps, 'layout');
+    return effectImpl(cb, deps, "layout");
 };
 const effectImpl = (cb, deps, key) => {
-    const [hook, current] = getSlot(cursor++);
+    const [hook, current] = getHook(cursor++);
     if (isChanged(hook[1], deps)) {
         hook[0] = cb;
         hook[1] = deps;
@@ -83,7 +80,7 @@ const effectImpl = (cb, deps, key) => {
     }
 };
 const useMemo = (cb, deps) => {
-    const hook = getSlot(cursor++)[0];
+    const hook = getHook(cursor++)[0];
     if (isChanged(hook[1], deps)) {
         hook[1] = deps;
         return (hook[0] = cb());
@@ -96,7 +93,7 @@ const useCallback = (cb, deps) => {
 const useRef = (current) => {
     return useMemo(() => ({ current }), []);
 };
-const getSlot = (cursor) => {
+const getHook = (cursor) => {
     const current = getCurrentFiber();
     const hooks = current.hooks || (current.hooks = { list: [], effect: [], layout: [] });
     if (cursor >= hooks.list.length) {
@@ -138,16 +135,14 @@ const useContext = (contextType) => {
     }
 };
 const isChanged = (a, b) => {
-    return (!a ||
-        a.length !== b.length ||
-        b.some((arg, index) => !Object.is(arg, a[index])));
+    return !a || a.length !== b.length || b.some((arg, index) => !Object.is(arg, a[index]));
 };
 
 const queue = [];
 const threshold = 5;
 const transitions = [];
 let deadline = 0;
-const startTransition = (cb) => {
+const startTransition = cb => {
     transitions.push(cb) && translate();
 };
 const schedule = (callback) => {
@@ -155,7 +150,7 @@ const schedule = (callback) => {
     startTransition(flush);
 };
 const task = (pending) => {
-    const cb = () => transitions.splice(0, 1).forEach((c) => c());
+    const cb = () => transitions.splice(0, 1).forEach(c => c());
     if (!pending && typeof queueMicrotask !== 'undefined') {
         return () => queueMicrotask(cb);
     }
@@ -194,70 +189,48 @@ const commit = (fiber) => {
     if (!fiber) {
         return;
     }
-    const { op, ref, cur } = fiber.action || {};
-    const parent = fiber.parentNode;
-    const curnode = getChildNode(cur);
-    const refnode = getChildNode(ref);
+    const { op, before, elm } = fiber.action || {};
     if (op & 4 || op & 64) {
-        parent.insertBefore(curnode, refnode);
-    }
-    if (op & 128) {
-        parent.replaceChild(curnode, refnode);
-        removeElement(ref, false);
+        if (fiber.isComp && fiber.child) {
+            fiber.child.action.op |= fiber.action.op;
+        }
+        else {
+            fiber.parentNode.insertBefore(elm.node, before === null || before === void 0 ? void 0 : before.node);
+        }
     }
     if (op & 2) {
-        const node = getChildNode(fiber);
-        updateElement(node, fiber.old.props || {}, fiber.props);
+        if (fiber.isComp && fiber.child) {
+            fiber.child.action.op |= fiber.action.op;
+        }
+        else {
+            updateElement(fiber.node, fiber.old.props || {}, fiber.props);
+        }
     }
     refer(fiber.ref, fiber.node);
     fiber.action = null;
-    commitSibling(fiber.child);
-    commitSibling(fiber.sibling);
-};
-function commitSibling(fiber) {
-    if (fiber === null || fiber === void 0 ? void 0 : fiber.memo) {
-        commitSibling(fiber.sibling);
-    }
-    else {
-        commit(fiber);
-    }
-}
-const getChildNode = (fiber) => {
-    if (fiber == null)
-        return null;
-    if (fiber.isComp) {
-        while ((fiber = fiber.child)) {
-            if (!fiber.isComp)
-                return fiber.node;
-        }
-    }
-    else {
-        return fiber.node;
-    }
+    commit(fiber.child);
+    commit(fiber.sibling);
 };
 const refer = (ref, dom) => {
     if (ref)
         isFn(ref) ? ref(dom) : (ref.current = dom);
 };
 const kidsRefer = (kids) => {
-    kids.forEach((kid) => {
+    kids.forEach(kid => {
         kid.kids && kidsRefer(kid.kids);
         refer(kid.ref, null);
     });
 };
-const removeElement = (fiber, flag = true) => {
+const removeElement = fiber => {
     if (fiber.isComp) {
-        fiber.hooks && fiber.hooks.list.forEach((e) => e[2] && e[2]());
+        fiber.hooks && fiber.hooks.list.forEach(e => e[2] && e[2]());
+        fiber.kids.forEach(removeElement);
     }
     else {
-        if (flag) {
-            fiber.parentNode.removeChild(fiber.node);
-            flag = false;
-        }
+        fiber.parentNode.removeChild(fiber.node);
         kidsRefer(fiber.kids);
         refer(fiber.ref, null);
     }
-    fiber.kids.forEach(v => removeElement(v, flag));
 };
 
 let currentFiber = null;
@@ -282,15 +255,22 @@ const reconcile = (fiber) => {
         return reconcile.bind(null, fiber);
     return null;
 };
+const memo$1 = (fiber) => {
+    var _a;
+    if (fiber.type.memo && ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.props)) {
+        let scu = fiber.type.shouldUpdate || shouldUpdate;
+        if (!scu(fiber.props, fiber.old.props)) {
+            return getSibling(fiber);
+        }
+    }
+    return null;
+};
 const capture = (fiber) => {
     fiber.isComp = isFn(fiber.type);
     if (fiber.isComp) {
-        if (isMemo(fiber)) {
-            fiber.memo = true;
-            return getSibling(fiber);
-        }
-        else if (fiber.memo) {
-            fiber.memo = false;
+        const memoFiber = memo$1(fiber);
+        if (memoFiber) {
+            return memoFiber;
         }
         updateHook(fiber);
     }
@@ -301,18 +281,6 @@ const capture = (fiber) => {
         return fiber.child;
     const sibling = getSibling(fiber);
     return sibling;
-};
-const isMemo = (fiber) => {
-    var _a, _b;
-    if (fiber.type.memo &&
-        fiber.type === ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.type) &&
-        ((_b = fiber.old) === null || _b === void 0 ? void 0 : _b.props)) {
-        let scu = fiber.type.shouldUpdate || shouldUpdate;
-        if (!scu(fiber.props, fiber.old.props)) {
-            return true;
-        }
-    }
-    return false;
 };
 const getSibling = (fiber) => {
     while (fiber) {
@@ -328,7 +296,7 @@ const getSibling = (fiber) => {
     }
     return null;
 };
-const bubble = (fiber) => {
+const bubble = fiber => {
     if (fiber.isComp) {
         if (fiber.hooks) {
             side(fiber.hooks.layout);
@@ -347,7 +315,6 @@ const shouldUpdate = (a, b) => {
 const updateHook = (fiber) => {
     resetCursor();
     currentFiber = fiber;
-    fiber.parentNode = getParentNode(fiber) || {};
     let children = fiber.type(fiber.props);
     reconcileChidren(fiber, simpleVnode(children));
 };
@@ -368,7 +335,7 @@ const getParentNode = (fiber) => {
     }
 };
 const reconcileChidren = (fiber, children) => {
-    let aCh = fiber.kids || [], bCh = (fiber.kids = arrayfy$1(children));
+    let aCh = fiber.kids || [], bCh = (fiber.kids = arrayfy(children));
     const actions = diff(aCh, bCh);
     for (let i = 0, prev = null, len = bCh.length; i < len; i++) {
         const child = bCh[i];
@@ -393,91 +360,57 @@ function clone(a, b) {
     b.kids = a.kids;
     b.old = a;
 }
-const arrayfy$1 = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
+const arrayfy = arr => (!arr ? [] : isArr(arr) ? arr : [arr]);
 const side = (effects) => {
-    effects.forEach((e) => e[2] && e[2]());
-    effects.forEach((e) => (e[2] = e[0]()));
+    effects.forEach(e => e[2] && e[2]());
+    effects.forEach(e => (e[2] = e[0]()));
     effects.length = 0;
 };
-const diff = (aCh, bCh) => {
-    let aHead = 0, bHead = 0, aTail = aCh.length - 1, bTail = bCh.length - 1, aMap = {}, bMap = {}, same = (a, b) => a.key != null && b.key != null && a.key === b.key, temp = [], actions = [];
-    while (aHead <= aTail && bHead <= bTail) {
-        if (!same(aCh[aTail], bCh[bTail]))
-            break;
-        if (aCh[aTail].type === bCh[bTail].type) {
-            clone(aCh[aTail], bCh[bTail]);
-            temp.push({ op: 2 });
-        }
-        else {
-            actions.push({ op: 128, cur: bCh[bTail], ref: aCh[aTail] });
-        }
-        aTail--;
-        bTail--;
+const diff = function (a, b) {
+    var actions = [], aIdx = {}, bIdx = {}, key = v => v.key + v.type, i, j;
+    for (i = 0; i < a.length; i++) {
+        aIdx[key(a[i])] = i;
     }
-    while (aHead <= aTail && bHead <= bTail) {
-        if (!same(aCh[aHead], bCh[bHead]))
-            break;
-        if (aCh[aHead].type === bCh[bHead].type) {
-            clone(aCh[aHead], bCh[bHead]);
-            actions.push({ op: 2 });
-        }
-        else {
-            actions.push({ op: 128, cur: bCh[bHead], ref: aCh[aHead] });
-        }
-        aHead++;
-        bHead++;
+    for (i = 0; i < b.length; i++) {
+        bIdx[key(b[i])] = i;
     }
-    for (let i = aHead; i <= aTail; i++) {
-        aMap[aCh[i].key] = i;
-    }
-    for (let i = bHead; i <= bTail; i++) {
-        bMap[bCh[i].key] = i;
-    }
-    while (aHead <= aTail || bHead <= bTail) {
-        var aElm = aCh[aHead], bElm = bCh[bHead];
+    for (i = j = 0; i !== a.length || j !== b.length;) {
+        var aElm = a[i], bElm = b[j];
         if (aElm === null) {
-            aHead++;
+            i++;
         }
-        else if (bTail + 1 <= bHead) {
-            removeElement(aElm);
-            aHead++;
+        else if (b.length <= j) {
+            removeElement(a[i]);
+            i++;
         }
-        else if (aTail + 1 <= aHead) {
-            actions.push({ op: 4, cur: bElm, ref: aElm });
-            bHead++;
+        else if (a.length <= i) {
+            actions.push({ op: 4, elm: bElm, before: a[i] });
+            j++;
         }
-        else if (aElm.key === bElm.key) {
-            if (aElm.type === bElm.type) {
-                clone(aElm, bElm);
-                actions.push({ op: 2 });
-            }
-            else {
-                actions.push({ op: 128, cur: bElm, ref: aElm });
-            }
-            aHead++;
-            bHead++;
+        else if (key(aElm) === key(bElm)) {
+            clone(aElm, bElm);
+            actions.push({ op: 2 });
+            i++;
+            j++;
         }
         else {
-            var foundB = bMap[aElm.key];
-            var foundA = aMap[bElm.key];
-            if (foundB == null) {
-                removeElement(aElm);
-                aHead++;
+            var curElmInNew = bIdx[key(aElm)];
+            var wantedElmInOld = aIdx[key(bElm)];
+            if (curElmInNew === undefined) {
+                removeElement(a[i]);
+                i++;
             }
-            else if (foundA == null) {
-                actions.push({ op: 4, cur: bElm, ref: aElm });
-                bHead++;
+            else if (wantedElmInOld === undefined) {
+                actions.push({ op: 4, elm: bElm, before: a[i] });
+                j++;
             }
             else {
-                clone(aCh[foundA], bElm);
-                actions.push({ op: 64, cur: aCh[foundA], ref: aElm });
-                aCh[foundA] = null;
-                bHead++;
+                clone(a[wantedElmInOld], bElm);
+                actions.push({ op: 64, elm: a[wantedElmInOld], before: a[i] });
+                a[wantedElmInOld] = null;
+                j++;
             }
         }
-    }
-    for (let i = temp.length - 1; i >= 0; i--) {
-        actions.push(temp[i]);
     }
     return actions;
 };
@@ -498,10 +431,9 @@ const h = (type, props, ...kids) => {
         props.ref = undefined;
     return createVnode(type, props, key, ref);
 };
-const arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 const some = (x) => x != null && x !== true && x !== false;
 const flat = (arr, target = []) => {
-    arr.forEach((v) => {
+    arr.forEach(v => {
         isArr(v)
             ? flat(v, target)
             : some(v) && target.push(isStr(v) ? createText(v) : v);

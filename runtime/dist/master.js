@@ -55,16 +55,16 @@ function workerdom() {
     get textContent() {
       return this.data;
     }
-    set textContent(value2) {
+    set textContent(value) {
       let oldValue = this.data;
-      this.data = value2;
+      this.data = value;
       mutation(this, "characterData", { oldValue });
     }
     get nodeValue() {
       return this.data;
     }
-    set nodeValue(value2) {
-      this.textContent = value2;
+    set nodeValue(value) {
+      this.textContent = value;
     }
   }
   class Element extends Node {
@@ -87,20 +87,20 @@ function workerdom() {
         get: () => this.getAttribute("style")
       });
     }
-    setAttribute(key2, value2) {
-      this.setAttributeNS(null, key2, value2);
+    setAttribute(key, value) {
+      this.setAttributeNS(null, key, value);
     }
-    getAttribute(key2) {
-      return this.getAttributeNS(null, key2);
+    getAttribute(key) {
+      return this.getAttributeNS(null, key);
     }
-    removeAttribute(key2) {
-      this.removeAttributeNS(null, key2);
+    removeAttribute(key) {
+      this.removeAttributeNS(null, key);
     }
-    setAttributeNS(ns, name, value2) {
+    setAttributeNS(ns, name, value) {
       let attr = findWhere(this.attributes, createAttributeFilter(ns, name)), oldValue = attr && attr.value;
       if (!attr)
         this.attributes.push(attr = { ns, name });
-      attr.value = String(value2);
+      attr.value = String(value);
       mutation(this, "attributes", { attributeName: name, attributeNamespace: ns, oldValue });
     }
     getAttributeNS(ns, name) {
@@ -274,15 +274,15 @@ var wx = {
 };
 function serOptions(options) {
   let out = {};
-  for (const key2 in options) {
-    let val = options[key2];
+  for (const key in options) {
+    let val = options[key];
     if (typeof val === "function") {
       let id = "." + index;
-      out[key2] = id;
+      out[key] = id;
       callbacks[id] = val;
       index++;
     } else {
-      out[key2] = val;
+      out[key] = val;
     }
   }
   return out;
@@ -305,7 +305,7 @@ function handleWxEvent(data) {
 
 // master/exec-script.js
 function execScript(path, ref) {
-  const { modules, native, fre: fre2, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
+  const { modules, native, fre, comp: comp2, getApp: getApp2, Page: Page2, Component: Component2, App: App2, $handleEvent: $handleEvent2, setStates, $for: $for2, wx: wx2 } = ref;
   const str = path;
   const fn = new Function("module", "require", "fre", "comp", "getApp", "Page", "Component", "App", "$handleEvent", "$for", "setStates", "wx", str);
   const relative = function(parent) {
@@ -338,7 +338,7 @@ function execScript(path, ref) {
     exports: {}
   };
   try {
-    fn.call(module.exports, module, relative(path), fre2, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
+    fn.call(module.exports, module, relative(path), fre, comp2, getApp2, Page2, Component2, App2, $handleEvent2, $for2, setStates, wx2);
   } catch (e) {
     console.log(e);
   }
@@ -362,6 +362,33 @@ function getInsById(id) {
   return app.graph[id];
 }
 App();
+
+// master/safe-obj.js
+function getter(obj, keys, def, p, undef) {
+  keys = keyArr(keys);
+  for (p = 0; p < keys.length; p++) {
+    const k = keys[p];
+    obj = obj ? obj[isNaN(+k) ? k : +k] : undef;
+  }
+  return obj === undef ? def : obj;
+}
+function keyArr(key) {
+  return key.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g) || [""];
+}
+function setter(source, keys, update2) {
+  keys = keyArr(keys);
+  let next = copy(source), last = next, i = 0, l = keys.length;
+  for (; i < l; i++) {
+    last = last[keys[i]] = i === l - 1 ? update2 && !!update2.call ? update2(last[keys[i]]) : update2 : copy(last[keys[i]]);
+  }
+  return next;
+}
+function copy(source) {
+  let to = source && !!source.pop ? [] : {};
+  for (let i in source)
+    to[i] = source[i];
+  return to;
+}
 
 // master/fre-esm.js
 var defaultObj = {};
@@ -408,17 +435,14 @@ var useState = (initState) => {
   return useReducer(null, initState);
 };
 var useReducer = (reducer, initState) => {
-  const [hook, current] = getSlot(cursor++);
+  const [hook, current] = getHook(cursor++);
   if (hook.length === 0) {
     hook[0] = initState;
-  }
-  hook[1] = (value2) => {
-    let v = reducer ? reducer(hook[0], value2) : isFn(value2) ? value2(hook[0]) : value2;
-    if (hook[0] !== v) {
-      hook[0] = v;
+    hook[1] = (value) => {
+      hook[0] = reducer ? reducer(hook[0], value) : isFn(value) ? value(hook[0]) : value;
       update(current);
-    }
-  };
+    };
+  }
   return hook;
 };
 var useEffect = (cb, deps) => {
@@ -427,16 +451,16 @@ var useEffect = (cb, deps) => {
 var useLayout = (cb, deps) => {
   return effectImpl(cb, deps, "layout");
 };
-var effectImpl = (cb, deps, key2) => {
-  const [hook, current] = getSlot(cursor++);
+var effectImpl = (cb, deps, key) => {
+  const [hook, current] = getHook(cursor++);
   if (isChanged(hook[1], deps)) {
     hook[0] = cb;
     hook[1] = deps;
-    current.hooks[key2].push(hook);
+    current.hooks[key].push(hook);
   }
 };
 var useMemo = (cb, deps) => {
-  const hook = getSlot(cursor++)[0];
+  const hook = getHook(cursor++)[0];
   if (isChanged(hook[1], deps)) {
     hook[1] = deps;
     return hook[0] = cb();
@@ -449,7 +473,7 @@ var useCallback = (cb, deps) => {
 var useRef = (current) => {
   return useMemo(() => ({ current }), []);
 };
-var getSlot = (cursor2) => {
+var getHook = (cursor2) => {
   const current = getCurrentFiber();
   const hooks = current.hooks || (current.hooks = { list: [], effect: [], layout: [] });
   if (cursor2 >= hooks.list.length) {
@@ -509,44 +533,25 @@ var commit = (fiber) => {
   if (!fiber) {
     return;
   }
-  const { op, ref, cur } = fiber.action || {};
-  const parent = fiber.parentNode;
-  const curnode = getChildNode(cur);
-  const refnode = getChildNode(ref);
+  const { op, before, elm } = fiber.action || {};
   if (op & 4 || op & 64) {
-    parent.insertBefore(curnode, refnode);
-  }
-  if (op & 128) {
-    parent.replaceChild(curnode, refnode);
-    removeElement(ref, false);
+    if (fiber.isComp && fiber.child) {
+      fiber.child.action.op |= fiber.action.op;
+    } else {
+      fiber.parentNode.insertBefore(elm.node, before === null || before === void 0 ? void 0 : before.node);
+    }
   }
   if (op & 2) {
-    const node = getChildNode(fiber);
-    updateElement(node, fiber.old.props || {}, fiber.props);
+    if (fiber.isComp && fiber.child) {
+      fiber.child.action.op |= fiber.action.op;
+    } else {
+      updateElement(fiber.node, fiber.old.props || {}, fiber.props);
+    }
   }
   refer(fiber.ref, fiber.node);
   fiber.action = null;
-  commitSibling(fiber.child);
-  commitSibling(fiber.sibling);
-};
-function commitSibling(fiber) {
-  if (fiber === null || fiber === void 0 ? void 0 : fiber.memo) {
-    commitSibling(fiber.sibling);
-  } else {
-    commit(fiber);
-  }
-}
-var getChildNode = (fiber) => {
-  if (fiber == null)
-    return null;
-  if (fiber.isComp) {
-    while (fiber = fiber.child) {
-      if (!fiber.isComp)
-        return fiber.node;
-    }
-  } else {
-    return fiber.node;
-  }
+  commit(fiber.child);
+  commit(fiber.sibling);
 };
 var refer = (ref, dom) => {
   if (ref)
@@ -558,18 +563,15 @@ var kidsRefer = (kids) => {
     refer(kid.ref, null);
   });
 };
-var removeElement = (fiber, flag = true) => {
+var removeElement = (fiber) => {
   if (fiber.isComp) {
     fiber.hooks && fiber.hooks.list.forEach((e) => e[2] && e[2]());
+    fiber.kids.forEach(removeElement);
   } else {
-    if (flag) {
-      fiber.parentNode.removeChild(fiber.node);
-      flag = false;
-    }
+    fiber.parentNode.removeChild(fiber.node);
     kidsRefer(fiber.kids);
     refer(fiber.ref, null);
   }
-  fiber.kids.forEach((v) => removeElement(v, flag));
 };
 var currentFiber = null;
 var rootFiber = null;
@@ -593,14 +595,22 @@ var reconcile = (fiber) => {
     return reconcile.bind(null, fiber);
   return null;
 };
+var memo$1 = (fiber) => {
+  var _a;
+  if (fiber.type.memo && ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.props)) {
+    let scu = fiber.type.shouldUpdate || shouldUpdate;
+    if (!scu(fiber.props, fiber.old.props)) {
+      return getSibling(fiber);
+    }
+  }
+  return null;
+};
 var capture = (fiber) => {
   fiber.isComp = isFn(fiber.type);
   if (fiber.isComp) {
-    if (isMemo(fiber)) {
-      fiber.memo = true;
-      return getSibling(fiber);
-    } else if (fiber.memo) {
-      fiber.memo = false;
+    const memoFiber = memo$1(fiber);
+    if (memoFiber) {
+      return memoFiber;
     }
     updateHook(fiber);
   } else {
@@ -610,16 +620,6 @@ var capture = (fiber) => {
     return fiber.child;
   const sibling = getSibling(fiber);
   return sibling;
-};
-var isMemo = (fiber) => {
-  var _a, _b;
-  if (fiber.type.memo && fiber.type === ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.type) && ((_b = fiber.old) === null || _b === void 0 ? void 0 : _b.props)) {
-    let scu = fiber.type.shouldUpdate || shouldUpdate;
-    if (!scu(fiber.props, fiber.old.props)) {
-      return true;
-    }
-  }
-  return false;
 };
 var getSibling = (fiber) => {
   while (fiber) {
@@ -654,7 +654,6 @@ var shouldUpdate = (a, b) => {
 var updateHook = (fiber) => {
   resetCursor();
   currentFiber = fiber;
-  fiber.parentNode = getParentNode(fiber) || {};
   let children = fiber.type(fiber.props);
   reconcileChidren(fiber, simpleVnode(children));
 };
@@ -675,7 +674,7 @@ var getParentNode = (fiber) => {
   }
 };
 var reconcileChidren = (fiber, children) => {
-  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy$1(children);
+  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy(children);
   const actions = diff(aCh, bCh);
   for (let i = 0, prev = null, len = bCh.length; i < len; i++) {
     const child = bCh[i];
@@ -699,82 +698,51 @@ function clone(a, b) {
   b.kids = a.kids;
   b.old = a;
 }
-var arrayfy$1 = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
+var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var side = (effects) => {
   effects.forEach((e) => e[2] && e[2]());
   effects.forEach((e) => e[2] = e[0]());
   effects.length = 0;
 };
-var diff = (aCh, bCh) => {
-  let aHead = 0, bHead = 0, aTail = aCh.length - 1, bTail = bCh.length - 1, aMap = {}, bMap = {}, same = (a, b) => a.key != null && b.key != null && a.key === b.key, temp = [], actions = [];
-  while (aHead <= aTail && bHead <= bTail) {
-    if (!same(aCh[aTail], bCh[bTail]))
-      break;
-    if (aCh[aTail].type === bCh[bTail].type) {
-      clone(aCh[aTail], bCh[bTail]);
-      temp.push({ op: 2 });
-    } else {
-      actions.push({ op: 128, cur: bCh[bTail], ref: aCh[aTail] });
-    }
-    aTail--;
-    bTail--;
+var diff = function(a, b) {
+  var actions = [], aIdx = {}, bIdx = {}, key = (v) => v.key + v.type, i, j;
+  for (i = 0; i < a.length; i++) {
+    aIdx[key(a[i])] = i;
   }
-  while (aHead <= aTail && bHead <= bTail) {
-    if (!same(aCh[aHead], bCh[bHead]))
-      break;
-    if (aCh[aHead].type === bCh[bHead].type) {
-      clone(aCh[aHead], bCh[bHead]);
-      actions.push({ op: 2 });
-    } else {
-      actions.push({ op: 128, cur: bCh[bHead], ref: aCh[aHead] });
-    }
-    aHead++;
-    bHead++;
+  for (i = 0; i < b.length; i++) {
+    bIdx[key(b[i])] = i;
   }
-  for (let i = aHead; i <= aTail; i++) {
-    aMap[aCh[i].key] = i;
-  }
-  for (let i = bHead; i <= bTail; i++) {
-    bMap[bCh[i].key] = i;
-  }
-  while (aHead <= aTail || bHead <= bTail) {
-    var aElm = aCh[aHead], bElm = bCh[bHead];
+  for (i = j = 0; i !== a.length || j !== b.length; ) {
+    var aElm = a[i], bElm = b[j];
     if (aElm === null) {
-      aHead++;
-    } else if (bTail + 1 <= bHead) {
-      removeElement(aElm);
-      aHead++;
-    } else if (aTail + 1 <= aHead) {
-      actions.push({ op: 4, cur: bElm, ref: aElm });
-      bHead++;
-    } else if (aElm.key === bElm.key) {
-      if (aElm.type === bElm.type) {
-        clone(aElm, bElm);
-        actions.push({ op: 2 });
-      } else {
-        actions.push({ op: 128, cur: bElm, ref: aElm });
-      }
-      aHead++;
-      bHead++;
+      i++;
+    } else if (b.length <= j) {
+      removeElement(a[i]);
+      i++;
+    } else if (a.length <= i) {
+      actions.push({ op: 4, elm: bElm, before: a[i] });
+      j++;
+    } else if (key(aElm) === key(bElm)) {
+      clone(aElm, bElm);
+      actions.push({ op: 2 });
+      i++;
+      j++;
     } else {
-      var foundB = bMap[aElm.key];
-      var foundA = aMap[bElm.key];
-      if (foundB == null) {
-        removeElement(aElm);
-        aHead++;
-      } else if (foundA == null) {
-        actions.push({ op: 4, cur: bElm, ref: aElm });
-        bHead++;
+      var curElmInNew = bIdx[key(aElm)];
+      var wantedElmInOld = aIdx[key(bElm)];
+      if (curElmInNew === void 0) {
+        removeElement(a[i]);
+        i++;
+      } else if (wantedElmInOld === void 0) {
+        actions.push({ op: 4, elm: bElm, before: a[i] });
+        j++;
       } else {
-        clone(aCh[foundA], bElm);
-        actions.push({ op: 64, cur: aCh[foundA], ref: aElm });
-        aCh[foundA] = null;
-        bHead++;
+        clone(a[wantedElmInOld], bElm);
+        actions.push({ op: 64, elm: a[wantedElmInOld], before: a[i] });
+        a[wantedElmInOld] = null;
+        j++;
       }
     }
-  }
-  for (let i = temp.length - 1; i >= 0; i--) {
-    actions.push(temp[i]);
   }
   return actions;
 };
@@ -786,15 +754,14 @@ var h2 = (type, props, ...kids) => {
   kids = flat(arrayfy(props.children || kids));
   if (kids.length)
     props.children = kids.length === 1 ? kids[0] : kids;
-  const key2 = props.key || null;
+  const key = props.key || null;
   const ref = props.ref || null;
-  if (key2)
+  if (key)
     props.key = void 0;
   if (ref)
     props.ref = void 0;
-  return createVnode(type, props, key2, ref);
+  return createVnode(type, props, key, ref);
 };
-var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var some = (x) => x != null && x !== true && x !== false;
 var flat = (arr, target = []) => {
   arr.forEach((v) => {
@@ -802,10 +769,10 @@ var flat = (arr, target = []) => {
   });
   return target;
 };
-var createVnode = (type, props, key2, ref) => ({
+var createVnode = (type, props, key, ref) => ({
   type,
   props,
-  key: key2,
+  key,
   ref
 });
 var createText = (vnode) => ({ type: "#text", props: { nodeValue: vnode + "" } });
@@ -829,8 +796,8 @@ function computedStype(str) {
   let out = {};
   let arr = str.split(";");
   arr.forEach((s) => {
-    const [name, value2] = s.split(":");
-    out[name] = value2;
+    const [name, value] = s.split(":");
+    out[name] = value;
   });
   return out;
 }
@@ -906,10 +873,10 @@ var createContext = (defaultValue) => {
   const context = {
     value: defaultValue,
     subs: /* @__PURE__ */ new Set(),
-    Provider: ({ value: value2, children = "" }) => {
+    Provider: ({ value, children = "" }) => {
       useEffect(() => {
-        context.subs.forEach((fn) => fn(value2));
-        context.value = value2;
+        context.subs.forEach((fn) => fn(value));
+        context.value = value;
       });
       return children;
     }
@@ -947,7 +914,7 @@ var radio_group_default = RadioGroup;
 // master/components/radio.js
 function Radio(props) {
   const change = useContext(RadioContext);
-  let { color, id, style, value: value2 } = props;
+  let { color, id, style, value } = props;
   const onClick = (e) => {
     if (props.onClick) {
       props.onClick(e);
@@ -955,11 +922,11 @@ function Radio(props) {
   };
   const onChange = (e) => {
     e.stopPropagation && e.stopPropagation();
-    change && change({ detail: { value: value2 } });
+    change && change({ detail: { value } });
     if (props.onChange) {
       props.onChange({
         detail: {
-          value: value2,
+          value,
           checked: e.target.checked
         }
       });
@@ -994,12 +961,12 @@ var checkbox_group_default = CheckboxGroup;
 function Checkbox(props) {
   let { change, value: newValue } = useContext(CheckboxContext);
   const [checked, setChecked] = useState(props.checked);
-  let { color, id, style, value: value2 } = props;
+  let { color, id, style, value } = props;
   useEffect(() => {
-    if (checked && newValue.indexOf(value2) === -1) {
-      newValue.push(value2);
+    if (checked && newValue.indexOf(value) === -1) {
+      newValue.push(value);
     } else if (!checked) {
-      const index2 = newValue.indexOf(value2);
+      const index2 = newValue.indexOf(value);
       newValue.splice(index2, 1);
     }
     change && change({ detail: { value: newValue } });
@@ -1010,7 +977,7 @@ function Checkbox(props) {
     if (props.onChange) {
       props.onChange({
         detail: {
-          value: value2,
+          value,
           checked
         }
       });
@@ -1059,8 +1026,8 @@ var _Component = class {
     this.children = /* @__PURE__ */ new Map();
     this.parent = null;
     this.eventMap = {};
-    for (const key2 in option) {
-      this[key2] = option[key2];
+    for (const key in option) {
+      this[key] = option[key];
     }
   }
   setData(data) {
@@ -1093,95 +1060,159 @@ function $handleEvent(name, id, custom) {
     method.call(ins, e);
   };
 }
-var $for = (arr, fn, key2) => {
+var $for = (arr, fn, key) => {
   arr = arr || [];
   return arr.map((item, index2) => {
     const vdom = fn(item);
-    vdom.key = key2 || index2;
+    vdom.key = key || index2;
     return vdom;
   });
 };
 
 // master/expr.js
-var Cache = class {
-  constructor() {
-    this._maxSize = maxSize;
-    this.clear();
-  }
-  clear() {
-    this._size = 0;
-    this._values = /* @__PURE__ */ Object.create(null);
-  }
-  get() {
-    return this._values[key];
-  }
-  set() {
-    this._size >= this._maxSize && this.clear();
-    if (!(key in this._values))
-      this._size++;
-    return this._values[key] = value;
-  }
-};
-var SPLIT_REGEX = /[^.^\]^[]+|(?=\[\]|\.\.)/g;
-var CLEAN_QUOTES_REGEX = /^\s*(['"]?)(.*?)(\1)\s*$/;
-var MAX_CACHE_SIZE = 512;
-var pathCache = new Cache(MAX_CACHE_SIZE);
-var setCache = new Cache(MAX_CACHE_SIZE);
-var getCache = new Cache(MAX_CACHE_SIZE);
-var setter = function(path) {
-  var parts = normalizePath(path);
-  return setCache.get(path) || setCache.set(path, function setter2(obj, value2) {
-    var index2 = 0;
-    var len = parts.length;
-    var data = obj;
-    while (index2 < len - 1) {
-      var part = parts[index2];
-      if (part === "__proto__" || part === "constructor" || part === "prototype") {
-        return obj;
-      }
-      data = data[parts[index2++]];
-    }
-    data[parts[index2]] = value2;
-  });
-};
-var getter = function(path, safe) {
-  var parts = normalizePath(path);
-  return getCache.get(path) || getCache.set(path, function getter2(data) {
-    var index2 = 0, len = parts.length;
-    while (index2 < len) {
-      if (data != null || !safe)
-        data = data[parts[index2++]];
-      else
-        return;
-    }
-    return data;
-  });
-};
-function normalizePath(path) {
-  return pathCache.get(path) || pathCache.set(
-    path,
-    split(path).map(function(part) {
-      return part.replace(CLEAN_QUOTES_REGEX, "$2");
-    })
+var defaultAllowedKeywords = "Math,Date,this,true,false,null,undefined,Infinity,NaN,isNaN,isFinite,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,parseInt,parseFloat";
+var improperKeywordsRE = new RegExp(
+  "^(" + "break,case,class,catch,const,continue,debugger,default,delete,do,else,export,extends,finally,for,function,if,import,in,instanceof,let,return,super,switch,throw,try,var,while,with,yield,enum,await,implements,package,protected,static,interface,private,public".replace(/,/g, "\\b|") + "\\b)"
+);
+var wsRE = /\s/g;
+var newlineRE = /\n/g;
+var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g;
+var restoreRE = /"(\d+)"/g;
+var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
+var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
+var booleanLiteralRE = /^(?:true|false)$/;
+var saved = [];
+function save(str, isString) {
+  var i = saved.length;
+  saved[i] = isString ? str.replace(newlineRE, "\\n") : str;
+  return '"' + i + '"';
+}
+function restore(str, i) {
+  return saved[i];
+}
+function isSimplePath(expression) {
+  return pathTestRE.test(expression) && !booleanLiteralRE.test(expression);
+}
+function parseKeywordsToRE(keywords) {
+  return new RegExp(
+    "^(?:" + keywords.replace(wsRE, "").replace(/\$/g, "\\$").replace(/,/g, "\\b|") + "\\b)"
   );
 }
-function split(path) {
-  return path.match(SPLIT_REGEX) || [""];
+var Expr = class {
+  constructor(options = {}) {
+    let { scope = "$", scopes, params } = options;
+    this._cache = /* @__PURE__ */ new Map();
+    this._funcParams = (params || (scopes ? [scope, ...Object.keys(scopes)] : [scope])).join(",").replace(wsRE, "");
+    this._funcBefore = `function(${this._funcParams}){return `;
+    this._funcAfter = "}";
+    this.scope = scope;
+    if (scopes) {
+      const keys = Object.keys(scopes);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i];
+        const keywords = scopes[key];
+        scopes[key] = parseKeywordsToRE(
+          Object.prototype.toString.call(keywords) === "[object Array]" ? keywords.join(",") : keywords
+        );
+      }
+      this._scopeREs = scopes;
+    }
+    let paramsPrefix;
+    if (params && params.length > 1) {
+      params = params.slice(1);
+      paramsPrefix = params.join(",");
+      this._paramsPrefixRE = parseKeywordsToRE(paramsPrefix);
+    }
+    const allowedKeywords = paramsPrefix ? `${paramsPrefix},${defaultAllowedKeywords}` : defaultAllowedKeywords;
+    this._allowedKeywordsRE = parseKeywordsToRE(allowedKeywords);
+  }
+  _addScope(expression) {
+    if (this._paramsPrefixRE && this._paramsPrefixRE.test(expression)) {
+      return expression;
+    }
+    if (this._scopeREs) {
+      const keys = Object.keys(this._scopeREs);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const re = this._scopeREs[keys[i]];
+        if (re.test(expression)) {
+          return `${keys[i]}.${expression}`;
+        }
+      }
+    }
+    return `${this.scope}.${expression}`;
+  }
+  compile(expression) {
+    if (improperKeywordsRE.test(expression)) {
+      console.warn(`Avoid using reserved keywords in expression: ${expression}`);
+    }
+    saved.length = 0;
+    let body = expression.replace(saveRE, save).replace(wsRE, "");
+    const self2 = this;
+    let c, path;
+    return (" " + body).replace(identRE, (raw) => {
+      c = raw.charAt(0);
+      path = raw.slice(1);
+      if (self2._allowedKeywordsRE.test(path)) {
+        return raw;
+      } else {
+        path = path.indexOf('"') > -1 ? path.replace(restoreRE, restore) : path;
+        return c + self2._addScope(path);
+      }
+    }).replace(restoreRE, restore).slice(1);
+  }
+  parse(source) {
+    if (!(source && (source = source.trim()))) {
+      return "";
+    }
+    let hit = this._cache.get(source);
+    if (hit) {
+      return hit;
+    }
+    const result = isSimplePath(source) && source.indexOf("[") < 0 ? this._addScope(source) : this.compile(source);
+    this._cache.set(source, result);
+    return result;
+  }
+  build(expression) {
+    try {
+      return new Function(this._funcParams, `return ${expression}`);
+    } catch (e) {
+      if (true) {
+        console.warn(`Invalid expression. Generated function body: ${expression}`);
+      }
+    }
+  }
+  buildToString(expression) {
+    return `${this._funcBefore}${expression}${this._funcAfter}`;
+  }
+  make(source) {
+    const expression = this.parse(source);
+    return this.build(expression);
+  }
+  makeToString(source) {
+    const expression = this.parse(source);
+    return this.buildToString(expression);
+  }
+};
+function expr(expr2, obj) {
+  const jep = new Expr();
+  const fun = jep.make(expr2);
+  const res = fun(obj);
+  return res;
 }
 
 // master/global.js
-var fre = { Fragment, h: h2, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState };
 var global2 = {
   modules: {},
   Page,
   getApp,
   Component,
-  fre,
+  fre: { Fragment, h: h2, render, useCallback, useEffect, useLayout, useMemo, useReducer, useRef, useState },
   comp: components_default,
   $handleEvent,
   $for,
   setStates: {},
   wx,
+  expr,
   getter,
   setter,
   native: {
@@ -1217,13 +1248,16 @@ var _Page = class {
     this.children = /* @__PURE__ */ new Map();
     this.parent = null;
     this.eventMap = {};
-    for (const key2 in option) {
-      this[key2] = option[key2];
+    for (const key in option) {
+      this[key] = option[key];
     }
   }
-  setData(data) {
+  setData(data, extra) {
     this.data = { ...this.data, ...data };
     const setState = global2.setStates[this.id];
+    if (typeof data === "string") {
+      setter(data)(this.data, extra);
+    }
     setState(this.data);
   }
 };

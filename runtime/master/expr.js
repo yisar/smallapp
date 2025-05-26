@@ -32,7 +32,7 @@ function parseKeywordsToRE(keywords) {
 
 class Expr {
     constructor(options = {}) {
-        const { scope = "$", scopes, params } = options
+        let { scope = "$", scopes, params } = options
         this._cache = new Map()
         this._funcParams = (params || (scopes ? [scope, ...Object.keys(scopes)] : [scope])).join(",").replace(wsRE, "")
         this._funcBefore = `function(${this._funcParams}){return `

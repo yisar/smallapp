@@ -22,7 +22,7 @@ Page({
       1: '常驻卡池',
       2: '新手卡池'
     },
-    title: ""
+    title: "未知"
   },
   onload(){
     console.log('onLoad')

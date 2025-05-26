@@ -26,7 +26,7 @@ Page({
       1: "\u5E38\u9A7B\u5361\u6C60",
       2: "\u65B0\u624B\u5361\u6C60"
     },
-    title: ""
+    title: "\u672A\u77E5"
   },
   onload() {
     console.log("onLoad");
