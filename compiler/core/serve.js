@@ -4,12 +4,14 @@ const { getIndexHtmlCode } = require('./packagers/util')
 const { PORT = 1122 } = process.env
 
 module.exports = function serve(options) {
-  const basetdir = path.join(__dirname, '../../runtime/dist')
+  const basetdir = path.join(__dirname, '../../demo/dist')
   const distdir = path.join(options.i, options.o)
+  const runtimedir = path.join(__dirname,'../../runtime/dist')
 
   const app = express()
     .use(express.static(basetdir))
     .use(express.static(distdir))
+    .use(express.static(runtimedir))
     .get('/', (req, res) => {
       getIndexHtmlCode().then((data) => {
         res.end(data)
