@@ -84,7 +84,7 @@ async function handler(req) {
     <script src="/slave.js"></script>
     <script>
         const worker = new Worker('/master.js')
-        workerdom({ worker })
+        workerdomView({ worker })
     </script>
 </body>
 
