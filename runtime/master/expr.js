@@ -1,3 +1,5 @@
+//copy from vue1.x https://github.com/vuejs/vue/blob/1.1/src/parsers/expression.js
+
 var defaultAllowedKeywords = "Math,Date,this,true,false,null,undefined,Infinity,NaN,isNaN,isFinite,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,parseInt,parseFloat"
 var improperKeywordsRE = new RegExp(
     "^(" + "break,case,class,catch,const,continue,debugger,default,delete,do,else,export,extends,finally,for,function,if,import,in,instanceof,let,return,super,switch,throw,try,var,while,with,yield,enum,await,implements,package,protected,static,interface,private,public".replace(/,/g, "\\b|") + "\\b)"
