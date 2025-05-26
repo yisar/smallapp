@@ -1,4 +1,4 @@
-function getter(obj, keys, def, p, undef) {
+export function getter(obj, keys, def, p, undef) {
     keys = keyArr(keys)
     for (p = 0; p < keys.length; p++) {
         const k = keys[p]
@@ -11,7 +11,7 @@ function keyArr(key) {
     return key.match(/[^.^\]^[]+|(?=\[\]|\.\.)/g,) || ['']
 }
 
-function setter(source, keys, update) {
+export function setter(source, keys, update) {
     keys = keyArr(keys)
 
     let next = copy(source),
