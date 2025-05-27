@@ -42,11 +42,11 @@ async function getIndexHtmlCode() {
     <script>
         if (window.AndroidJSServiceBridge) {
           setTimeout(() => {
-            workerdomView({ worker: AndroidJSServiceBridge })
+            fakedom({ worker: AndroidJSServiceBridge })
           }, 1000)
         } else {
           const worker = new Worker('/master.js')
-          workerdomView({ worker })
+          fakedom({ worker })
         }
     </script>
 </body>

@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-function workerdomView({ worker }) {
+function fakedom(worker) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -269,4 +269,4 @@ window['javascriptChannel'] = function (json) { // native 调用 webview，只�
     worker.postMessage(JSON.stringify({ type: 'wxcallback', payload: json }))
 }
 
-workerdomView.umd = true
+fakedom.umd = true

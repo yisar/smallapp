@@ -1,4 +1,4 @@
-export default function workerdom() {
+export default function fakedom() {
     let observers = [],
         pendingMutations = false;
 

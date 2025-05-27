@@ -2,26 +2,6 @@ if (!self.slave) self.slave = {}
 const idMap = new Map([[0, self]])
 let nextid = -1
 
-document.define = (tag, mount, unmount) => {
-    let host = null
-    customElements.define(
-        tag,
-        class extends HTMLElement {
-            constructor() {
-                super()
-                host = this.attachShadow({ mode: 'open' })
-            }
-            connectedCallback() {
-                mount()
-            }
-            disconnectedCallback() {
-                unmount()
-            }
-        }
-    )
-    return host
-}
-
 slave.wrap = (arg) => {
     if (canClone(arg)) {
         return [0, arg]
