@@ -185,7 +185,7 @@ master.makeProp = function (id, path) {
   return new Proxy(fn, propHandler)
 }
 
-self.effect = (cb) => {
+self.hijack = (cb) => {
   self.addEventListener('message', (e) => {
     if (e.data === 'start') {
       master.postMessage = (data) => self.postMessage(data)
