@@ -7,7 +7,7 @@ const EVENT_OPTS = {
 };
 
 
-function fakedom(worker) {
+function fakedom({worker}) {
     const NODES = new Map();
 
     function getNode(node) {
@@ -258,6 +258,7 @@ function fakedom(worker) {
             type: 'init'
         }))
     } else {
+        console.log(worker)
         worker.postMessage(JSON.stringify({
             type: 'init',
             manifest: window.manifest

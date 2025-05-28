@@ -1,5 +1,5 @@
 import fakedom from './dom/fake-dom.js'
-import './dom/proxy-dom.js'
+// import './dom/proxy-dom.js'
 import { handleWxEvent } from './wxapi'
 import { init } from './init'
 
@@ -19,8 +19,8 @@ self.send = function send(message) {
   }
 }
 
-let document = self.document = fakedom()
-globalThis.document = document
+self.document = fakedom()
+globalThis.document = self.document
 
 for (let i in document.defaultView) if (document.defaultView.hasOwnProperty(i)) {
   self[i] = document.defaultView[i]

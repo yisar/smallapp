@@ -1,5 +1,5 @@
-// master/worker-dom.js
-function workerdom() {
+// master/dom/fake-dom.js
+function fakedom() {
   let observers = [], pendingMutations = false;
   class Node {
     constructor(nodeType, nodeName) {
@@ -204,6 +204,9 @@ function workerdom() {
   function createElement2(type) {
     return new Element(null, String(type).toUpperCase());
   }
+  function createDocumentFragment(type) {
+    return new Element(null, "segment");
+  }
   function createElementNS(ns, type) {
     let element = createElement2(type);
     element.namespace = ns;
@@ -213,11 +216,11 @@ function workerdom() {
     return new Text2(text);
   }
   function createDocument() {
-    let document3 = new Document();
-    assign(document3, document3.defaultView = { document: document3, MutationObserver: MutationObserver2, Document, Node, Text: Text2, Element, SVGElement: SVGElement2, Event });
-    assign(document3, { documentElement: document3, createElement: createElement2, createElementNS, createTextNode });
-    document3.appendChild(document3.body = createElement2("body"));
-    return document3;
+    let document2 = new Document();
+    assign(document2, document2.defaultView = { document: document2, MutationObserver: MutationObserver2, Document, Node, Text: Text2, Element, SVGElement: SVGElement2, Event });
+    assign(document2, { documentElement: document2, createElement: createElement2, createElementNS, createTextNode, createDocumentFragment });
+    document2.appendChild(document2.body = createElement2("body"));
+    return document2;
   }
   return createDocument();
 }
@@ -418,7 +421,7 @@ var updateElement = (dom, aProps, bProps) => {
     } else if (b == null || b === false) {
       dom.removeAttribute(name);
     } else {
-      dom.setAttribute(name, b);
+      dom.setAttribute && (dom === null || dom === void 0 ? void 0 : dom.setAttribute(name, b));
     }
   });
 };
@@ -435,14 +438,17 @@ var useState = (initState) => {
   return useReducer(null, initState);
 };
 var useReducer = (reducer, initState) => {
-  const [hook, current] = getHook(cursor++);
+  const [hook, current] = getSlot(cursor++);
   if (hook.length === 0) {
     hook[0] = initState;
-    hook[1] = (value) => {
-      hook[0] = reducer ? reducer(hook[0], value) : isFn(value) ? value(hook[0]) : value;
-      update(current);
-    };
   }
+  hook[1] = (value) => {
+    let v = reducer ? reducer(hook[0], value) : isFn(value) ? value(hook[0]) : value;
+    if (hook[0] !== v) {
+      hook[0] = v;
+      update(current);
+    }
+  };
   return hook;
 };
 var useEffect = (cb, deps) => {
@@ -452,7 +458,7 @@ var useLayout = (cb, deps) => {
   return effectImpl(cb, deps, "layout");
 };
 var effectImpl = (cb, deps, key) => {
-  const [hook, current] = getHook(cursor++);
+  const [hook, current] = getSlot(cursor++);
   if (isChanged(hook[1], deps)) {
     hook[0] = cb;
     hook[1] = deps;
@@ -460,7 +466,7 @@ var effectImpl = (cb, deps, key) => {
   }
 };
 var useMemo = (cb, deps) => {
-  const hook = getHook(cursor++)[0];
+  const hook = getSlot(cursor++)[0];
   if (isChanged(hook[1], deps)) {
     hook[1] = deps;
     return hook[0] = cb();
@@ -473,8 +479,8 @@ var useCallback = (cb, deps) => {
 var useRef = (current) => {
   return useMemo(() => ({ current }), []);
 };
-var getHook = (cursor2) => {
-  const current = getCurrentFiber();
+var getSlot = (cursor2) => {
+  const current = useFiber();
   const hooks = current.hooks || (current.hooks = { list: [], effect: [], layout: [] });
   if (cursor2 >= hooks.list.length) {
     hooks.list.push([]);
@@ -530,29 +536,31 @@ var shouldYield = () => {
 var getTime = () => performance.now();
 var peek = (queue2) => queue2[0];
 var commit = (fiber) => {
+  var _a;
   if (!fiber) {
     return;
   }
-  const { op, before, elm } = fiber.action || {};
+  refer(fiber.ref, fiber.node);
+  commitSibling(fiber.child);
+  const { op, ref, cur } = fiber.action || {};
+  const parent = (_a = fiber === null || fiber === void 0 ? void 0 : fiber.parent) === null || _a === void 0 ? void 0 : _a.node;
   if (op & 4 || op & 64) {
-    if (fiber.isComp && fiber.child) {
-      fiber.child.action.op |= fiber.action.op;
-    } else {
-      fiber.parentNode.insertBefore(elm.node, before === null || before === void 0 ? void 0 : before.node);
-    }
+    parent.insertBefore(cur.node, ref === null || ref === void 0 ? void 0 : ref.node);
   }
   if (op & 2) {
-    if (fiber.isComp && fiber.child) {
-      fiber.child.action.op |= fiber.action.op;
-    } else {
-      updateElement(fiber.node, fiber.old.props || {}, fiber.props);
-    }
+    const node = fiber.node;
+    updateElement(node, fiber.alternate.props || {}, fiber.props);
   }
-  refer(fiber.ref, fiber.node);
   fiber.action = null;
-  commit(fiber.child);
-  commit(fiber.sibling);
+  commitSibling(fiber.sibling);
 };
+function commitSibling(fiber) {
+  if (fiber === null || fiber === void 0 ? void 0 : fiber.memo) {
+    commitSibling(fiber.sibling);
+  } else {
+    commit(fiber);
+  }
+}
 var refer = (ref, dom) => {
   if (ref)
     isFn(ref) ? ref(dom) : ref.current = dom;
@@ -563,15 +571,18 @@ var kidsRefer = (kids) => {
     refer(kid.ref, null);
   });
 };
-var removeElement = (fiber) => {
+var removeElement = (fiber, flag = true) => {
   if (fiber.isComp) {
     fiber.hooks && fiber.hooks.list.forEach((e) => e[2] && e[2]());
-    fiber.kids.forEach(removeElement);
   } else {
-    fiber.parentNode.removeChild(fiber.node);
+    if (flag) {
+      fiber.node.parentNode.removeChild(fiber.node);
+      flag = false;
+    }
     kidsRefer(fiber.kids);
     refer(fiber.ref, null);
   }
+  fiber.kids.forEach((v) => removeElement(v, flag));
 };
 var currentFiber = null;
 var rootFiber = null;
@@ -595,22 +606,14 @@ var reconcile = (fiber) => {
     return reconcile.bind(null, fiber);
   return null;
 };
-var memo$1 = (fiber) => {
-  var _a;
-  if (fiber.type.memo && ((_a = fiber.old) === null || _a === void 0 ? void 0 : _a.props)) {
-    let scu = fiber.type.shouldUpdate || shouldUpdate;
-    if (!scu(fiber.props, fiber.old.props)) {
-      return getSibling(fiber);
-    }
-  }
-  return null;
-};
 var capture = (fiber) => {
   fiber.isComp = isFn(fiber.type);
   if (fiber.isComp) {
-    const memoFiber = memo$1(fiber);
-    if (memoFiber) {
-      return memoFiber;
+    if (isMemo(fiber)) {
+      fiber.memo = true;
+      return getSibling(fiber);
+    } else if (fiber.memo) {
+      fiber.memo = false;
     }
     updateHook(fiber);
   } else {
@@ -620,6 +623,16 @@ var capture = (fiber) => {
     return fiber.child;
   const sibling = getSibling(fiber);
   return sibling;
+};
+var isMemo = (fiber) => {
+  var _a, _b;
+  if (fiber.type.memo && fiber.type === ((_a = fiber.alternate) === null || _a === void 0 ? void 0 : _a.type) && ((_b = fiber.alternate) === null || _b === void 0 ? void 0 : _b.props)) {
+    let scu = fiber.type.shouldUpdate || shouldUpdate;
+    if (!scu(fiber.props, fiber.alternate.props)) {
+      return true;
+    }
+  }
+  return false;
 };
 var getSibling = (fiber) => {
   while (fiber) {
@@ -651,14 +664,18 @@ var shouldUpdate = (a, b) => {
     if (a[i] !== b[i])
       return true;
 };
+var fragment = (fiber) => {
+  const f = document.createDocumentFragment(fiber.type);
+  return f;
+};
 var updateHook = (fiber) => {
   resetCursor();
   currentFiber = fiber;
+  fiber.node = fragment(fiber);
   let children = fiber.type(fiber.props);
   reconcileChidren(fiber, simpleVnode(children));
 };
 var updateHost = (fiber) => {
-  fiber.parentNode = getParentNode(fiber) || {};
   if (!fiber.node) {
     if (fiber.type === "svg")
       fiber.lane |= 16;
@@ -667,14 +684,8 @@ var updateHost = (fiber) => {
   reconcileChidren(fiber, fiber.props.children);
 };
 var simpleVnode = (type) => isStr(type) ? createText(type) : type;
-var getParentNode = (fiber) => {
-  while (fiber = fiber.parent) {
-    if (!fiber.isComp)
-      return fiber.node;
-  }
-};
 var reconcileChidren = (fiber, children) => {
-  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy(children);
+  let aCh = fiber.kids || [], bCh = fiber.kids = arrayfy$1(children);
   const actions = diff(aCh, bCh);
   for (let i = 0, prev = null, len = bCh.length; i < len; i++) {
     const child = bCh[i];
@@ -696,57 +707,80 @@ function clone(a, b) {
   b.ref = a.ref;
   b.node = a.node;
   b.kids = a.kids;
-  b.old = a;
+  b.alternate = a;
 }
-var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
+var arrayfy$1 = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var side = (effects) => {
   effects.forEach((e) => e[2] && e[2]());
   effects.forEach((e) => e[2] = e[0]());
   effects.length = 0;
 };
-var diff = function(a, b) {
-  var actions = [], aIdx = {}, bIdx = {}, key = (v) => v.key + v.type, i, j;
-  for (i = 0; i < a.length; i++) {
-    aIdx[key(a[i])] = i;
+var diff = (aCh, bCh) => {
+  let aHead = 0, bHead = 0, aTail = aCh.length - 1, bTail = bCh.length - 1, aMap = {}, bMap = {}, same = (a, b) => {
+    return a.type === b.type && a.key === b.key;
+  }, temp = [], actions = [];
+  while (aHead <= aTail && bHead <= bTail) {
+    if (!same(aCh[aTail], bCh[bTail]))
+      break;
+    clone(aCh[aTail], bCh[bTail]);
+    temp.push({ op: 2 });
+    aTail--;
+    bTail--;
   }
-  for (i = 0; i < b.length; i++) {
-    bIdx[key(b[i])] = i;
+  while (aHead <= aTail && bHead <= bTail) {
+    if (!same(aCh[aHead], bCh[bHead]))
+      break;
+    clone(aCh[aHead], bCh[bHead]);
+    actions.push({ op: 2 });
+    aHead++;
+    bHead++;
   }
-  for (i = j = 0; i !== a.length || j !== b.length; ) {
-    var aElm = a[i], bElm = b[j];
+  for (let i = aHead; i <= aTail; i++) {
+    if (aCh[i].key)
+      aMap[aCh[i].key] = i;
+  }
+  for (let i = bHead; i <= bTail; i++) {
+    if (bCh[i].key)
+      bMap[bCh[i].key] = i;
+  }
+  while (aHead <= aTail || bHead <= bTail) {
+    var aElm = aCh[aHead], bElm = bCh[bHead];
     if (aElm === null) {
-      i++;
-    } else if (b.length <= j) {
-      removeElement(a[i]);
-      i++;
-    } else if (a.length <= i) {
-      actions.push({ op: 4, elm: bElm, before: a[i] });
-      j++;
-    } else if (key(aElm) === key(bElm)) {
+      aHead++;
+    } else if (bTail + 1 <= bHead) {
+      removeElement(aElm);
+      aHead++;
+    } else if (aTail + 1 <= aHead) {
+      actions.push({ op: 4, cur: bElm, ref: aElm });
+      bHead++;
+    } else if (same(aElm, bElm)) {
       clone(aElm, bElm);
       actions.push({ op: 2 });
-      i++;
-      j++;
+      aHead++;
+      bHead++;
     } else {
-      var curElmInNew = bIdx[key(aElm)];
-      var wantedElmInOld = aIdx[key(bElm)];
-      if (curElmInNew === void 0) {
-        removeElement(a[i]);
-        i++;
-      } else if (wantedElmInOld === void 0) {
-        actions.push({ op: 4, elm: bElm, before: a[i] });
-        j++;
+      var foundB = bMap[aElm.key];
+      var foundA = aMap[bElm.key];
+      if (foundB == null) {
+        removeElement(aElm);
+        aHead++;
+      } else if (foundA == null) {
+        actions.push({ op: 4, cur: bElm, ref: aElm });
+        bHead++;
       } else {
-        clone(a[wantedElmInOld], bElm);
-        actions.push({ op: 64, elm: a[wantedElmInOld], before: a[i] });
-        a[wantedElmInOld] = null;
-        j++;
+        clone(aCh[foundA], bElm);
+        actions.push({ op: 64, cur: aCh[foundA], ref: aElm });
+        aCh[foundA] = null;
+        bHead++;
       }
     }
   }
+  for (let i = temp.length - 1; i >= 0; i--) {
+    actions.push(temp[i]);
+  }
   return actions;
 };
-var getCurrentFiber = () => currentFiber || null;
+var useFiber = () => currentFiber || null;
 var isFn = (x) => typeof x === "function";
 var isStr = (s) => typeof s === "number" || typeof s === "string";
 var h2 = (type, props, ...kids) => {
@@ -762,6 +796,7 @@ var h2 = (type, props, ...kids) => {
     props.ref = void 0;
   return createVnode(type, props, key, ref);
 };
+var arrayfy = (arr) => !arr ? [] : isArr(arr) ? arr : [arr];
 var some = (x) => x != null && x !== true && x !== false;
 var flat = (arr, target = []) => {
   arr.forEach((v) => {
@@ -1290,7 +1325,7 @@ function init(manifest) {
     }, []);
     return h2(c, { data: page.data });
   };
-  render(h2(wrapComp, {}), globalThis.document1.body);
+  render(h2(wrapComp, {}), globalThis.document.body);
 }
 
 // master/index.js
@@ -1309,11 +1344,11 @@ self.send = function send2(message) {
     postMessage(JSON.stringify(message));
   }
 };
-var document2 = self.document = workerdom();
-globalThis.document1 = document2;
-for (let i in document2.defaultView)
-  if (document2.defaultView.hasOwnProperty(i)) {
-    self[i] = document2.defaultView[i];
+self.document = fakedom();
+globalThis.document = self.document;
+for (let i in document.defaultView)
+  if (document.defaultView.hasOwnProperty(i)) {
+    self[i] = document.defaultView[i];
   }
 var COUNTER = 0;
 var TO_SANITIZE = ["addedNodes", "removedNodes", "nextSibling", "previousSibling", "target"];
@@ -1328,7 +1363,7 @@ function getNode(node) {
   if (!id)
     return null;
   if (node.nodeName === "BODY")
-    return document2.body;
+    return document.body;
   return NODES.get(id);
 }
 function handleEvent(event) {
@@ -1344,7 +1379,7 @@ function sanitize(obj) {
     return obj;
   if (Array.isArray(obj))
     return obj.map(sanitize);
-  if (obj instanceof document2.defaultView.Node) {
+  if (obj instanceof document.defaultView.Node) {
     let id = obj.__id;
     if (!id) {
       id = obj.__id = String(++COUNTER);
@@ -1371,7 +1406,7 @@ new MutationObserver((mutations) => {
     }
   }
   send({ type: "MutationRecord", mutations });
-}).observe(document2, { subtree: true, childList: true });
+}).observe(document, { subtree: true, childList: true });
 function _message(data) {
   if (typeof data === "string") {
     data = JSON.parse(data);

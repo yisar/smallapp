@@ -218,6 +218,11 @@ export default function fakedom() {
         return new Element(null, String(type).toUpperCase());
     }
 
+    function createDocumentFragment(type) {
+        //super(9, '#document');
+        return new Element(null, 'segment');
+    }
+
 
     function createElementNS(ns, type) {
         let element = createElement(type);
@@ -234,7 +239,7 @@ export default function fakedom() {
     function createDocument() {
         let document = new Document();
         assign(document, document.defaultView = { document, MutationObserver, Document, Node, Text, Element, SVGElement, Event });
-        assign(document, { documentElement: document, createElement, createElementNS, createTextNode });
+        assign(document, { documentElement: document, createElement, createElementNS, createTextNode, createDocumentFragment });
         document.appendChild(document.body = createElement('body'));
         return document;
     }

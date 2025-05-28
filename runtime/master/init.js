@@ -37,5 +37,5 @@ export function init(manifest) {
     }
 
 
-    render(h(wrapComp, {}), globalThis.document1.body)
+    render(h(wrapComp, {}), globalThis.document.body)
 }

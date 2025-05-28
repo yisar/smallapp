@@ -4,7 +4,7 @@ var EVENT_OPTS = {
   capture: true,
   passive: true
 };
-function workerdomView({ worker: worker2 }) {
+function fakedom({ worker: worker2 }) {
   const NODES = /* @__PURE__ */ new Map();
   function getNode(node) {
     if (!node)
@@ -217,6 +217,7 @@ function workerdomView({ worker: worker2 }) {
       type: "init"
     }));
   } else {
+    console.log(worker2);
     worker2.postMessage(JSON.stringify({
       type: "init",
       manifest: window.manifest
@@ -226,4 +227,4 @@ function workerdomView({ worker: worker2 }) {
 window["javascriptChannel"] = function(json) {
   worker.postMessage(JSON.stringify({ type: "wxcallback", payload: json }));
 };
-workerdomView.umd = true;
+fakedom.umd = true;
