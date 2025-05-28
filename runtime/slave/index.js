@@ -87,6 +87,14 @@ function fakedom({worker}) {
         if (skel.nodeType === 3) {
             node = document.createTextNode(skel.data);
         }
+        if (skel.nodeType === 11) {
+            node = document.createDocumentFragment();
+            if (skel.childNodes) {
+                for (let i = 0; i < skel.childNodes.length; i++) {
+                    node.appendChild(createNode(skel.childNodes[i]));
+                }
+            }
+        }
         else if (skel.nodeType === 1) {
             node = document.createElement(skel.nodeName);
             if (skel.className) {

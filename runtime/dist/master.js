@@ -205,7 +205,7 @@ function fakedom() {
     return new Element(null, String(type).toUpperCase());
   }
   function createDocumentFragment(type) {
-    return new Element(null, "segment");
+    return new Element(11, "#document-fragment");
   }
   function createElementNS(ns, type) {
     let element = createElement2(type);
