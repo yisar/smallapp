@@ -2237,10 +2237,10 @@ pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pnpm@^6.32.9:
-  version "6.35.1"
-  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-6.35.1.tgz#445a7610b62ff84baa42c3d009120c2b41e1d629"
-  integrity sha512-Pt5JEjV2JSORAqw/XtjfF4k34PBQFpqV3kUMFYSlyrWJsio5Hr3lqy2oJkpprMrVbOyBJsxXfZDQOlvmytIrgA==
+pnpm@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/pnpm/-/pnpm-10.0.0.tgz#74fbc3b5a86ddb0cf212ed6c035ee2d5cb9dcd71"
+  integrity sha512-uP71SUvT/ky9Ttq9B0XfLuW+PksLiwj6ZDqj5MZwLMwPANaPqKjJhYpzWgAySFpEmQ7SgQUmyHXkFvABsX3xKw==
 
 postcss-selector-parser@^6.0.4:
   version "6.0.13"

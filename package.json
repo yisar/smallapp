@@ -15,7 +15,7 @@
     "cross-fetch": "^3.0.6",
     "nanoid": "^3.1.21",
     "nodemon": "^2.0.6",
-    "pnpm": "^6.32.9",
+    "pnpm": "^10.0.0",
     "postcss-selector-parser": "^6.0.4",
     "prettier": "^2.2.1",
     "rollup": "^4.9.6",
