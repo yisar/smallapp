@@ -2,8 +2,9 @@ const [empty] = [[0, 0, 0, 0]];
 const { is } = Object;
 const { max } = Math;
 
+
 function measure(obj, ddd, vxy, vwh) {
-    const { style, children, nodeType, data } = obj; // [修改] 结构出 nodeType 和 data
+    const { style, children, nodeType, data } = obj;
     const direction = +(!(style.direction?.charCodeAt(0) === 114)); 
     const xxx = ddd; 
     const yyy = +(!xxx); 
@@ -23,7 +24,6 @@ function measure(obj, ddd, vxy, vwh) {
     if (style.display?.charCodeAt(0) === 110) return void (cwh[0] = cwh[1] = 0); 
     if ((style.position ?? 'r').charCodeAt(0) === 114) { vxy[0x2] += 1; vwh[0x2] += max(0, style.flex | 0); } 
     
-    // 如果是元素节点才递归处理子节点
     if (nodeType === 1) {
         for (let idx = 0; idx < children.length; ++idx) measure(children[idx], direction, cxy, cwh); 
     }
@@ -80,7 +80,6 @@ function layout(obj, aaa, jjj, vxy, vwh, gpu) {
         gpu(obj, [vxy[0] + cxy[0], vxy[1] + cxy[1]], [cwh[0], cwh[1]]); 
     }
     each: {
-        // 只有元素节点才递归子节点排版
         if (nodeType === 1) {
             for (var idx = 0; idx < activeChildren.length; idx++) layout(activeChildren[idx], align, justify, cxy, cwh, gpu); 
         }
@@ -90,7 +89,6 @@ function layout(obj, aaa, jjj, vxy, vwh, gpu) {
         vxy[0x4] += cxy[xxx]; 
     }
 }
-
 
 export default function fakedom() {
     let observers = [], pendingMutations = false
@@ -108,24 +106,21 @@ export default function fakedom() {
             child.remove()
             child.parentNode = this
             this.childNodes.push(child)
-            // 无论是否为元素，都加入 children 数组参与排版
             this.children.push(child) 
             mutation(this, 'childList', { addedNodes: [child], previousSibling: this.childNodes[this.childNodes.length - 2] })
         }
         insertBefore(child, ref) {
             child.remove()
-            let i = splice(this.childNodes, ref, child), ref2
+            let i = splice(this.childNodes, ref, child)
             if (!ref) { this.appendChild(child) }
             else {
-                if (~i) {
-                    splice(this.children, ref, child)
-                }
+                if (~i) splice(this.children, ref, child)
                 mutation(this, 'childList', { addedNodes: [child], nextSibling: ref })
             }
         }
         removeChild(child) {
             let i = splice(this.childNodes, child)
-            splice(this.children, child) // 移除 children 引用
+            splice(this.children, child) 
             mutation(this, 'childList', { removedNodes: [child], previousSibling: this.childNodes[i - 1], nextSibling: this.childNodes[i] })
         }
         remove() { if (this.parentNode) this.parentNode.removeChild(this) }
@@ -194,17 +189,21 @@ export default function fakedom() {
     }
 
     class Document extends Element {
-        constructor() { super(9, '#document') }
+        constructor() { 
+            super(9, '#document');
+            this._w = 0; this._h = 0; // 内部记录视口大小
+        }
         reflow(w, h) {
-            const vxy = [0, 0, 0, 0, 0];
-            const vwh = [w, h, 0, 0, 0];
+            // 如果传入了新宽高则更新，否则使用上次的宽高
+            this._w = w ?? this._w;
+            this._h = h ?? this._h;
+            const vxy = [0, 0, 0, 0, 0], vwh = [this._w, this._h, 0, 0, 0];
             measure(this.body, 1, vxy, vwh);
-            layout(this.body, 97, 0, [0, 0, 0, 0, 0], [w, h, vwh[2], vwh[3], vwh[4]], (node, pos, size) => {
-                node.layoutRect.x = pos[0];
-                node.layoutRect.y = pos[1];
-                node.layoutRect.width = size[0];
-                node.layoutRect.height = size[1];
+            layout(this.body, 97, 0, [0, 0, 0, 0, 0], [this._w, this._h, vwh[2], vwh[3], vwh[4]], (node, pos, size) => {
+                node.layoutRect.x = pos[0]; node.layoutRect.y = pos[1];
+                node.layoutRect.width = size[0]; node.layoutRect.height = size[1];
             });
+            console.log('--- Auto Reflow Executed ---');
         }
     }
 
@@ -259,11 +258,19 @@ export default function fakedom() {
         assign(document, document.defaultView = { document, MutationObserver, Document, Node, Text, Element, Event })
         assign(document, { documentElement: document, createElement, createTextNode, createDocumentFragment })
         document.appendChild(document.body = createElement('body'))
+
+        const observer = new MutationObserver(() => {
+            setImmediate(() => document.reflow());
+        });
+        
+        observer.observe(document, { subtree: true, childList: true, attributes: true, characterData: true });
+        
         return document
     }
 
     return createDocument()
 }
+
 
 export function assign(obj, props) { for (let i in props) obj[i] = props[i] }
 export function toLower(str) { return String(str).toLowerCase() }
